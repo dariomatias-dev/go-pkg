@@ -1,40 +1,19 @@
 "use client";
 
-import { ArrowRight, Clock, Search, X } from "lucide-react";
+import { ArrowRight, Search, X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { SearchHistoryDropdown } from "@/components/common/SearchHistoryDropdown";
+import { saveToHistory } from "@/lib/search-history.ts";
+
 const SUGGESTIONS = ["gin", "cobra", "zap", "gorm"];
-
-function loadHistory(): string[] {
-  try {
-    const raw = localStorage.getItem("gopkg_search_history");
-
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveToHistory(query: string) {
-  if (!query.trim()) return;
-
-  try {
-    let h = loadHistory();
-
-    h = h.filter((q) => q.toLowerCase() !== query.toLowerCase());
-    h.unshift(query.trim());
-
-    localStorage.setItem("gopkg_search_history", JSON.stringify(h.slice(0, 5)));
-  } catch {}
-}
 
 export function HeroSection() {
   const router = useRouter();
 
   const [query, setQuery] = useState("");
-  const [history, setHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
 
   const submit = (q: string) => {
@@ -51,8 +30,10 @@ export function HeroSection() {
   };
 
   return (
-    <section className="bg-linear-to-b from-[#007D9C] to-[#00ADD8] text-white py-16 px-6 relative overflow-hidden border-b border-sky-600/30">
-      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] bg-size-[24px_24px] pointer-events-none" />
+    <section className="bg-linear-to-b from-[#007D9C] to-[#00ADD8] text-white py-16 px-6 relative border-b border-sky-600/30">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] bg-size-[24px_24px]" />
+      </div>
 
       <div className="container-scale text-center relative z-10">
         <div className="h-4" />
@@ -75,10 +56,7 @@ export function HeroSection() {
               className="w-full pl-8 pr-8 py-3 text-slate-800 placeholder-slate-400 font-sans text-sm sm:text-base focus:outline-none focus:ring-0"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => {
-                setHistory(loadHistory());
-                setShowHistory(true);
-              }}
+              onFocus={() => setShowHistory(true)}
               onBlur={() => setTimeout(() => setShowHistory(false), 200)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") submit(query);
@@ -103,56 +81,15 @@ export function HeroSection() {
             <ArrowRight className="w-4 h-4" />
           </button>
 
-          {showHistory && history.length > 0 && (
-            <div className="absolute left-2 right-2 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 text-slate-800 text-sm overflow-hidden text-left animate-fade-in">
-              <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-                <span className="font-semibold text-slate-500 text-xs">
-                  Recent Searches
-                </span>
-                <button
-                  onMouseDown={() => {
-                    localStorage.removeItem("gopkg_search_history");
-                    setHistory([]);
-                  }}
-                  className="text-xs text-slate-400 hover:text-rose-500 hover:underline transition-colors cursor-pointer border-none bg-transparent outline-none"
-                >
-                  Clear all
-                </button>
-              </div>
-              <div className="max-h-60 overflow-y-auto">
-                {history.map((q, idx) => (
-                  <div
-                    key={idx}
-                    onMouseDown={() => {
-                      setQuery(q);
-                      submit(q);
-                    }}
-                    className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-slate-50/70 transition-colors border-b border-slate-50 last:border-none"
-                  >
-                    <div className="flex items-center space-x-3 truncate">
-                      <Clock className="w-4 h-4 text-slate-400 shrink-0" />
-                      <span className="truncate font-medium text-slate-700">
-                        {q}
-                      </span>
-                    </div>
-                    <button
-                      onMouseDown={(e) => {
-                        e.stopPropagation();
-                        const updated = history.filter((h) => h !== q);
-                        localStorage.setItem(
-                          "gopkg_search_history",
-                          JSON.stringify(updated),
-                        );
-                        setHistory(updated);
-                      }}
-                      className="text-slate-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {showHistory && (
+            <SearchHistoryDropdown
+              size="lg"
+              onSelect={(q) => {
+                setQuery(q);
+                submit(q);
+              }}
+              className="absolute left-2 right-2 top-full mt-2 text-left animate-fade-in"
+            />
           )}
         </div>
 
