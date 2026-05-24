@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-  Heart,
-  HeartOff,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowRight, Heart, HeartOff, Loader2, TrendingUp } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,28 +9,56 @@ import PackageCard from "@/components/package/PackageCard";
 import { useFavorites } from "@/hooks/useFavorites";
 import type { PopularPackage, PopularPackageResponse } from "@/types";
 
+const PER_PAGE = 4;
+
+async function fetchPage(page: number): Promise<PopularPackageResponse> {
+  const res = await fetch(
+    `/api/popular-package?page=${page}&perPage=${PER_PAGE}`,
+  );
+
+  if (!res.ok) throw new Error("Failed to fetch");
+
+  return res.json() as Promise<PopularPackageResponse>;
+}
+
 export function PopularPackageSection() {
   const router = useRouter();
 
   const { favorites, removeFavorite } = useFavorites();
 
-  const [popular, setPopular] = useState<PopularPackage[]>([]);
+  const [packages, setPackages] = useState<PopularPackage[]>([]);
   const [popularTags, setPopularTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAll, setShowAll] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
-    fetch("/api/trending")
-      .then((r) => r.json())
-      .then((data: PopularPackageResponse) => {
-        setPopular(data.trending ?? []);
+    fetchPage(1)
+      .then((data) => {
+        setPackages(data.packages ?? []);
         setPopularTags(data.popularTags ?? []);
+        setHasMore(data.hasMore);
+        setPage(1);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  const visiblePopular = showAll ? popular : popular.slice(0, 4);
+  const loadMore = () => {
+    const nextPage = page + 1;
+
+    setLoadingMore(true);
+
+    fetchPage(nextPage)
+      .then((data) => {
+        setPackages((prev) => [...prev, ...(data.packages ?? [])]);
+        setHasMore(data.hasMore);
+        setPage(nextPage);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingMore(false));
+  };
 
   return (
     <section className="py-12 bg-slate-50/50 flex-1 border-t border-slate-100">
@@ -61,7 +82,7 @@ export function PopularPackageSection() {
 
           {loading ? (
             <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
+              {Array.from({ length: PER_PAGE }).map((_, i) => (
                 <div
                   key={i}
                   className="bg-white rounded-xl p-6 border border-slate-200/60 shadow-sm animate-shimmer relative overflow-hidden flex flex-col gap-3"
@@ -73,30 +94,31 @@ export function PopularPackageSection() {
                       <div className="h-3 w-64 bg-slate-100/50 rounded-sm" />
                     </div>
                   </div>
-
                   <div className="h-3.5 w-full bg-slate-50 rounded" />
                 </div>
               ))}
             </div>
           ) : (
             <div className="space-y-4">
-              {visiblePopular.map((pkg, i) => (
+              {packages.map((pkg, i) => (
                 <PackageCard key={pkg.modulePath} pkg={pkg} index={i + 1} />
               ))}
 
-              {popular.length > 4 && (
+              {hasMore && (
                 <div className="flex justify-center pt-2 select-none">
                   <button
                     type="button"
-                    onClick={() => setShowAll(!showAll)}
-                    className="inline-flex items-center gap-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-[#007D9C] font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer font-sans"
+                    onClick={loadMore}
+                    disabled={loadingMore}
+                    className="inline-flex items-center gap-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-[#007D9C] font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer font-sans disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <span>{showAll ? "Show Fewer" : "Show More"}</span>
-
-                    {showAll ? (
-                      <ChevronUp className="w-4 h-4 text-slate-400" />
+                    {loadingMore ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Loading...</span>
+                      </>
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-slate-400" />
+                      <span>Load More</span>
                     )}
                   </button>
                 </div>
@@ -171,7 +193,7 @@ export function PopularPackageSection() {
             <div className="flex flex-wrap gap-1.5">
               {loading ? (
                 <>
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                  {Array.from({ length: 6 }).map((_, i) => (
                     <span
                       key={i}
                       className="bg-slate-100/80 text-transparent h-6 w-14 rounded-md animate-shimmer relative overflow-hidden inline-block"
