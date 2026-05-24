@@ -22,6 +22,9 @@ export interface GoPackage {
 export interface PackageSearchResponse {
   results: GoPackage[];
   totalResults: number;
+  page: number;
+  perPage: number;
+  hasMore: boolean;
 }
 
 export interface PackageDetailResponse {

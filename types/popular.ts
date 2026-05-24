@@ -20,7 +20,11 @@ export interface PopularPackage {
 }
 
 export interface PopularPackageResponse {
-  trending: PopularPackage[];
+  packages: PopularPackage[];
   categories: CuratedCategory[];
   popularTags: string[];
+  page: number;
+  perPage: number;
+  total: number;
+  hasMore: boolean;
 }
