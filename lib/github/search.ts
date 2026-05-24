@@ -1,0 +1,81 @@
+import type { PackageSearchResponse, PopularPackage } from "@/types";
+
+import { GITHUB_BASE_URL, getGithubHeaders } from "./client";
+import { enrichWithGoProxy } from "./go-proxy";
+import { buildSearchQuery, guessCategory, normalizePackage } from "./normalize";
+import type { GitHubSearchResponse } from "./types";
+
+export async function searchGithubPackages(
+  query: string,
+  category: string = "",
+  tag: string = "",
+  page: number = 1,
+  perPage: number = 10,
+): Promise<PackageSearchResponse> {
+  const q = buildSearchQuery(query, category, tag);
+  const url = `${GITHUB_BASE_URL}/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=${perPage}&page=${page}`;
+  const response = await fetch(url, { headers: getGithubHeaders() });
+
+  if (!response.ok) {
+    throw new Error(`GitHub search failed with status ${response.status}`);
+  }
+
+  const data = (await response.json()) as GitHubSearchResponse;
+  const items = Array.isArray(data.items) ? data.items : [];
+  const results = items.map((item) => normalizePackage(item, category));
+  const totalResults = Number(data.total_count ?? results.length);
+
+  return {
+    results,
+    totalResults,
+    page,
+    perPage,
+    hasMore: page * perPage < totalResults,
+  };
+}
+
+export async function fetchPopularPackages(
+  page: number = 1,
+  perPage: number = 10,
+): Promise<{ packages: PopularPackage[]; total: number }> {
+  const url = `${GITHUB_BASE_URL}/search/repositories?q=language:go&sort=stars&order=desc&page=${page}&per_page=${perPage}`;
+  const response = await fetch(url, { headers: getGithubHeaders() });
+
+  if (!response.ok) {
+    throw new Error(
+      `GitHub popular packages fetch failed with status ${response.status}`,
+    );
+  }
+
+  const data = (await response.json()) as GitHubSearchResponse;
+  const items = Array.isArray(data.items) ? data.items : [];
+  const total = Number(data.total_count ?? items.length);
+
+  const base: PopularPackage[] = items.map((item, index) => ({
+    modulePath: `github.com/${item.full_name}`,
+    trendScore: Math.max(0, 100 - index * 1.5),
+    change: `+${5 + Math.floor(Math.random() * 20)}%`,
+    name: item.name,
+    description: item.description ?? "No description available.",
+    stars: item.stargazers_count ?? 0,
+    forks: item.forks_count ?? 0,
+    license: item.license?.spdx_id || item.license?.name || "",
+    author: item.owner?.login || "",
+    publishedAt: item.pushed_at
+      ? new Date(item.pushed_at).toLocaleDateString("pt-BR")
+      : "",
+    category: guessCategory(item.name, item.description ?? ""),
+    tags: [item.name.toLowerCase(), ...(item.topics ?? []).slice(0, 3)],
+    githubUrl: item.html_url,
+  }));
+
+  const packages = await Promise.all(
+    base.map(async (pkg) => {
+      const proxy = await enrichWithGoProxy(pkg.modulePath);
+
+      return { ...pkg, ...proxy };
+    }),
+  );
+
+  return { packages, total };
+}
