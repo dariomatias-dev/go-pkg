@@ -8,15 +8,12 @@ import { useState } from "react";
 import { SearchHistoryDropdown } from "@/components/common/SearchHistoryDropdown";
 import { saveToHistory } from "@/lib/search-history.ts";
 
-interface SearchComponentProps {
+interface HeaderSearchProps {
   mobile?: boolean;
   onSearch?: () => void;
 }
 
-export default function SearchComponent({
-  mobile,
-  onSearch,
-}: SearchComponentProps) {
+export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
   const router = useRouter();
   const [searchVal, setSearchVal] = useState("");
   const [showHistory, setShowHistory] = useState(false);

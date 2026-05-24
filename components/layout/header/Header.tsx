@@ -16,7 +16,8 @@ import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import SearchComponent from "@/components/layout/header/SearchComponent";
+
+import { HeaderSearch } from "@/components/layout/header/HeaderSearch";
 
 const ECOSYSTEM_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "https://go.dev", label: "Official Website", icon: Globe },
@@ -109,7 +110,7 @@ export default function Header() {
           </Link>
         </div>
 
-        <SearchComponent onSearch={() => setMenuOpen(false)} />
+        <HeaderSearch onSearch={() => setMenuOpen(false)} />
 
         <div className="relative shrink-0" ref={menuRef}>
           <button
@@ -130,7 +131,7 @@ export default function Header() {
                   Search
                 </p>
 
-                <SearchComponent mobile onSearch={() => setMenuOpen(false)} />
+                <HeaderSearch mobile onSearch={() => setMenuOpen(false)} />
               </div>
 
               <div className="space-y-1 mb-4">
