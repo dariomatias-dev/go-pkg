@@ -39,7 +39,7 @@ function CategoryIcon({ name }: { name: string }) {
   }
 }
 
-export default function CategoriesSection({ loading }: CategoriesSectionProps) {
+export function CategoriesSection({ loading }: CategoriesSectionProps) {
   const router = useRouter();
 
   return (

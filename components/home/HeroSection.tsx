@@ -30,7 +30,7 @@ function saveToHistory(query: string) {
   } catch {}
 }
 
-export default function HeroSection() {
+export function HeroSection() {
   const router = useRouter();
 
   const [query, setQuery] = useState("");
