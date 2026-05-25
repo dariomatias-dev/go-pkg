@@ -72,7 +72,7 @@ export function PopularPackageSection() {
 
             <button
               type="button"
-              onClick={() => router.push("/trending")}
+              onClick={() => router.push("/popular")}
               className="inline-flex items-center gap-1 text-xs font-bold text-[#007D9C] hover:text-[#005F77] transition-colors cursor-pointer font-sans"
             >
               View All

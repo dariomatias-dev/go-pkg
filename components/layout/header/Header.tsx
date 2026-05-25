@@ -34,7 +34,7 @@ export function Header() {
 
   const navLinks = [
     {
-      href: "/trending",
+      href: "/popular",
       label: "Popular Modules",
       icon: TrendingUp,
       badge: null as null | { count: number; cls: string },

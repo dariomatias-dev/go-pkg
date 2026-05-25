@@ -42,7 +42,7 @@ export default function SearchSection({
   const [perPage, setPerPage] = useState(10);
 
   useEffect(() => {
-    fetch("/api/trending")
+    fetch("/api/popular-package")
       .then((r) => r.json())
       .then((data: PopularPackageResponse) => {
         if (data.categories) setCategories(data.categories);

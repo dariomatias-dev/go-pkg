@@ -17,7 +17,7 @@ import type { Route } from "next";
 import Link from "next/link";
 
 const NAV_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "/trending", label: "Popular Modules", icon: TrendingUp },
+  { href: "/popular", label: "Popular Modules", icon: TrendingUp },
   { href: "/compare", label: "Comparison Tool", icon: Scale },
   { href: "/favorites", label: "My Watchlist", icon: Heart },
 ];
