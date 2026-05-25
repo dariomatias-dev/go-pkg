@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { PackageCard } from "@/components/package/PackageCard";
+import { PackageCardSkeleton } from "@/components/common/PackageCardSkeleton";
 import { useFavorites } from "@/hooks/useFavorites";
 import type { PopularPackage, PopularPackageResponse } from "@/types";
 
@@ -83,19 +84,7 @@ export function PopularPackageSection() {
           {loading ? (
             <div className="space-y-4">
               {Array.from({ length: PER_PAGE }).map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-xl p-6 border border-slate-200/60 shadow-sm animate-shimmer relative overflow-hidden flex flex-col gap-3"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="space-y-2 flex-1">
-                      <div className="h-3 w-16 bg-slate-200/40 rounded-full" />
-                      <div className="h-4 w-48 bg-slate-200/50 rounded-md" />
-                      <div className="h-3 w-64 bg-slate-100/50 rounded-sm" />
-                    </div>
-                  </div>
-                  <div className="h-3.5 w-full bg-slate-50 rounded" />
-                </div>
+                <PackageCardSkeleton key={i} />
               ))}
             </div>
           ) : (
