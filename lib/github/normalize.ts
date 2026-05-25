@@ -60,11 +60,11 @@ export function normalizePackage(
   item: GitHubRepo,
   category?: string,
 ): GoPackage {
-  const modulePath = `github.com/${item.full_name}`;
+  const importPath = `github.com/${item.full_name}`;
 
   return {
     name: item.name,
-    modulePath,
+    importPath,
     description: item.description ?? "No description available.",
     stars: item.stargazers_count ?? 0,
     forks: item.forks_count ?? 0,

@@ -19,13 +19,13 @@ export function useFavorites() {
   const [favorites, setFavorites] = useState<GoPackage[]>(loadFavorites);
 
   const isFavorite = useCallback(
-    (modulePath: string) => favorites.some((f) => f.modulePath === modulePath),
+    (importPath: string) => favorites.some((f) => f.importPath === importPath),
     [favorites],
   );
 
   const addFavorite = useCallback((pkg: GoPackage) => {
     setFavorites((prev) => {
-      if (prev.some((f) => f.modulePath === pkg.modulePath)) return prev;
+      if (prev.some((f) => f.importPath === pkg.importPath)) return prev;
 
       const next = [...prev, pkg];
 
@@ -35,9 +35,9 @@ export function useFavorites() {
     });
   }, []);
 
-  const removeFavorite = useCallback((modulePath: string) => {
+  const removeFavorite = useCallback((importPath: string) => {
     setFavorites((prev) => {
-      const next = prev.filter((f) => f.modulePath !== modulePath);
+      const next = prev.filter((f) => f.importPath !== importPath);
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
 
@@ -47,8 +47,8 @@ export function useFavorites() {
 
   const toggleFavorite = useCallback(
     (pkg: GoPackage) => {
-      if (isFavorite(pkg.modulePath)) {
-        removeFavorite(pkg.modulePath);
+      if (isFavorite(pkg.importPath)) {
+        removeFavorite(pkg.importPath);
       } else {
         addFavorite(pkg);
       }

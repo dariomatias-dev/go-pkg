@@ -2,10 +2,10 @@ import { GO_PROXY_BASE, escapeGoModule } from "./client";
 import type { GoProxyLatest } from "./types";
 
 export async function fetchGoMod(
-  modulePath: string,
+  importPath: string,
   version: string,
 ): Promise<string> {
-  const escaped = escapeGoModule(modulePath);
+  const escaped = escapeGoModule(importPath);
   const res = await fetch(`${GO_PROXY_BASE}/${escaped}/@v/${version}.mod`);
 
   if (!res.ok) return "";
@@ -44,9 +44,9 @@ export function countGoModDependencies(goMod: string): number {
 }
 
 export async function enrichWithGoProxy(
-  modulePath: string,
+  importPath: string,
 ): Promise<{ latestVersion: string; dependenciesCount: number }> {
-  const escaped = escapeGoModule(modulePath);
+  const escaped = escapeGoModule(importPath);
   try {
     const res = await fetch(`${GO_PROXY_BASE}/${escaped}/@latest`, {
       signal: AbortSignal.timeout(4000),
@@ -59,7 +59,7 @@ export async function enrichWithGoProxy(
 
     if (!version) return { latestVersion: "", dependenciesCount: 0 };
 
-    const goMod = await fetchGoMod(modulePath, version);
+    const goMod = await fetchGoMod(importPath, version);
 
     return {
       latestVersion: version,

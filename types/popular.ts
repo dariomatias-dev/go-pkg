@@ -1,7 +1,7 @@
 import type { CuratedCategory } from "./curated-category";
 
 export interface PopularPackage {
-  modulePath: string;
+  importPath: string;
   name: string;
   description: string;
   stars: number;

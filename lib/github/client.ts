@@ -15,12 +15,12 @@ export function getGithubHeaders(): Record<string, string> {
   return headers;
 }
 
-export function escapeGoModule(modulePath: string): string {
-  return modulePath.replace(/([A-Z])/g, "!$1").toLowerCase();
+export function escapeGoModule(importPath: string): string {
+  return importPath.replace(/([A-Z])/g, "!$1").toLowerCase();
 }
 
 export function parseGithubRepo(
-  modulePath: string,
+  importPath: string,
 ): { owner: string; repo: string } | null {
   const mapping: Record<string, string> = {
     "go.uber.org/zap": "uber-go/zap",
@@ -38,7 +38,7 @@ export function parseGithubRepo(
     "gopkg.in/yaml.v3": "go-yaml/yaml",
   };
 
-  const normalized = mapping[modulePath] ?? modulePath;
+  const normalized = mapping[importPath] ?? importPath;
   const target = normalized.startsWith("github.com/")
     ? normalized
     : `github.com/${normalized}`;

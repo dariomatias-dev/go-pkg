@@ -1,6 +1,6 @@
 export interface GoPackage {
   name: string;
-  modulePath: string;
+  importPath: string;
   description: string;
   stars: number;
   forks: number;

@@ -101,7 +101,7 @@ export function PopularPackageSection() {
           ) : (
             <div className="space-y-4">
               {packages.map((pkg, i) => (
-                <PackageCard key={pkg.modulePath} pkg={pkg} index={i + 1} />
+                <PackageCard key={pkg.importPath} pkg={pkg} index={i + 1} />
               ))}
 
               {hasMore && (
@@ -147,9 +147,9 @@ export function PopularPackageSection() {
               <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
                 {favorites.map((pkg) => (
                   <div
-                    key={pkg.modulePath}
+                    key={pkg.importPath}
                     onClick={() => {
-                      const encoded = pkg.modulePath
+                      const encoded = pkg.importPath
                         .split("/")
                         .map(encodeURIComponent)
                         .join("/");
@@ -161,18 +161,18 @@ export function PopularPackageSection() {
                   >
                     <div className="min-w-0 flex-1 pr-2">
                       <p className="text-xs font-semibold text-slate-800 group-hover:text-[#00ADD8] transition-colors truncate">
-                        {pkg.modulePath.split("/").pop()}
+                        {pkg.importPath.split("/").pop()}
                       </p>
 
                       <p className="text-[10px] font-mono text-slate-400 truncate">
-                        {pkg.modulePath}
+                        {pkg.importPath}
                       </p>
                     </div>
 
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        removeFavorite(pkg.modulePath);
+                        removeFavorite(pkg.importPath);
                       }}
                       className="text-slate-300 hover:text-rose-500 p-1 rounded hover:bg-rose-50 transition-colors shrink-0"
                       title="Remove from favorites"

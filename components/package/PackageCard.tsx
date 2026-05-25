@@ -1,12 +1,12 @@
 "use client";
 import {
-    Calendar,
-    Database,
-    GitFork,
-    Heart,
-    Shield,
-    Star,
-    User,
+  Calendar,
+  Database,
+  GitFork,
+  Heart,
+  Shield,
+  Star,
+  User,
 } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
@@ -49,7 +49,7 @@ function toGoPackage(pkg: CardPkg): GoPackage {
 export default function PackageCard({ pkg, index }: PackageCardProps) {
   const router = useRouter();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const saved = isFavorite(pkg.modulePath);
+  const saved = isFavorite(pkg.importPath);
 
   const scoreValue =
     pkg.similarityScore !== undefined
@@ -59,7 +59,7 @@ export default function PackageCard({ pkg, index }: PackageCardProps) {
       : undefined;
 
   const navigateToPkg = () => {
-    const encoded = pkg.modulePath.split("/").map(encodeURIComponent).join("/");
+    const encoded = pkg.importPath.split("/").map(encodeURIComponent).join("/");
 
     router.push(`/package/${encoded}` as Route<`/package/${string}`>);
   };
@@ -146,11 +146,11 @@ export default function PackageCard({ pkg, index }: PackageCardProps) {
               onClick={(e) => e.stopPropagation()}
               className="text-[11px] text-[#007D9C] hover:text-[#005F77] hover:underline font-mono truncate select-all font-medium"
             >
-              {pkg.modulePath}
+              {pkg.importPath}
             </a>
           ) : (
             <span className="text-[11px] text-slate-400 font-mono truncate select-all">
-              {pkg.modulePath}
+              {pkg.importPath}
             </span>
           )}
         </div>

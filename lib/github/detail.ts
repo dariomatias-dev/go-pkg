@@ -11,26 +11,26 @@ import { countGoModDependencies, fetchGoMod } from "./go-proxy";
 import type { GitHubRepo, GoProxyLatest } from "./types";
 
 export async function getPackageDetail(
-  modulePath: string,
+  importPath: string,
 ): Promise<PackageDetailResponse> {
-  const pkgName = modulePath.split("/").pop() || modulePath;
+  const pkgName = importPath.split("/").pop() || importPath;
   const pkg: GoPackage = {
     name: pkgName,
-    modulePath,
+    importPath,
     description: "Go package discovered on demand.",
     stars: 0,
     forks: 0,
     license: "View on GitHub",
     latestVersion: "v0.0.0",
     category: "utilities",
-    tags: [modulePath.toLowerCase()],
-    author: modulePath.split("/")[1] || "go-community",
+    tags: [importPath.toLowerCase()],
+    author: importPath.split("/")[1] || "go-community",
     publishedAt: "Unknown",
     dependenciesCount: 0,
     importsCount: 0,
   };
 
-  const escaped = escapeGoModule(modulePath);
+  const escaped = escapeGoModule(importPath);
   let versions: string[] = [];
 
   try {
@@ -66,12 +66,12 @@ export async function getPackageDetail(
   let goMod = "";
 
   if (pkg.latestVersion) {
-    goMod = await fetchGoMod(modulePath, pkg.latestVersion);
+    goMod = await fetchGoMod(importPath, pkg.latestVersion);
 
     if (goMod) pkg.dependenciesCount = countGoModDependencies(goMod);
   }
 
-  const repoInfo = parseGithubRepo(modulePath);
+  const repoInfo = parseGithubRepo(importPath);
 
   if (repoInfo) {
     try {

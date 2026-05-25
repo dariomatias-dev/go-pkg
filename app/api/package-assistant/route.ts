@@ -7,7 +7,7 @@ interface ChatMessage {
 }
 
 interface AssistantRequestBody {
-  modulePath?: string;
+  importPath?: string;
   message: string;
   history?: ChatMessage[];
 }
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   const {
     message,
     history = [],
-    modulePath,
+    importPath,
   } = (await request.json()) as AssistantRequestBody;
 
   if (!message) {
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const finalModulePath = modulePath ?? "general";
+  const finalModulePath = importPath ?? "general";
 
   const apiKey = process.env.GEMINI_API_KEY;
 

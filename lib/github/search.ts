@@ -52,7 +52,7 @@ export async function fetchPopularPackages(
   const total = Number(data.total_count ?? items.length);
 
   const base: PopularPackage[] = items.map((item, index) => ({
-    modulePath: `github.com/${item.full_name}`,
+    importPath: `github.com/${item.full_name}`,
     trendScore: Math.max(0, 100 - index * 1.5),
     change: `+${5 + Math.floor(Math.random() * 20)}%`,
     name: item.name,
@@ -71,7 +71,7 @@ export async function fetchPopularPackages(
 
   const packages = await Promise.all(
     base.map(async (pkg) => {
-      const proxy = await enrichWithGoProxy(pkg.modulePath);
+      const proxy = await enrichWithGoProxy(pkg.importPath);
 
       return { ...pkg, ...proxy };
     }),
