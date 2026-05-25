@@ -1,6 +1,15 @@
+import { unstable_cache } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { getPackageDetail } from "@/lib/github";
+
+const getCachedPackageDetail = unstable_cache(
+  async (importPath: string) => {
+    return getPackageDetail(importPath);
+  },
+  ["package-detail"],
+  { revalidate: 1800 },
+);
 
 export async function GET(request: Request) {
   try {
@@ -14,9 +23,13 @@ export async function GET(request: Request) {
       );
     }
 
-    const data = await getPackageDetail(importPath);
+    const data = await getCachedPackageDetail(importPath);
 
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: {
+        "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=86400",
+      },
+    });
   } catch {
     return NextResponse.json(
       { error: "Unable to load package details" },
