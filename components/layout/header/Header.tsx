@@ -26,7 +26,7 @@ const ECOSYSTEM_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "https://go.dev/ref/spec", label: "Language Spec", icon: Code },
 ];
 
-export default function Header() {
+export function Header() {
   const pathname = usePathname();
 
   const [menuOpen, setMenuOpen] = useState(false);

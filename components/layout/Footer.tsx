@@ -33,7 +33,7 @@ const navLinkClass =
 const externalLinkClass =
   "group flex items-center gap-2 text-slate-500 hover:text-white transition-all duration-200 text-xs font-medium";
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="bg-[#020617] text-slate-400 py-10 mt-auto border-t border-slate-900 select-none">
       <div className="container-scale">

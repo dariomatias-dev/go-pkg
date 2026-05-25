@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 
 import "./globals.css";
 
-import Footer from "@/components/layout/Footer";
-import Header  from "@/components/layout/header/Header";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/header/Header";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
