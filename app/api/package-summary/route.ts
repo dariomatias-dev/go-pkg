@@ -1,22 +1,93 @@
+import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-
   const importPath = url.searchParams.get("importPath");
 
   if (!importPath) {
     return NextResponse.json(
-      { error: 'The "importPath" parameter is required' },
+      { error: 'The "importPath" parameter is required.' },
       { status: 400 },
     );
   }
 
-  return NextResponse.json(
-    {
-      error:
-        "AI service not configured. Set up an API key to enable intelligent summaries.",
-    },
-    { status: 503 },
-  );
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        error:
+          "AI service is not configured. Please set the GEMINI_API_KEY environment variable.",
+      },
+      { status: 503 },
+    );
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+
+  const packageName = importPath.split("/").pop() || importPath;
+
+  const prompt = `
+You are Gopher AI, a technical expert in Go (Golang) and its ecosystem.
+
+Generate a concise technical summary for the Go package below:
+
+Import path: "${importPath}"
+Package name: "${packageName}"
+
+The response must be written in English and include:
+
+1. A short description of the package and its main purpose
+2. Key features and capabilities
+3. A practical Go code example showing how to import and use it
+4. Common use cases in Go projects
+
+Format the response using Markdown.
+Keep the explanation concise, practical, and developer-focused.
+Do not include comments inside code snippets.
+`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }],
+        },
+      ],
+      config: {
+        temperature: 0.5,
+      },
+    });
+
+    return NextResponse.json({
+      summary: response.text || "Summary not available.",
+    });
+  } catch (error) {
+    console.error("Summary generation error:", error);
+
+    const isRateLimit =
+      typeof error === "object" &&
+      error !== null &&
+      "status" in error &&
+      (error as { status: number }).status === 429;
+
+    if (isRateLimit) {
+      return NextResponse.json(
+        {
+          error: "API rate limit reached. Please try again in a few seconds.",
+        },
+        { status: 429 },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        error: "Failed to generate AI summary. Please try again.",
+      },
+      { status: 500 },
+    );
+  }
 }
