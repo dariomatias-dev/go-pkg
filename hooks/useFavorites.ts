@@ -1,22 +1,52 @@
 "use client";
 
 import type { GoPackage } from "@/types";
-import { useCallback, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "gopkg_favorites";
+const listeners = new Set<() => void>();
 
-function loadFavorites(): GoPackage[] {
+const EMPTY: GoPackage[] = [];
+let snapshotCache: GoPackage[] = EMPTY;
+let snapshotRaw: string | null = null;
+
+function getSnapshot(): GoPackage[] {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-
-    return stored ? JSON.parse(stored) : [];
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw === snapshotRaw) return snapshotCache;
+    snapshotRaw = raw;
+    snapshotCache = raw ? (JSON.parse(raw) as GoPackage[]) : EMPTY;
+    return snapshotCache;
   } catch {
-    return [];
+    return EMPTY;
   }
 }
 
+function getServerSnapshot(): GoPackage[] {
+  return EMPTY;
+}
+
+function emit() {
+  listeners.forEach((l) => l());
+}
+
+function persist(favorites: GoPackage[]) {
+  const raw = JSON.stringify(favorites);
+  localStorage.setItem(STORAGE_KEY, raw);
+  snapshotRaw = raw;
+  snapshotCache = favorites;
+  emit();
+}
+
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<GoPackage[]>(loadFavorites);
+  const favorites = useSyncExternalStore(
+    (cb) => {
+      listeners.add(cb);
+      return () => listeners.delete(cb);
+    },
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   const isFavorite = useCallback(
     (importPath: string) => favorites.some((f) => f.importPath === importPath),
@@ -24,36 +54,24 @@ export function useFavorites() {
   );
 
   const addFavorite = useCallback((pkg: GoPackage) => {
-    setFavorites((prev) => {
-      if (prev.some((f) => f.importPath === pkg.importPath)) return prev;
-
-      const next = [...prev, pkg];
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-
-      return next;
-    });
+    const current = getSnapshot();
+    if (current.some((f) => f.importPath === pkg.importPath)) return;
+    persist([...current, pkg]);
   }, []);
 
   const removeFavorite = useCallback((importPath: string) => {
-    setFavorites((prev) => {
-      const next = prev.filter((f) => f.importPath !== importPath);
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-
-      return next;
-    });
+    persist(getSnapshot().filter((f) => f.importPath !== importPath));
   }, []);
 
   const toggleFavorite = useCallback(
     (pkg: GoPackage) => {
-      if (isFavorite(pkg.importPath)) {
+      if (getSnapshot().some((f) => f.importPath === pkg.importPath)) {
         removeFavorite(pkg.importPath);
       } else {
         addFavorite(pkg);
       }
     },
-    [isFavorite, addFavorite, removeFavorite],
+    [addFavorite, removeFavorite],
   );
 
   return { favorites, isFavorite, addFavorite, removeFavorite, toggleFavorite };
