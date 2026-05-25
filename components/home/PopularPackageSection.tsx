@@ -5,7 +5,7 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import PackageCard from "@/components/package/PackageCard";
+import { PackageCard } from "@/components/package/PackageCard";
 import { useFavorites } from "@/hooks/useFavorites";
 import type { PopularPackage, PopularPackageResponse } from "@/types";
 

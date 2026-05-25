@@ -46,7 +46,7 @@ function toGoPackage(pkg: CardPkg): GoPackage {
   } as GoPackage;
 }
 
-export default function PackageCard({ pkg, index }: PackageCardProps) {
+export function PackageCard({ pkg, index }: PackageCardProps) {
   const router = useRouter();
   const { isFavorite, toggleFavorite } = useFavorites();
   const saved = isFavorite(pkg.importPath);
