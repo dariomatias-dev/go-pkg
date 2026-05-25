@@ -7,7 +7,7 @@ import {
   clearHistory,
   loadHistory,
   removeFromHistory,
-} from "@/lib/search-history.ts";
+} from "@/lib/search-history";
 
 interface SearchHistoryDropdownProps {
   onSelect: (q: string) => void;
