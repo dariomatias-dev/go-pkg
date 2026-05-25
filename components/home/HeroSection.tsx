@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { SearchHistoryDropdown } from "@/components/common/SearchHistoryDropdown";
-import { saveToHistory } from "@/lib/search-history.ts";
+import { saveToHistory } from "@/lib/search-history";
 
 const SUGGESTIONS = ["gin", "cobra", "zap", "gorm"];
 

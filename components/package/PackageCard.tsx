@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 
 import { useFavorites } from "@/hooks/useFavorites";
 import type { GoPackage, PopularPackage } from "@/types";
+import { encodeImportPath } from "@/lib/utils";
 
 type CardPkg = GoPackage | PopularPackage;
 
@@ -59,9 +60,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
       : undefined;
 
   const navigateToPkg = () => {
-    const encoded = pkg.importPath.split("/").map(encodeURIComponent).join("/");
-
-    router.push(`/package/${encoded}` as Route<`/package/${string}`>);
+    router.push(`/package/${encodeImportPath(pkg.importPath)}` as Route<`/package/${string}`>);
   };
 
   return (

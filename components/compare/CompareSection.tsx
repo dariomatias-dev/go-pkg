@@ -21,6 +21,8 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { encodeImportPath } from "@/lib/utils";
+
 const PRESETS = [
   {
     emoji: "🌐",
@@ -389,9 +391,7 @@ export function CompareSection() {
   };
 
   const inspectPackage = (importPath: string) => {
-    const encoded = importPath.split("/").map(encodeURIComponent).join("/");
-
-    router.push(`/package/${encoded}` as Route<`/package/${string}`>);
+    router.push(`/package/${encodeImportPath(importPath)}` as Route<`/package/${string}`>);
   };
 
   return (

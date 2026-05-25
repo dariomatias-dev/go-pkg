@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { PackageCardSkeleton } from "@/components/common/PackageCardSkeleton";
 import { Pagination } from "@/components/common/Pagination";
 import { PackageCard } from "@/components/package/PackageCard";
+import { encodeImportPath } from "@/lib/utils";
 import type {
   CuratedCategory,
   GoPackage,
@@ -379,7 +380,7 @@ export default function SearchSection({
                       ? query
                       : `github.com/${query}/${query}`;
                     router.push(
-                      `/package/${path.split("/").map(encodeURIComponent).join("/")}` as Route,
+                      `/package/${encodeImportPath(path)}` as Route,
                     );
                   }}
                   className="bg-[#00ADD8] hover:bg-[#007D9C] text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer shadow-md inline-flex items-center gap-2"

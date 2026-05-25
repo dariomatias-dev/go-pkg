@@ -9,6 +9,7 @@ import { PackageCard } from "@/components/package/PackageCard";
 import { PackageCardSkeleton } from "@/components/common/PackageCardSkeleton";
 import { useFavorites } from "@/hooks/useFavorites";
 import type { PopularPackage, PopularPackageResponse } from "@/types";
+import { encodeImportPath } from "@/lib/utils";
 
 const PER_PAGE = 4;
 
@@ -138,12 +139,8 @@ export function PopularPackageSection() {
                   <div
                     key={pkg.importPath}
                     onClick={() => {
-                      const encoded = pkg.importPath
-                        .split("/")
-                        .map(encodeURIComponent)
-                        .join("/");
                       router.push(
-                        `/package/${encoded}` as Route<`/package/${string}`>,
+                        `/package/${encodeImportPath(pkg.importPath)}` as Route<`/package/${string}`>,
                       );
                     }}
                     className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all cursor-pointer group"
