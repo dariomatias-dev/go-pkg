@@ -142,6 +142,25 @@ export function PackageHeader({
                     <ExternalLink className="w-2.5 h-2.5 text-[#00ADD8] dark:text-sky-500" />
                   </a>
                 )}
+
+                <a
+                  href={`https://pkg.go.dev/${pkg.importPath}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-[#007D9C] dark:text-sky-400 hover:text-[#005F77] dark:hover:text-sky-300 font-semibold border-l border-slate-200 dark:border-[#30363d] pl-3 transition-colors shrink-0 group font-sans"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-3.5 h-3.5 text-slate-400 dark:text-[#484f58] group-hover:text-[#00ADD8] dark:group-hover:text-[#00ADD8]"
+                    fill="currentColor"
+                  >
+                    <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4zm0 14v-2h12v2H6zm12-4H6v-2h12v2zm0-4h-5V4h5v6z" />
+                  </svg>
+
+                  <span className="group-hover:underline">pkg.go.dev</span>
+
+                  <ExternalLink className="w-2.5 h-2.5 text-[#00ADD8] dark:text-sky-500" />
+                </a>
               </div>
             </div>
 
