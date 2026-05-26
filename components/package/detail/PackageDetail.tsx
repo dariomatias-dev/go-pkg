@@ -1,97 +1,34 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { GoReportCard } from "@/components/package/detail/GoReportCard";
 import { PackageBreadcrumb } from "@/components/package/detail/PackageBreadcrumb";
 import { PackageDetailError } from "@/components/package/detail/PackageDetailError";
 import { PackageDetailSkeleton } from "@/components/package/detail/PackageDetailSkeleton";
 import { PackageHeader } from "@/components/package/detail/PackageHeader";
-import type { Tab } from "@/components/package/detail/tabs/PackageTabs";
 import { PackageTabs } from "@/components/package/detail/tabs/PackageTabs";
 import { GopherChat } from "@/components/package/shared/GopherChat";
-import { saveToPackageHistory } from "@/lib/package-history";
-import type { PackageDetailResponse } from "@/types";
+import { usePackageDetail } from "@/hooks/usePackageDetail";
 
 interface PackageDetailProps {
   importPath: string;
 }
 
 export function PackageDetail({ importPath }: PackageDetailProps) {
-  const [prevImportPath, setPrevImportPath] = useState(importPath);
-  const [data, setData] = useState<PackageDetailResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>("readme");
+  const {
+    data,
+    loading,
+    error,
+    activeTab,
+    aiSummary,
+    aiSummaryLoading,
+    aiSummaryError,
+    handleTabChange,
+    retryAiSummary,
+  } = usePackageDetail(importPath);
+
   const scrollBarRef = useRef<HTMLDivElement>(null);
-
-  const [aiSummary, setAiSummary] = useState("");
-  const [aiSummaryLoading, setAiSummaryLoading] = useState(false);
-  const [aiSummaryError, setAiSummaryError] = useState<string | null>(null);
-
-  if (prevImportPath !== importPath) {
-    setPrevImportPath(importPath);
-    setLoading(true);
-    setError(null);
-    setData(null);
-    setAiSummary("");
-    setAiSummaryError(null);
-    setActiveTab("readme");
-  }
-
-  const fetchAiSummary = async (path: string) => {
-    setAiSummaryLoading(true);
-    setAiSummaryError(null);
-
-    try {
-      const res = await fetch(
-        `/api/package-summary?importPath=${encodeURIComponent(path)}`,
-      );
-
-      if (res.ok) {
-        const d = await res.json();
-
-        setAiSummary(d.summary);
-      } else {
-        const d = await res.json().catch(() => ({}));
-
-        setAiSummaryError(
-          d.error || "Failed to generate the AI summary. Check the server.",
-        );
-      }
-    } catch {
-      setAiSummaryError("Connection error while requesting AI analysis.");
-    } finally {
-      setAiSummaryLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-
-    fetch(`/api/package-info?importPath=${encodeURIComponent(importPath)}`)
-      .then((r) => {
-        if (!r.ok)
-          throw new Error(
-            "We couldn't load this package. Verify the Go module exists in proxy.golang.org.",
-          );
-
-        return r.json();
-      })
-      .then((d: PackageDetailResponse) => {
-        setData(d);
-        saveToPackageHistory(importPath);
-
-        if (!d.pkg.readme) {
-          setActiveTab("summary");
-          fetchAiSummary(importPath);
-        } else {
-          setActiveTab("readme");
-        }
-      })
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, [importPath]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -103,19 +40,10 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-
     onScroll();
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const handleTabChange = (tab: Tab) => {
-    setActiveTab(tab);
-
-    if (tab === "summary" && !aiSummary && importPath) {
-      fetchAiSummary(importPath);
-    }
-  };
 
   if (loading) return <PackageDetailSkeleton />;
 
@@ -149,7 +77,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                 aiSummaryLoading={aiSummaryLoading}
                 aiSummaryError={aiSummaryError}
                 onTabChange={handleTabChange}
-                onRetryAiSummary={() => fetchAiSummary(importPath)}
+                onRetryAiSummary={retryAiSummary}
               />
             </div>
 
