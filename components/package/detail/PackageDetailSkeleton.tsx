@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export function PackageDetailSkeleton() {
   return (
     <div className="animate-fade-in bg-white dark:bg-[#0d1117]">
@@ -27,7 +29,12 @@ export function PackageDetailSkeleton() {
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className={`h-8 rounded-lg ${i === 1 ? "w-24 bg-slate-200/85 dark:bg-[#30363d]" : "w-24 bg-slate-100/70 dark:bg-[#21262d]"}`}
+                  className={cn(
+                    "h-8 w-24 rounded-lg",
+                    i === 1
+                      ? "bg-slate-200/85 dark:bg-[#30363d]"
+                      : "bg-slate-100/70 dark:bg-[#21262d]",
+                  )}
                 />
               ))}
             </div>

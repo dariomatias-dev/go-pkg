@@ -28,6 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 const ECOSYSTEM_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "https://go.dev", label: "Official Website", icon: Globe },
@@ -151,7 +152,7 @@ export function Header() {
             >
               <span>Menu</span>
               <ChevronDown
-                className={`w-3.5 h-3.5 transition-transform duration-300 ${menuOpen ? "rotate-180" : ""}`}
+                className={cn("w-3.5 h-3.5 transition-transform duration-300", menuOpen && "rotate-180")}
               />
             </button>
 

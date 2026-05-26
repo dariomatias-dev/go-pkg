@@ -3,6 +3,8 @@
 import { ChevronDown, ChevronUp, Send, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { cn } from "@/lib/utils";
+
 interface ChatMessage {
   role: "user" | "model";
   text: string;
@@ -63,7 +65,12 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
       const res = await fetch("/api/package-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ importPath, description, message: text, history: messages }),
+        body: JSON.stringify({
+          importPath,
+          description,
+          message: text,
+          history: messages,
+        }),
       });
 
       const d = await res.json();
@@ -154,7 +161,10 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                className={cn(
+                  "flex",
+                  msg.role === "user" ? "justify-end" : "justify-start",
+                )}
               >
                 <div className="flex gap-2 items-end max-w-[88%] min-w-0">
                   {msg.role !== "user" && (
@@ -164,11 +174,12 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
                   )}
 
                   <div
-                    className={`text-xs rounded-xl px-3 py-2 shadow-sm leading-relaxed min-w-0 ${
+                    className={cn(
+                      "text-xs rounded-xl px-3 py-2 shadow-sm leading-relaxed min-w-0",
                       msg.role === "user"
                         ? "bg-slate-900 dark:bg-[#21262d] text-white rounded-br-none"
-                        : "bg-white dark:bg-[#1c2128] text-slate-800 dark:text-[#c9d1d9] border border-slate-200/80 dark:border-[#30363d] rounded-bl-none"
-                    }`}
+                        : "bg-white dark:bg-[#1c2128] text-slate-800 dark:text-[#c9d1d9] border border-slate-200/80 dark:border-[#30363d] rounded-bl-none",
+                    )}
                   >
                     <p className="whitespace-pre-wrap wrap-break-word font-sans font-normal">
                       {msg.text}
@@ -228,15 +239,21 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
             <button
               type="submit"
               disabled={!input.trim() || loading}
-              className={`p-2 rounded-xl transition-all duration-200 active:scale-95 shrink-0 flex items-center justify-center h-8 w-8 shadow-sm border ${
+              className={cn(
+                "p-2 rounded-xl transition-all duration-200 active:scale-95 shrink-0 flex items-center justify-center h-8 w-8 shadow-sm border",
                 !input.trim() || loading
                   ? "bg-slate-50 dark:bg-[#21262d] text-slate-300 dark:text-[#484f58] border-slate-200/60 dark:border-[#30363d] cursor-not-allowed opacity-50"
-                  : "bg-[#007D9C] dark:bg-sky-600 hover:bg-[#005F77] dark:hover:bg-sky-700 text-white border-[#007D9C] dark:border-sky-600 cursor-pointer"
-              }`}
+                  : "bg-[#007D9C] dark:bg-sky-600 hover:bg-[#005F77] dark:hover:bg-sky-700 text-white border-[#007D9C] dark:border-sky-600 cursor-pointer",
+              )}
               title="Send message"
             >
               <Send
-                className={`w-3.5 h-3.5 ${!input.trim() || loading ? "text-slate-300 dark:text-[#484f58]" : "text-white"}`}
+                className={cn(
+                  "w-3.5 h-3.5",
+                  !input.trim() || loading
+                    ? "text-slate-300 dark:text-[#484f58]"
+                    : "text-white",
+                )}
               />
             </button>
           </form>

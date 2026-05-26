@@ -3,8 +3,8 @@
 import { ExternalLink, Scale, Trash2 } from "lucide-react";
 
 import { COMPARE_ROWS } from "@/components/compare/data/compareRows";
+import { cn } from "@/lib/utils";
 import type { GoPackage } from "@/types";
-
 
 interface CompareTableProps {
   compared: GoPackage[];
@@ -12,7 +12,11 @@ interface CompareTableProps {
   inspectPackage: (importPath: string) => void;
 }
 
-export function CompareTable({ compared, removePackage, inspectPackage }: CompareTableProps) {
+export function CompareTable({
+  compared,
+  removePackage,
+  inspectPackage,
+}: CompareTableProps) {
   return (
     <div className="bg-white dark:bg-[#0d1117] rounded-2xl border border-slate-200/80 dark:border-[#30363d] shadow-sm overflow-hidden select-none">
       <div className="overflow-x-auto">
@@ -74,7 +78,10 @@ export function CompareTable({ compared, removePackage, inspectPackage }: Compar
 
           <tbody className="divide-y divide-slate-100 dark:divide-[#30363d] text-xs text-slate-700">
             {COMPARE_ROWS.map(({ label, icon, cellCls, render }) => (
-              <tr key={label} className="hover:bg-slate-50/30 dark:hover:bg-[#161b22]/50">
+              <tr
+                key={label}
+                className="hover:bg-slate-50/30 dark:hover:bg-[#161b22]/50"
+              >
                 <td className="p-4 font-semibold text-slate-600 dark:text-[#8b949e] bg-slate-50/10 dark:bg-[#0d1117] border-r border-slate-100 dark:border-[#30363d]">
                   {icon ? (
                     <div className="flex items-center gap-2">
@@ -89,13 +96,18 @@ export function CompareTable({ compared, removePackage, inspectPackage }: Compar
                 {compared.map((pkg) => (
                   <td
                     key={`${label}-${pkg.importPath}`}
-                    className={`${cellCls} border-r border-slate-100 dark:border-[#30363d] last:border-r-0`}
+                    className={cn(
+                      cellCls,
+                      "border-r border-slate-100 dark:border-[#30363d] last:border-r-0",
+                    )}
                   >
                     {render(pkg)}
                   </td>
                 ))}
 
-                {compared.length < 3 && <td className="bg-slate-50/5 dark:bg-transparent" />}
+                {compared.length < 3 && (
+                  <td className="bg-slate-50/5 dark:bg-transparent" />
+                )}
               </tr>
             ))}
 
@@ -119,7 +131,9 @@ export function CompareTable({ compared, removePackage, inspectPackage }: Compar
                 </td>
               ))}
 
-              {compared.length < 3 && <td className="bg-slate-50/5 dark:bg-transparent" />}
+              {compared.length < 3 && (
+                <td className="bg-slate-50/5 dark:bg-transparent" />
+              )}
             </tr>
           </tbody>
         </table>

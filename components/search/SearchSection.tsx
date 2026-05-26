@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { PackageCardSkeleton } from "@/components/common/PackageCardSkeleton";
 import { Pagination } from "@/components/common/Pagination";
 import { PackageCard } from "@/components/package/card/PackageCard";
-import { encodeImportPath } from "@/lib/utils";
+import { cn, encodeImportPath } from "@/lib/utils";
 import type {
   CuratedCategory,
   GoPackage,
@@ -230,7 +230,12 @@ export default function SearchSection({
                   setCurrentPage(1);
                   pushRoute(query, "", tag);
                 }}
-                className={`w-full text-left text-xs px-3 py-2 rounded-lg flex items-center justify-between transition-colors cursor-pointer ${!category ? "bg-sky-50 dark:bg-[#21262d] text-[#007D9C] dark:text-sky-400 font-semibold" : "hover:bg-slate-50 dark:hover:bg-[#21262d] text-slate-600 dark:text-[#c9d1d9]"}`}
+                className={cn(
+                  "w-full text-left text-xs px-3 py-2 rounded-lg flex items-center justify-between transition-colors cursor-pointer",
+                  !category
+                    ? "bg-sky-50 dark:bg-[#21262d] text-[#007D9C] dark:text-sky-400 font-semibold"
+                    : "hover:bg-slate-50 dark:hover:bg-[#21262d] text-slate-600 dark:text-[#c9d1d9]",
+                )}
               >
                 <span>All Categories</span>
 
@@ -243,7 +248,12 @@ export default function SearchSection({
                 <button
                   key={cat.id}
                   onClick={() => selectCategory(cat.id)}
-                  className={`w-full text-left text-xs px-3 py-2 rounded-lg flex items-center justify-between transition-colors cursor-pointer ${category === cat.id ? "bg-[#E0F2FE] dark:bg-[#21262d] text-[#007D9C] dark:text-sky-400 font-semibold" : "hover:bg-slate-50 dark:hover:bg-[#21262d] text-slate-600 dark:text-[#c9d1d9]"}`}
+                  className={cn(
+                    "w-full text-left text-xs px-3 py-2 rounded-lg flex items-center justify-between transition-colors cursor-pointer",
+                    category === cat.id
+                      ? "bg-[#E0F2FE] dark:bg-[#21262d] text-[#007D9C] dark:text-sky-400 font-semibold"
+                      : "hover:bg-slate-50 dark:hover:bg-[#21262d] text-slate-600 dark:text-[#c9d1d9]",
+                  )}
                 >
                   <span className="truncate pr-1">{cat.name}</span>
 

@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useCompare } from "@/hooks/useCompare";
 import { useFavorites } from "@/hooks/useFavorites";
-import { formatRelativeTime } from "@/lib/utils";
+import { cn, formatRelativeTime } from "@/lib/utils";
 import type { GoPackage } from "@/types";
 
 interface PackageHeaderProps {
@@ -197,11 +197,12 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                       }
                     }}
                     disabled={!isCompared && isFull}
-                    className={`flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed ${
+                    className={cn(
+                      "flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed",
                       isCompared
                         ? "bg-slate-900 dark:bg-[#21262d] border-slate-950 dark:border-[#30363d] text-white"
-                        : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]"
-                    }`}
+                        : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]",
+                    )}
                   >
                     <Scale className="w-3.5 h-3.5 shrink-0 text-[#007D9C] dark:text-sky-400" />
 
@@ -220,18 +221,20 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => toggleFavorite(pkg)}
-                    className={`group flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm shrink-0 ${
+                    className={cn(
+                      "group flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm shrink-0",
                       isFavorite
                         ? "bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/40 text-rose-600 dark:text-rose-400"
-                        : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-rose-50 dark:hover:bg-rose-950/10 hover:border-rose-200 dark:hover:border-rose-900/30 hover:text-rose-600 dark:hover:text-rose-400"
-                    }`}
+                        : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-rose-50 dark:hover:bg-rose-950/10 hover:border-rose-200 dark:hover:border-rose-900/30 hover:text-rose-600 dark:hover:text-rose-400",
+                    )}
                   >
                     <Heart
-                      className={`w-3.5 h-3.5 shrink-0 transition-colors duration-150 ${
+                      className={cn(
+                        "w-3.5 h-3.5 shrink-0 transition-colors duration-150",
                         isFavorite
                           ? "fill-rose-500 text-rose-500"
-                          : "text-slate-400 dark:text-[#484f58] group-hover:text-rose-500"
-                      }`}
+                          : "text-slate-400 dark:text-[#484f58] group-hover:text-rose-500",
+                      )}
                     />
 
                     <span className="hidden sm:inline">

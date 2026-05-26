@@ -1,4 +1,4 @@
-  "use client";
+"use client";
 
 import {
   Clock,
@@ -13,7 +13,7 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 
 import { useFavorites } from "@/hooks/useFavorites";
-import { encodeImportPath, formatRelativeTime } from "@/lib/utils";
+import { cn, encodeImportPath, formatRelativeTime } from "@/lib/utils";
 import type { GoPackage, PopularPackage } from "@/types";
 
 type CardPkg = GoPackage | PopularPackage;
@@ -81,15 +81,16 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
         <div className="flex flex-wrap items-center gap-2 select-none">
           {index !== undefined && (
             <span
-              className={`inline-flex items-center justify-center font-sans font-extrabold text-xs px-2.5 py-0.5 rounded-md select-none shrink-0 border ${
+              className={cn(
+                "inline-flex items-center justify-center font-sans font-extrabold text-xs px-2.5 py-0.5 rounded-md select-none shrink-0 border",
                 index === 1
                   ? "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-500/5 dark:text-amber-500/90 dark:border-amber-500/20"
                   : index === 2
                     ? "bg-slate-400/10 text-slate-500 border-slate-400/30 dark:bg-[#21262d] dark:text-slate-400 dark:border-[#30363d]"
                     : index === 3
                       ? "bg-amber-700/10 text-amber-700 border-amber-700/20 dark:bg-amber-700/5 dark:text-amber-600/90 dark:border-amber-700/20"
-                      : "bg-slate-100 text-slate-600 border-slate-200/60 dark:bg-[#161b22] dark:text-[#8b949e] dark:border-[#30363d]"
-              }`}
+                      : "bg-slate-100 text-slate-600 border-slate-200/60 dark:bg-[#161b22] dark:text-[#8b949e] dark:border-[#30363d]",
+              )}
             >
               #{index}
             </span>
@@ -185,14 +186,15 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
             e.stopPropagation();
             toggleFavorite(toGoPackage(pkg));
           }}
-          className={`p-2.5 rounded-lg border transition-all duration-150 cursor-pointer active:scale-90 flex items-center justify-center shadow-sm ${
+          className={cn(
+            "p-2.5 rounded-lg border transition-all duration-150 cursor-pointer active:scale-90 flex items-center justify-center shadow-sm",
             saved
               ? "bg-rose-50 dark:bg-rose-950/10 border-rose-200 dark:border-rose-900/40 text-rose-500 dark:text-rose-400"
-              : "bg-white dark:bg-[#161b22] border-slate-200 dark:border-[#30363d] text-slate-400 dark:text-[#484f58] hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20"
-          }`}
+              : "bg-white dark:bg-[#161b22] border-slate-200 dark:border-[#30363d] text-slate-400 dark:text-[#484f58] hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20",
+          )}
         >
           <Heart
-            className={`w-4 h-4 ${saved ? "fill-rose-500 text-rose-500" : ""}`}
+            className={cn("w-4 h-4", saved && "fill-rose-500 text-rose-500")}
           />
         </button>
       </div>

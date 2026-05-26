@@ -7,6 +7,7 @@ import { AiSummaryTab } from "@/components/package/detail/tabs/AiSummaryTab";
 import { PackageGoModTab } from "@/components/package/detail/tabs/PackageGoModTab";
 import { ReadmeTab } from "@/components/package/detail/tabs/ReadmeTab";
 import { VersionsReleasesTab } from "@/components/package/detail/tabs/VersionsReleasesTab";
+import { cn } from "@/lib/utils";
 import type { GoPackage } from "@/types";
 
 export type Tab = "summary" | "readme" | "goMod" | "versions";
@@ -70,11 +71,12 @@ export function PackageTabs({
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`px-4 h-full text-xs font-semibold flex items-center space-x-1.5 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            className={cn(
+              "px-4 h-full text-xs font-semibold flex items-center space-x-1.5 border-b-2 transition-all cursor-pointer whitespace-nowrap",
               activeTab === tab.id
                 ? "border-[#00ADD8] dark:border-sky-500 text-[#00ADD8] dark:text-sky-400 bg-white dark:bg-[#0d1117] font-bold"
-                : "border-transparent text-slate-500 dark:text-[#8b949e] hover:text-slate-800 dark:hover:text-[#f0f6fc]"
-            }`}
+                : "border-transparent text-slate-500 dark:text-[#8b949e] hover:text-slate-800 dark:hover:text-[#f0f6fc]",
+            )}
           >
             {tab.icon}
             <span>{tab.label}</span>

@@ -4,6 +4,7 @@ import { ExternalLink, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import type { GoReportCardResult } from "@/app/api/package-report/route";
+import { cn } from "@/lib/utils";
 
 const GRADE_STYLES: Record<
   string,
@@ -90,7 +91,7 @@ export function GoReportCard({ importPath }: { importPath: string }) {
             </h3>
           </div>
 
-          <div className={`font-mono font-black text-xl ${style.color}`}>
+          <div className={cn("font-mono font-black text-xl", style.color)}>
             {state.result.grade}
           </div>
         </div>

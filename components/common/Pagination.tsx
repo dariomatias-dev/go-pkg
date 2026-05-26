@@ -2,6 +2,8 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 interface PaginationProps {
   currentPage: number;
   totalResults: number;
@@ -95,7 +97,10 @@ export function Pagination({
                     go(Math.round((prev + next) / 2));
                   }
                 }}
-                className={`${btnBase} text-slate-400 dark:text-[#484f58] hover:text-[#007D9C] dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d] tracking-wider`}
+                className={cn(
+                  btnBase,
+                  "text-slate-400 dark:text-[#484f58] hover:text-[#007D9C] dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d] tracking-wider",
+                )}
                 title="Jump to middle"
               >
                 &hellip;
@@ -105,11 +110,12 @@ export function Pagination({
                 type="button"
                 key={p}
                 onClick={() => go(p)}
-                className={`${btnBase} ${
+                className={cn(
+                  btnBase,
                   currentPage === p
                     ? "bg-[#00ADD8] dark:bg-sky-600 text-white shadow-sm"
-                    : "text-slate-600 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d]"
-                }`}
+                    : "text-slate-600 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d]",
+                )}
               >
                 {p}
               </button>

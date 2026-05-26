@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import { MarkdownRenderer } from "@/components/package/shared/MarkdownRenderer";
 import type { GitHubRelease } from "@/lib/github/types";
+import { cn } from "@/lib/utils";
 
 interface VersionsReleasesTabProps {
   importPath: string;
@@ -34,7 +35,6 @@ function formatDate(iso: string | null): string {
   });
 }
 
-
 export function VersionsReleasesTab({
   importPath,
   versions,
@@ -58,7 +58,11 @@ export function VersionsReleasesTab({
       .then((r) => r.json())
       .then((d: { releases?: GitHubRelease[] }) => {
         if (!cancelled)
-          setFetchResult({ importPath, releases: d.releases ?? [], error: false });
+          setFetchResult({
+            importPath,
+            releases: d.releases ?? [],
+            error: false,
+          });
       })
       .catch(() => {
         if (!cancelled)
@@ -97,11 +101,12 @@ export function VersionsReleasesTab({
               <button
                 key={ver}
                 onClick={() => setSelected(ver)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition-all border ${
+                className={cn(
+                  "w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition-all border",
                   isSelected
                     ? "border-[#00ADD8] dark:border-sky-500 bg-sky-50 dark:bg-sky-950/20 text-[#007D9C] dark:text-sky-400 font-bold"
-                    : "border-slate-100 dark:border-[#30363d] text-slate-600 dark:text-[#8b949e] hover:bg-slate-50 dark:hover:bg-[#161b22] hover:border-slate-200 dark:hover:border-[#484f58]"
-                }`}
+                    : "border-slate-100 dark:border-[#30363d] text-slate-600 dark:text-[#8b949e] hover:bg-slate-50 dark:hover:bg-[#161b22] hover:border-slate-200 dark:hover:border-[#484f58]",
+                )}
               >
                 <div className="flex items-center justify-between gap-1">
                   <span className="truncate">{ver}</span>
