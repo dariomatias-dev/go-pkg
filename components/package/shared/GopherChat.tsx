@@ -10,9 +10,10 @@ interface ChatMessage {
 
 interface GopherChatProps {
   importPath: string;
+  description?: string;
 }
 
-export function GopherChat({ importPath }: GopherChatProps) {
+export function GopherChat({ importPath, description }: GopherChatProps) {
   const [open, setOpen] = useState(true);
   const [prevModulePath, setPrevModulePath] = useState(importPath);
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
@@ -62,7 +63,7 @@ export function GopherChat({ importPath }: GopherChatProps) {
       const res = await fetch("/api/package-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ importPath, message: text, history: messages }),
+        body: JSON.stringify({ importPath, description, message: text, history: messages }),
       });
 
       const d = await res.json();

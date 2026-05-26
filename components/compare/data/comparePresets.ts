@@ -28,7 +28,7 @@ export const PRESETS: Preset[] = [
 
 export const PRESET_PATH_MAP: Record<string, string> = {
   gin: "github.com/gin-gonic/gin",
-  gorm: "github.com/gorm/gorm",
+  gorm: "gorm.io/gorm",
   cobra: "github.com/spf13/cobra",
   zap: "go.uber.org/zap",
 };

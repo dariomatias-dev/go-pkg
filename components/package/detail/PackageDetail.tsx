@@ -169,7 +169,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
             </div>
 
             <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-20 lg:self-start">
-              <GopherChat importPath={importPath} />
+              <GopherChat importPath={importPath} description={pkg.description} />
             </aside>
           </div>
         </div>

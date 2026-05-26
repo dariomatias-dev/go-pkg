@@ -8,6 +8,7 @@ interface ChatMessage {
 
 interface AssistantRequestBody {
   importPath?: string;
+  description?: string;
   message: string;
   history?: ChatMessage[];
 }
@@ -17,6 +18,7 @@ export async function POST(request: Request) {
     message,
     history = [],
     importPath,
+    description,
   } = (await request.json()) as AssistantRequestBody;
 
   if (!message) {
@@ -51,7 +53,7 @@ You are "Gopher AI", the official GoPkg development assistant.
 
 Your expertise is entirely focused on the Go programming language (Golang), its ecosystem, clean code practices, concurrency patterns, and Go project architecture.
 
-Respond exclusively in English.
+Always respond in the same language the user writes in.
 
 Guidelines:
 - Provide concise, practical, and developer-focused explanations.
@@ -72,9 +74,9 @@ Your expertise is entirely focused on the Go programming language (Golang) and t
 Current module information:
 - Import Path: ${finalModulePath}
 - Package Name: ${packageName}
-- Description: A Go ecosystem package.
+- Description: ${description || "A Go ecosystem package."}
 
-Respond exclusively in English.
+Always respond in the same language the user writes in.
 
 Guidelines:
 - Provide concise and practical technical explanations.
