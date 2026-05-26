@@ -1,12 +1,12 @@
 "use client";
 
-import { BookOpen, Clock, FileCode2, Sparkles } from "lucide-react";
+import { BookOpen, FileCode2, GitBranch, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { AiSummaryTab } from "@/components/package/detail/tabs/AiSummaryTab";
 import { PackageGoModTab } from "@/components/package/detail/tabs/PackageGoModTab";
-import { PackageVersionsTab } from "@/components/package/detail/tabs/PackageVersionsTab";
 import { ReadmeTab } from "@/components/package/detail/tabs/ReadmeTab";
+import { VersionsReleasesTab } from "@/components/package/detail/tabs/VersionsReleasesTab";
 import type { GoPackage } from "@/types";
 
 export type Tab = "summary" | "readme" | "goMod" | "versions";
@@ -21,7 +21,9 @@ const TABS: TabDef[] = [
   {
     id: "summary",
     label: "AI Summary",
-    icon: <Sparkles className="w-3.5 h-3.5 text-cyan-600 dark:text-sky-400 animate-pulse" />,
+    icon: (
+      <Sparkles className="w-3.5 h-3.5 text-cyan-600 dark:text-sky-400 animate-pulse" />
+    ),
   },
   {
     id: "readme",
@@ -35,8 +37,8 @@ const TABS: TabDef[] = [
   },
   {
     id: "versions",
-    label: "Available Versions",
-    icon: <Clock className="w-3.5 h-3.5" />,
+    label: "Versions & Releases",
+    icon: <GitBranch className="w-3.5 h-3.5" />,
   },
 ];
 
@@ -99,7 +101,11 @@ export function PackageTabs({
         )}
 
         {activeTab === "versions" && (
-          <PackageVersionsTab versions={pkg.versions} latestVersion={pkg.latestVersion} />
+          <VersionsReleasesTab
+            importPath={pkg.importPath}
+            versions={pkg.versions}
+            latestVersion={pkg.latestVersion}
+          />
         )}
       </div>
     </div>
