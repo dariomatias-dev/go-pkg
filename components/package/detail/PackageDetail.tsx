@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { GoReportCard } from "@/components/package/detail/GoReportCard";
 import { PackageBreadcrumb } from "@/components/package/detail/PackageBreadcrumb";
 import { PackageDetailError } from "@/components/package/detail/PackageDetailError";
 import { PackageDetailSkeleton } from "@/components/package/detail/PackageDetailSkeleton";
@@ -178,6 +179,8 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
             </div>
 
             <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-20 lg:self-start">
+              {pkg.githubUrl && <GoReportCard importPath={importPath} />}
+
               <GopherChat
                 importPath={importPath}
                 description={pkg.description}
