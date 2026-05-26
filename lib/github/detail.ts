@@ -89,6 +89,11 @@ export async function getPackageDetail(
           repo.license?.spdx_id ?? repo.license?.name ?? pkg.license;
         pkg.description = repo.description || pkg.description;
         pkg.githubUrl = `https://github.com/${repoInfo.owner}/${repoInfo.repo}`;
+        if (repo.updated_at) {
+          pkg.publishedAt = new Date(repo.updated_at)
+            .toISOString()
+            .split("T")[0];
+        }
       }
     } catch (err) {
       console.warn("Failed to fetch GitHub repo details", err);
