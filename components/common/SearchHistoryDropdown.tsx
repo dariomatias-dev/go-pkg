@@ -28,13 +28,13 @@ export function SearchHistoryDropdown({
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-2xl border border-slate-200 text-slate-800 overflow-hidden z-200 ${sm ? "text-xs" : "text-sm"} ${className ?? ""}`}
+      className={`bg-white dark:bg-[#161b22] rounded-xl shadow-2xl border border-slate-200 dark:border-[#30363d] text-slate-800 dark:text-[#c9d1d9] overflow-hidden z-200 ${sm ? "text-xs" : "text-sm"} ${className ?? ""}`}
     >
       <div
-        className={`bg-slate-50 border-b border-slate-100 flex items-center justify-between ${sm ? "p-2.5" : "px-4 py-3"}`}
+        className={`bg-slate-50 dark:bg-[#0d1117] border-b border-slate-100 dark:border-[#30363d] flex items-center justify-between ${sm ? "p-2.5" : "px-4 py-3"}`}
       >
         <span
-          className={`font-bold text-slate-500 ${sm ? "tracking-tighter text-[10px]" : "text-xs"}`}
+          className={`font-bold text-slate-500 dark:text-[#8b949e] ${sm ? "tracking-tighter text-[10px]" : "text-xs"}`}
         >
           Recent Searches
         </span>
@@ -44,7 +44,7 @@ export function SearchHistoryDropdown({
             clearHistory();
             setHistory([]);
           }}
-          className={`text-slate-400 hover:text-rose-500 font-bold transition-colors border-none bg-transparent outline-none cursor-pointer ${sm ? "text-[10px]" : "text-xs hover:underline"}`}
+          className={`text-slate-400 dark:text-[#484f58] hover:text-rose-500 dark:hover:text-rose-400 font-bold transition-colors border-none bg-transparent outline-none cursor-pointer ${sm ? "text-[10px]" : "text-xs hover:underline"}`}
         >
           Clear all
         </button>
@@ -55,13 +55,16 @@ export function SearchHistoryDropdown({
           <div
             key={idx}
             onMouseDown={() => onSelect(q)}
-            className={`flex items-center justify-between cursor-pointer transition-colors border-b border-slate-50 last:border-none ${sm ? "px-4 py-2.5 hover:bg-slate-100" : "px-4 py-3 hover:bg-slate-50/70"}`}
+            className={`flex items-center justify-between cursor-pointer transition-colors border-b border-slate-50 dark:border-[#30363d]/50 last:border-none ${sm ? "px-4 py-2.5 hover:bg-slate-100 dark:hover:bg-[#21262d]" : "px-4 py-3 hover:bg-slate-50/70 dark:hover:bg-[#21262d]"}`}
           >
             <div className="flex items-center space-x-3 truncate">
               <Clock
-                className={`text-slate-400 shrink-0 ${sm ? "w-3.5 h-3.5" : "w-4 h-4"}`}
+                className={`text-slate-400 dark:text-[#484f58] shrink-0 ${sm ? "w-3.5 h-3.5" : "w-4 h-4"}`}
               />
-              <span className="truncate font-medium text-slate-700">{q}</span>
+
+              <span className="truncate font-medium text-slate-700 dark:text-[#c9d1d9]">
+                {q}
+              </span>
             </div>
 
             <button
@@ -69,7 +72,7 @@ export function SearchHistoryDropdown({
                 e.stopPropagation();
                 setHistory(removeFromHistory(q));
               }}
-              className={`text-slate-400 hover:text-rose-500 border-none bg-transparent cursor-pointer transition-colors ${sm ? "text-slate-300 p-1 rounded-md hover:bg-slate-200" : "p-1.5 rounded-lg hover:bg-slate-100"}`}
+              className={`text-slate-400 dark:text-[#484f58] hover:text-rose-500 dark:hover:text-rose-400 border-none bg-transparent cursor-pointer transition-colors ${sm ? "text-slate-300 dark:text-[#30363d] p-1 rounded-md hover:bg-slate-200 dark:hover:bg-[#30363d]" : "p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#30363d]"}`}
             >
               <X className={sm ? "w-3 h-3" : "w-4 h-4"} />
             </button>
