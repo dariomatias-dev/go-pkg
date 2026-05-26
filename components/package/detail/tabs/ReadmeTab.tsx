@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-import { CodeBlock } from "@/components/package/CodeBlock";
+import { CodeBlock } from "@/components/package/shared/CodeBlock";
 
 interface ReadmeTabProps {
   readme: string;

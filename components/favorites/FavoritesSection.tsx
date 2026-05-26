@@ -3,7 +3,7 @@
 import { BookOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { PackageCard } from "@/components/package/PackageCard";
+import { PackageCard } from "@/components/package/card/PackageCard";
 import { useFavorites } from "@/hooks/useFavorites";
 
 export function FavoritesSection() {

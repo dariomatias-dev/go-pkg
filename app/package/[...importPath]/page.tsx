@@ -1,4 +1,4 @@
-import { PackageDetail } from "@/components/package/PackageDetail";
+import { PackageDetail } from "@/components/package/detail/PackageDetail";
 
 type PackagePageProps = {
   params: Promise<{

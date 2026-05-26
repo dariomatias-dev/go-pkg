@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 import { PackageCardSkeleton } from "@/components/common/PackageCardSkeleton";
 import { Pagination } from "@/components/common/Pagination";
-import { PackageCard } from "@/components/package/PackageCard";
+import { PackageCard } from "@/components/package/card/PackageCard";
 import { encodeImportPath } from "@/lib/utils";
 import type {
   CuratedCategory,

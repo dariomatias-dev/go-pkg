@@ -4,7 +4,7 @@ import { HelpCircle, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { CodeBlock } from "@/components/package/CodeBlock";
+import { CodeBlock } from "@/components/package/shared/CodeBlock";
 
 interface AiSummaryTabProps {
   loading: boolean;

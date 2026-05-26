@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { PackageCardSkeleton } from "@/components/common/PackageCardSkeleton";
-import { PackageCard } from "@/components/package/PackageCard";
+import { PackageCard } from "@/components/package/card/PackageCard";
 import { useFavorites } from "@/hooks/useFavorites";
 import { encodeImportPath } from "@/lib/utils";
 import type { PopularPackage, PopularPackageResponse } from "@/types";
