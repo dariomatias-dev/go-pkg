@@ -2,10 +2,8 @@
 
 import { ExternalLink, GitBranch, Loader2, Tag } from "lucide-react";
 import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
-import { CodeBlock } from "@/components/package/shared/CodeBlock";
+import { MarkdownRenderer } from "@/components/package/shared/MarkdownRenderer";
 import type { GitHubRelease } from "@/lib/github/types";
 
 interface VersionsReleasesTabProps {
@@ -36,88 +34,6 @@ function formatDate(iso: string | null): string {
   });
 }
 
-function ReleaseBody({ body }: { body: string }) {
-  return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        h1: ({ children }) => (
-          <h1 className="text-base font-bold text-slate-900 dark:text-[#f0f6fc] mt-4 mb-2 border-b border-slate-100 dark:border-[#30363d] pb-1">
-            {children}
-          </h1>
-        ),
-        h2: ({ children }) => (
-          <h2 className="text-sm font-semibold text-slate-800 dark:text-[#f0f6fc] mt-3 mb-1.5">
-            {children}
-          </h2>
-        ),
-        h3: ({ children }) => (
-          <h3 className="text-xs font-semibold text-slate-700 dark:text-[#c9d1d9] mt-2.5 mb-1">
-            {children}
-          </h3>
-        ),
-        p: ({ children }) => (
-          <p className="text-xs text-slate-600 dark:text-[#c9d1d9] leading-relaxed mb-2">
-            {children}
-          </p>
-        ),
-        ul: ({ children }) => (
-          <ul className="list-disc pl-4 mb-2 text-xs text-slate-600 dark:text-[#c9d1d9] space-y-0.5">
-            {children}
-          </ul>
-        ),
-        ol: ({ children }) => (
-          <ol className="list-decimal pl-4 mb-2 text-xs text-slate-600 dark:text-[#c9d1d9] space-y-0.5">
-            {children}
-          </ol>
-        ),
-        li: ({ children }) => (
-          <li className="leading-relaxed text-xs text-slate-600 dark:text-[#c9d1d9]">
-            {children}
-          </li>
-        ),
-        blockquote: ({ children }) => (
-          <blockquote className="border-l-4 border-[#00ADD8] dark:border-sky-600 bg-sky-50/15 dark:bg-sky-950/10 pl-3 py-1 my-2 rounded-r text-slate-700 dark:text-[#c9d1d9] italic text-xs">
-            {children}
-          </blockquote>
-        ),
-        a: ({ href, children }) => (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#00ADD8] dark:text-sky-400 hover:text-[#007D9C] dark:hover:text-sky-300 underline underline-offset-2 decoration-[#00ADD8]/40 text-xs transition-colors"
-          >
-            {children}
-          </a>
-        ),
-        code({ className, children }) {
-          const match = /language-(\w+)/.exec(className || "");
-          const language = match ? match[1] : "";
-          const codeString = String(children).replace(/\n$/, "");
-          const isInline = !className && !codeString.includes("\n");
-
-          if (!isInline) {
-            return (
-              <CodeBlock code={codeString} language={language || "text"} />
-            );
-          }
-
-          return (
-            <code className="bg-slate-100 dark:bg-[#161b22] text-slate-800 dark:text-[#e6edf3] text-[11px] px-1.5 py-0.5 rounded font-mono font-semibold">
-              {children}
-            </code>
-          );
-        },
-        pre: ({ children }) => (
-          <div className="my-2 dark:text-[#e6edf3]">{children}</div>
-        ),
-      }}
-    >
-      {body}
-    </ReactMarkdown>
-  );
-}
 
 export function VersionsReleasesTab({
   importPath,
@@ -263,7 +179,7 @@ export function VersionsReleasesTab({
 
               {activeRelease.body ? (
                 <div className="overflow-auto max-h-96 custom-scrollbar">
-                  <ReleaseBody body={activeRelease.body} />
+                  <MarkdownRenderer content={activeRelease.body} size="xs" />
                 </div>
               ) : (
                 <p className="text-xs text-slate-400 dark:text-[#8b949e]">
