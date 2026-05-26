@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={cn("font-sans", inter.variable)}
       suppressHydrationWarning
     >
-      <body className="bg-[#F8FAFC] text-slate-900 selection:bg-go-blue selection:text-white flex flex-col min-h-screen">
+      <body className="bg-[#F8FAFC] dark:bg-[#0b0e14] text-slate-900 dark:text-[#f0f6fc] selection:bg-go-blue dark:selection:bg-sky-500 selection:text-white flex flex-col min-h-screen transition-colors duration-300">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
