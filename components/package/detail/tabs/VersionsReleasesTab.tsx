@@ -28,6 +28,7 @@ function matchRelease(
 
 function formatDate(iso: string | null): string {
   if (!iso) return "";
+
   return new Date(iso).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -124,17 +125,33 @@ export function VersionsReleasesTab({
   latestVersion,
 }: VersionsReleasesTabProps) {
   const [selected, setSelected] = useState<string>(latestVersion ?? "");
-  const [releases, setReleases] = useState<GitHubRelease[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [fetchResult, setFetchResult] = useState<{
+    importPath: string;
+    releases: GitHubRelease[];
+    error: boolean;
+  } | null>(null);
+
+  const loading = fetchResult?.importPath !== importPath;
+  const error = !loading && (fetchResult?.error ?? false);
+  const releases = loading ? [] : (fetchResult?.releases ?? []);
 
   useEffect(() => {
+    let cancelled = false;
+
     fetch(`/api/package-releases?importPath=${encodeURIComponent(importPath)}`)
       .then((r) => r.json())
-      .then((d: { releases?: GitHubRelease[] }) =>
-        setReleases(d.releases ?? []),
-      )
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .then((d: { releases?: GitHubRelease[] }) => {
+        if (!cancelled)
+          setFetchResult({ importPath, releases: d.releases ?? [], error: false });
+      })
+      .catch(() => {
+        if (!cancelled)
+          setFetchResult({ importPath, releases: [], error: true });
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [importPath]);
 
   const versionList =
@@ -195,6 +212,10 @@ export function VersionsReleasesTab({
               <Loader2 className="w-4 h-4 animate-spin" />
               <span>Loading releases…</span>
             </div>
+          ) : error ? (
+            <p className="text-sm text-rose-500 dark:text-rose-400 text-center py-8">
+              Failed to load releases.
+            </p>
           ) : !selected ? (
             <p className="text-sm text-slate-400 dark:text-[#8b949e] text-center py-8">
               Select a version
