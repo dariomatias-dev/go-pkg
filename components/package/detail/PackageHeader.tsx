@@ -165,43 +165,77 @@ export function PackageHeader({
             </div>
 
             <div className="flex items-center gap-2 select-none shrink-0">
-              <button
-                onClick={handleShare}
-                className="flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]"
-              >
-                <Link2 className="w-3.5 h-3.5 shrink-0 text-[#007D9C] dark:text-sky-400" />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleShare}
+                    className="flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]"
+                  >
+                    <Link2 className="w-3.5 h-3.5 shrink-0 text-[#007D9C] dark:text-sky-400" />
 
-                <span className="hidden sm:inline">{copied ? "Copied!" : "Share"}</span>
-              </button>
+                    <span className="hidden sm:inline">
+                      {copied ? "Copied!" : "Share"}
+                    </span>
+                  </button>
+                </TooltipTrigger>
 
-              <button
-                onClick={onToggleCompare}
-                disabled={!isCompared && isFull}
-                className={`flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed ${
-                  isCompared
-                    ? "bg-slate-900 dark:bg-[#21262d] border-slate-950 dark:border-[#30363d] text-white"
-                    : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]"
-                }`}
-              >
-                <Scale className="w-3.5 h-3.5 shrink-0 text-[#007D9C] dark:text-sky-400" />
+                <TooltipContent>
+                  {copied ? "Link copied" : "Share link"}
+                </TooltipContent>
+              </Tooltip>
 
-                <span className="hidden sm:inline">{isCompared ? "In Comparator" : "Compare"}</span>
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={onToggleCompare}
+                    disabled={!isCompared && isFull}
+                    className={`flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed ${
+                      isCompared
+                        ? "bg-slate-900 dark:bg-[#21262d] border-slate-950 dark:border-[#30363d] text-white"
+                        : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]"
+                    }`}
+                  >
+                    <Scale className="w-3.5 h-3.5 shrink-0 text-[#007D9C] dark:text-sky-400" />
 
-              <button
-                onClick={onToggleFavorite}
-                className={`flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm shrink-0 ${
-                  isFavorite
-                    ? "bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/40 text-rose-600 dark:text-rose-400"
-                    : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:text-rose-600"
-                }`}
-              >
-                <Heart
-                  className={`w-3.5 h-3.5 shrink-0 ${isFavorite ? "fill-rose-500 text-rose-500" : "text-slate-400 dark:text-[#484f58]"}`}
-                />
+                    <span className="hidden sm:inline">
+                      {isCompared ? "In Comparator" : "Compare"}
+                    </span>
+                  </button>
+                </TooltipTrigger>
 
-                <span className="hidden sm:inline">{isFavorite ? "Saved" : "Save"}</span>
-              </button>
+                <TooltipContent>
+                  {isCompared ? "Remove from comparison" : "Add to comparison"}
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={onToggleFavorite}
+                    className={`group flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm shrink-0 ${
+                      isFavorite
+                        ? "bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/40 text-rose-600 dark:text-rose-400"
+                        : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-rose-50 dark:hover:bg-rose-950/10 hover:border-rose-200 dark:hover:border-rose-900/30 hover:text-rose-600 dark:hover:text-rose-400"
+                    }`}
+                  >
+                    <Heart
+                      className={`w-3.5 h-3.5 shrink-0 transition-colors duration-150 ${
+                        isFavorite
+                          ? "fill-rose-500 text-rose-500"
+                          : "text-slate-400 dark:text-[#484f58] group-hover:text-rose-500"
+                      }`}
+                    />
+
+                    <span className="hidden sm:inline">
+                      {isFavorite ? "Saved" : "Save"}
+                    </span>
+                  </button>
+                </TooltipTrigger>
+
+                <TooltipContent>
+                  {isFavorite ? "Remove from favorites" : "Save to favorites"}
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
 
