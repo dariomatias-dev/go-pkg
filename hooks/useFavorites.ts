@@ -13,9 +13,12 @@ let snapshotRaw: string | null = null;
 function getSnapshot(): GoPackage[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
+
     if (raw === snapshotRaw) return snapshotCache;
+
     snapshotRaw = raw;
     snapshotCache = raw ? (JSON.parse(raw) as GoPackage[]) : EMPTY;
+
     return snapshotCache;
   } catch {
     return EMPTY;
@@ -32,18 +35,24 @@ function emit() {
 
 function persist(favorites: GoPackage[]) {
   const raw = JSON.stringify(favorites);
+
   localStorage.setItem(STORAGE_KEY, raw);
+
   snapshotRaw = raw;
   snapshotCache = favorites;
+
   emit();
+}
+
+function subscribe(cb: () => void) {
+  listeners.add(cb);
+
+  return () => listeners.delete(cb);
 }
 
 export function useFavorites() {
   const favorites = useSyncExternalStore(
-    (cb) => {
-      listeners.add(cb);
-      return () => listeners.delete(cb);
-    },
+    subscribe,
     getSnapshot,
     getServerSnapshot,
   );
@@ -55,8 +64,28 @@ export function useFavorites() {
 
   const addFavorite = useCallback((pkg: GoPackage) => {
     const current = getSnapshot();
+
     if (current.some((f) => f.importPath === pkg.importPath)) return;
-    persist([...current, pkg]);
+
+    const slim: GoPackage = {
+      importPath: pkg.importPath,
+      name: pkg.name,
+      description: pkg.description,
+      stars: pkg.stars,
+      forks: pkg.forks,
+      license: pkg.license,
+      latestVersion: pkg.latestVersion,
+      category: pkg.category,
+      tags: pkg.tags,
+      author: pkg.author,
+      publishedAt: pkg.publishedAt,
+      ...(pkg.githubUrl && { githubUrl: pkg.githubUrl }),
+      ...(pkg.dependenciesCount !== undefined && {
+        dependenciesCount: pkg.dependenciesCount,
+      }),
+    };
+
+    persist([...current, slim]);
   }, []);
 
   const removeFavorite = useCallback((importPath: string) => {

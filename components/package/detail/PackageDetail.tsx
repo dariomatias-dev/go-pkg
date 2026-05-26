@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { GoReportCard } from "@/components/package/detail/GoReportCard";
@@ -11,8 +10,6 @@ import { PackageHeader } from "@/components/package/detail/PackageHeader";
 import type { Tab } from "@/components/package/detail/tabs/PackageTabs";
 import { PackageTabs } from "@/components/package/detail/tabs/PackageTabs";
 import { GopherChat } from "@/components/package/shared/GopherChat";
-import { useCompare } from "@/hooks/useCompare";
-import { useFavorites } from "@/hooks/useFavorites";
 import { saveToPackageHistory } from "@/lib/package-history";
 import type { PackageDetailResponse } from "@/types";
 
@@ -21,8 +18,6 @@ interface PackageDetailProps {
 }
 
 export function PackageDetail({ importPath }: PackageDetailProps) {
-  const router = useRouter();
-
   const [prevImportPath, setPrevImportPath] = useState(importPath);
   const [data, setData] = useState<PackageDetailResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,9 +38,6 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
     setAiSummaryError(null);
     setActiveTab("readme");
   }
-
-  const { isFavorite, toggleFavorite } = useFavorites();
-  const { isCompared, addToCompare, removeFromCompare, isFull } = useCompare();
 
   const fetchAiSummary = async (path: string) => {
     setAiSummaryLoading(true);
@@ -131,9 +123,6 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
 
   const { pkg, goMod } = data;
 
-  const favorite = isFavorite(importPath);
-  const compared = isCompared(importPath);
-
   return (
     <>
       <div className="fixed top-16 left-0 right-0 h-1.5 bg-slate-200/50 dark:bg-[#30363d]/50 z-30 shadow-sm pointer-events-none select-none">
@@ -147,21 +136,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
       <div className="flex-1 flex flex-col animate-fade-in relative transition-colors duration-300">
         <PackageBreadcrumb importPath={pkg.importPath} />
 
-        <PackageHeader
-          pkg={pkg}
-          isFavorite={favorite}
-          isCompared={compared}
-          isFull={isFull}
-          onToggleFavorite={() => toggleFavorite(pkg)}
-          onToggleCompare={() => {
-            if (compared) removeFromCompare(importPath);
-            else {
-              addToCompare(pkg);
-
-              router.push("/compare");
-            }
-          }}
-        />
+        <PackageHeader pkg={pkg} />
 
         <div className="bg-[#F8FAFC] dark:bg-[#0b0e14]">
           <div className="container-scale grid grid-cols-1 lg:grid-cols-4 gap-8 py-8 items-start">

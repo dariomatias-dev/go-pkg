@@ -12,6 +12,7 @@ import {
   Star,
   User,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { GoInstallBlock } from "@/components/package/shared/GoInstallBlock";
@@ -20,26 +21,26 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useCompare } from "@/hooks/useCompare";
+import { useFavorites } from "@/hooks/useFavorites";
 import { formatRelativeTime } from "@/lib/utils";
 import type { GoPackage } from "@/types";
 
 interface PackageHeaderProps {
   pkg: GoPackage;
-  isFavorite: boolean;
-  isCompared: boolean;
-  isFull: boolean;
-  onToggleFavorite: () => void;
-  onToggleCompare: () => void;
 }
 
-export function PackageHeader({
-  pkg,
-  isFavorite,
-  isCompared,
-  isFull,
-  onToggleFavorite,
-  onToggleCompare,
-}: PackageHeaderProps) {
+export function PackageHeader({ pkg }: PackageHeaderProps) {
+  const router = useRouter();
+  const { isFavorite: checkFavorite, toggleFavorite } = useFavorites();
+  const {
+    isCompared: checkCompared,
+    addToCompare,
+    removeFromCompare,
+    isFull,
+  } = useCompare();
+  const isFavorite = checkFavorite(pkg.importPath);
+  const isCompared = checkCompared(pkg.importPath);
   const [copied, setCopied] = useState(false);
 
   function handleShare() {
@@ -187,7 +188,10 @@ export function PackageHeader({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={onToggleCompare}
+                    onClick={() => {
+                      if (isCompared) removeFromCompare(pkg.importPath);
+                      else if (addToCompare(pkg)) router.push("/compare");
+                    }}
                     disabled={!isCompared && isFull}
                     className={`flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed ${
                       isCompared
@@ -211,7 +215,7 @@ export function PackageHeader({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={onToggleFavorite}
+                    onClick={() => toggleFavorite(pkg)}
                     className={`group flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm shrink-0 ${
                       isFavorite
                         ? "bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/40 text-rose-600 dark:text-rose-400"
