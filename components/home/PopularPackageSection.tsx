@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { PackageCardSkeleton } from "@/components/common/PackageCardSkeleton";
+import { RecentPackagesWidget } from "@/components/home/RecentPackagesWidget";
 import { PackageCard } from "@/components/package/card/PackageCard";
 import { useFavorites } from "@/hooks/useFavorites";
 import { encodeImportPath } from "@/lib/utils";
@@ -118,6 +119,8 @@ export function PopularPackageSection() {
         </div>
 
         <div className="space-y-8">
+          <RecentPackagesWidget />
+
           <div className="bg-white dark:bg-[#161b22] rounded-xl p-5 border border-slate-200/60 dark:border-[#30363d] shadow-sm">
             <h3 className="font-display font-semibold text-slate-900 dark:text-[#f0f6fc] text-sm tracking-tight border-b border-slate-100 dark:border-[#30363d] pb-3 mb-4 flex items-center justify-between">
               <span className="flex items-center gap-1.5">

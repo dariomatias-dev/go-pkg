@@ -12,6 +12,7 @@ import { PackageTabs } from "@/components/package/detail/tabs/PackageTabs";
 import { GopherChat } from "@/components/package/shared/GopherChat";
 import { useCompare } from "@/hooks/useCompare";
 import { useFavorites } from "@/hooks/useFavorites";
+import { saveToPackageHistory } from "@/lib/package-history";
 import type { PackageDetailResponse } from "@/types";
 
 interface PackageDetailProps {
@@ -86,6 +87,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
       })
       .then((d: PackageDetailResponse) => {
         setData(d);
+        saveToPackageHistory(importPath);
 
         if (!d.pkg.readme) {
           setActiveTab("summary");
