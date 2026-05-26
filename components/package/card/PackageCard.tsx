@@ -1,11 +1,19 @@
-"use client";
+  "use client";
 
-import { Database, GitFork, Heart, Shield, Star, User } from "lucide-react";
+import {
+  Clock,
+  Database,
+  GitFork,
+  Heart,
+  Shield,
+  Star,
+  User,
+} from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 
 import { useFavorites } from "@/hooks/useFavorites";
-import { encodeImportPath } from "@/lib/utils";
+import { encodeImportPath, formatRelativeTime } from "@/lib/utils";
 import type { GoPackage, PopularPackage } from "@/types";
 
 type CardPkg = GoPackage | PopularPackage;
@@ -30,6 +38,10 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
   const router = useRouter();
   const { isFavorite, toggleFavorite } = useFavorites();
   const saved = isFavorite(pkg.importPath);
+
+  const relativeTime = pkg.publishedAt
+    ? formatRelativeTime(pkg.publishedAt)
+    : null;
 
   const scoreValue =
     pkg.similarityScore !== undefined
@@ -155,6 +167,13 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
             <div className="flex items-center gap-1 text-slate-500 dark:text-[#8b949e]">
               <User className="w-3.5 h-3.5 text-slate-400 dark:text-[#484f58]" />
               <span className="truncate max-w-30">{pkg.author}</span>
+            </div>
+          )}
+
+          {relativeTime && (
+            <div className="flex items-center gap-1 text-slate-500 dark:text-[#8b949e]">
+              <Clock className="w-3.5 h-3.5 text-slate-400 dark:text-[#484f58]" />
+              <span>{relativeTime}</span>
             </div>
           )}
         </div>

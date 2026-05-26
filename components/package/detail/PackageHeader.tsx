@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Clock,
   Database,
   ExternalLink,
   GitFork,
@@ -19,6 +20,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatRelativeTime } from "@/lib/utils";
 import type { GoPackage } from "@/types";
 
 interface PackageHeaderProps {
@@ -83,22 +85,20 @@ export function PackageHeader({
               </Tooltip>
             )}
 
-            {pkg.publishedAt &&
-              !["desconhecido", "unknown", "n/a"].includes(
-                pkg.publishedAt.toLowerCase(),
-              ) && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="text-slate-400 dark:text-[#8b949e] font-normal text-xs bg-slate-100/50 dark:bg-[#161b22] px-2.5 py-0.5 rounded-md border border-slate-200/30 dark:border-[#30363d] inline-block cursor-default">
-                      Published on {pkg.publishedAt}
-                    </span>
-                  </TooltipTrigger>
+            {formatRelativeTime(pkg.publishedAt) && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex items-center gap-1.5 text-slate-400 dark:text-[#8b949e] font-normal text-xs bg-slate-100/50 dark:bg-[#161b22] px-2.5 py-0.5 rounded-md border border-slate-200/30 dark:border-[#30363d] cursor-default">
+                    <Clock className="w-3 h-3" />
+                    Updated {formatRelativeTime(pkg.publishedAt)}
+                  </span>
+                </TooltipTrigger>
 
-                  <TooltipContent>
-                    Date of the last module publication in the index
-                  </TooltipContent>
-                </Tooltip>
-              )}
+                <TooltipContent>
+                  Last updated on {pkg.publishedAt}
+                </TooltipContent>
+              </Tooltip>
+            )}
           </div>
 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/50 dark:border-[#30363d] pb-5">
