@@ -190,7 +190,11 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                   <button
                     onClick={() => {
                       if (isCompared) removeFromCompare(pkg.importPath);
-                      else if (addToCompare(pkg)) router.push("/compare");
+                      else {
+                        addToCompare(pkg);
+
+                        router.push("/compare");
+                      }
                     }}
                     disabled={!isCompared && isFull}
                     className={`flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed ${

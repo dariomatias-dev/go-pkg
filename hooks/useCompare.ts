@@ -1,21 +1,23 @@
 "use client";
 
 import type { GoPackage } from "@/types";
-import { useCallback, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
-const STORAGE_KEY = "gopkg_compared";
+import {
+  compareServerSnapshot,
+  compareSnapshot,
+  compareSubscribe,
+  setCompareData,
+} from "@/components/compare/data/compareStore";
+
 const MAX_COMPARE = 3;
 
 export function useCompare() {
-  const [compared, setCompared] = useState<GoPackage[]>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-
-      return stored ? (JSON.parse(stored) as GoPackage[]) : [];
-    } catch {
-      return [];
-    }
-  });
+  const compared = useSyncExternalStore(
+    compareSubscribe,
+    compareSnapshot,
+    compareServerSnapshot,
+  );
 
   const isCompared = useCallback(
     (importPath: string) => compared.some((p) => p.importPath === importPath),
@@ -23,31 +25,20 @@ export function useCompare() {
   );
 
   const addToCompare = useCallback((pkg: GoPackage): boolean => {
-    let added = false;
+    const current = compareSnapshot();
 
-    setCompared((prev) => {
-      if (prev.some((p) => p.importPath === pkg.importPath)) return prev;
-      if (prev.length >= MAX_COMPARE) return prev;
+    if (current.some((p) => p.importPath === pkg.importPath)) return false;
+    if (current.length >= MAX_COMPARE) return false;
 
-      const next = [...prev, pkg];
+    setCompareData([...current, pkg]);
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      added = true;
-
-      return next;
-    });
-
-    return added;
+    return true;
   }, []);
 
   const removeFromCompare = useCallback((importPath: string) => {
-    setCompared((prev) => {
-      const next = prev.filter((p) => p.importPath !== importPath);
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-
-      return next;
-    });
+    setCompareData(
+      compareSnapshot().filter((p) => p.importPath !== importPath),
+    );
   }, []);
 
   const isFull = compared.length >= MAX_COMPARE;
