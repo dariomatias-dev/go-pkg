@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { encodeImportPath } from "@/lib/utils";
 
@@ -52,20 +52,24 @@ const COMPARE_ROWS: {
 }[] = [
   {
     label: "Description",
-    icon: <BookOpen className="w-4 h-4 text-slate-400 shrink-0" />,
-    cellCls: "p-4 leading-relaxed font-light text-slate-500",
+    icon: (
+      <BookOpen className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+    ),
+    cellCls:
+      "p-4 leading-relaxed font-light text-slate-500 dark:text-[#8b949e]",
     render: (pkg) => <p className="line-clamp-4">{pkg.description}</p>,
   },
   {
     label: "GitHub Stars",
     icon: (
-      <Star className="w-4 h-4 text-[#007D9C] shrink-0 fill-[#00ADD8] stroke-[#007D9C]" />
+      <Star className="w-4 h-4 text-[#007D9C] dark:text-sky-400 shrink-0 fill-[#00ADD8] dark:fill-sky-500 stroke-[#007D9C] dark:stroke-sky-500" />
     ),
-    cellCls: "p-4 font-mono font-bold text-base text-slate-900",
+    cellCls:
+      "p-4 font-mono font-bold text-base text-slate-900 dark:text-[#f0f6fc]",
     render: (pkg) => (
       <>
         {(pkg.stars || 0).toLocaleString()}{" "}
-        <span className="text-[10px] text-slate-400 font-sans font-medium">
+        <span className="text-[10px] text-slate-400 dark:text-[#8b949e] font-sans font-medium">
           stars
         </span>
       </>
@@ -73,36 +77,45 @@ const COMPARE_ROWS: {
   },
   {
     label: "Forks",
-    icon: <GitFork className="w-4 h-4 text-slate-400 shrink-0" />,
-    cellCls: "p-4 font-mono text-slate-700 text-sm font-semibold",
+    icon: (
+      <GitFork className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+    ),
+    cellCls:
+      "p-4 font-mono text-slate-700 dark:text-[#c9d1d9] text-sm font-semibold",
     render: (pkg) => (pkg.forks || 0).toLocaleString(),
   },
   {
     label: "Category",
-    icon: <Layers className="w-4 h-4 text-slate-400 shrink-0" />,
+    icon: (
+      <Layers className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+    ),
     cellCls: "p-4 capitalize",
     render: (pkg) => (
-      <span className="bg-sky-50 text-[#00637c] font-semibold py-1 px-2.5 rounded-lg border border-sky-100">
+      <span className="bg-sky-50 dark:bg-sky-950/30 text-[#00637c] dark:text-sky-400 font-semibold py-1 px-2.5 rounded-lg border border-sky-100 dark:border-sky-900/30">
         {pkg.category}
       </span>
     ),
   },
   {
     label: "License",
-    icon: <Shield className="w-4 h-4 text-slate-400 shrink-0" />,
-    cellCls: "p-4 font-mono font-bold text-slate-700",
+    icon: (
+      <Shield className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+    ),
+    cellCls: "p-4 font-mono font-bold text-slate-700 dark:text-[#c9d1d9]",
     render: (pkg) => (
-      <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/50 py-1 px-2.5 rounded text-[10px]">
+      <span className="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/30 py-1 px-2.5 rounded text-[10px]">
         {pkg.license}
       </span>
     ),
   },
   {
     label: "Version",
-    icon: <Milestone className="w-4 h-4 text-slate-400 shrink-0" />,
+    icon: (
+      <Milestone className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+    ),
     cellCls: "p-4",
     render: (pkg) => (
-      <p className="font-bold text-slate-900 font-mono text-xs">
+      <p className="font-bold text-slate-900 dark:text-[#f0f6fc] font-mono text-xs">
         {pkg.latestVersion}
       </p>
     ),
@@ -112,12 +125,12 @@ const COMPARE_ROWS: {
     cellCls: "p-4 select-all",
     render: (pkg) => (
       <div className="flex items-center space-x-2">
-        <span className="font-semibold text-slate-900 font-mono">
+        <span className="font-semibold text-slate-900 dark:text-[#f0f6fc] font-mono">
           {pkg.dependenciesCount ?? 0}
         </span>
-        <div className="w-20 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+        <div className="w-20 bg-slate-100 dark:bg-[#30363d] h-1.5 rounded-full overflow-hidden">
           <div
-            className="bg-[#00ADD8] h-full rounded-full"
+            className="bg-[#00ADD8] dark:bg-sky-500 h-full rounded-full"
             style={{
               width: `${Math.min((pkg.dependenciesCount ?? 0) * 8, 100)}%`,
             }}
@@ -128,11 +141,12 @@ const COMPARE_ROWS: {
   },
   {
     label: "Imported By",
-    cellCls: "p-4 font-mono font-bold text-emerald-600 bg-emerald-50/20",
+    cellCls:
+      "p-4 font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50/20 dark:bg-emerald-950/10",
     render: (pkg) => (
       <>
         {pkg.importsCount ? pkg.importsCount.toLocaleString() : "N/A"}{" "}
-        <span className="text-[9px] font-sans font-light text-slate-400">
+        <span className="text-[9px] font-sans font-light text-slate-400 dark:text-[#8b949e]">
           repos
         </span>
       </>
@@ -140,16 +154,22 @@ const COMPARE_ROWS: {
   },
   {
     label: "Maintainer",
-    icon: <User className="w-4 h-4 text-slate-400 shrink-0" />,
+    icon: (
+      <User className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+    ),
     cellCls: "p-4",
     render: (pkg) => (
-      <p className="font-semibold text-slate-800">{pkg.author}</p>
+      <p className="font-semibold text-slate-800 dark:text-[#c9d1d9]">
+        {pkg.author}
+      </p>
     ),
   },
   {
     label: "Last Update",
-    icon: <Calendar className="w-4 h-4 text-slate-400 shrink-0" />,
-    cellCls: "p-4 font-mono text-slate-400",
+    icon: (
+      <Calendar className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+    ),
+    cellCls: "p-4 font-mono text-slate-400 dark:text-[#8b949e]",
     render: (pkg) => pkg.publishedAt,
   },
 ];
@@ -164,35 +184,42 @@ function CompareTable({
   inspectPackage: (importPath: string) => void;
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden select-none">
+    <div className="bg-white dark:bg-[#0d1117] rounded-2xl border border-slate-200/80 dark:border-[#30363d] shadow-sm overflow-hidden select-none">
       <div className="overflow-x-auto">
         <table className="w-full border-collapse table-fixed text-left min-w-175 font-sans">
           <thead>
-            <tr className="bg-slate-50/60 border-b border-slate-200">
-              <th className="p-6 text-xs uppercase font-bold tracking-widest text-slate-400 w-64 border-r border-slate-100 bg-slate-50/30">
+            <tr className="bg-slate-50/60 dark:bg-[#161b22] border-b border-slate-200 dark:border-[#30363d]">
+              <th
+                key="label"
+                className="p-6 text-xs uppercase font-bold tracking-widest text-slate-400 dark:text-[#8b949e] w-64 border-r border-slate-100 dark:border-[#30363d] bg-slate-50/30 dark:bg-[#0d1117]"
+              >
                 Technical Attribute
               </th>
+
               {compared.map((pkg, index) => (
                 <th
-                  key={pkg.importPath}
-                  className="p-6 relative text-slate-800"
+                  key={`${pkg.importPath}-${index}`}
+                  className="p-6 relative text-slate-800 dark:text-[#f0f6fc] border-r border-slate-100 dark:border-[#30363d] last:border-r-0"
                 >
                   <div className="space-y-2">
                     <button
                       onClick={() => removePackage(pkg.importPath)}
-                      className="absolute top-4 right-4 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all p-1.5 rounded-full cursor-pointer"
+                      className="absolute top-4 right-4 text-slate-400 dark:text-[#8b949e] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all p-1.5 rounded-full cursor-pointer"
                       title="Remove from comparison"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-                    <span className="inline-block bg-sky-50 text-[#007D9C] font-mono text-[10px] uppercase font-bold py-0.5 px-2 rounded-full mb-1 border border-sky-100">
+
+                    <span className="inline-block bg-sky-50 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 font-mono text-[10px] uppercase font-bold py-0.5 px-2 rounded-full mb-1 border border-sky-100 dark:border-sky-900/30">
                       Module {index + 1}
                     </span>
-                    <h3 className="font-display font-extrabold text-xl leading-none text-slate-900 tracking-tight">
+
+                    <h3 className="font-display font-extrabold text-xl leading-none text-slate-900 dark:text-[#f0f6fc] tracking-tight">
                       {pkg.name}
                     </h3>
+
                     <p
-                      className="font-mono text-[10px] text-slate-400 truncate"
+                      className="font-mono text-[10px] text-slate-400 dark:text-[#8b949e] truncate"
                       title={pkg.importPath}
                     >
                       {pkg.importPath}
@@ -200,10 +227,15 @@ function CompareTable({
                   </div>
                 </th>
               ))}
+
               {compared.length < 3 && (
-                <th className="p-6 text-center text-slate-400 border-l border-slate-100 bg-slate-50/20 font-light text-xs">
+                <th
+                  key="empty-slot"
+                  className="p-6 text-center text-slate-400 dark:text-[#484f58] border-l border-slate-100 dark:border-[#30363d] bg-slate-50/20 dark:bg-[#0d1117] font-light text-xs"
+                >
                   <div className="py-8 flex flex-col items-center justify-center space-y-2">
-                    <Scale className="w-8 h-8 text-slate-300 stroke-[1.5] animate-pulse" />
+                    <Scale className="w-8 h-8 text-slate-300 dark:text-[#30363d] stroke-[1.5] animate-pulse" />
+
                     <p>Free Slot ({3 - compared.length} remaining)</p>
                   </div>
                 </th>
@@ -211,10 +243,13 @@ function CompareTable({
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
+          <tbody className="divide-y divide-slate-100 dark:divide-[#30363d] text-xs text-slate-700">
             {COMPARE_ROWS.map(({ label, icon, cellCls, render }) => (
-              <tr key={label} className="hover:bg-slate-50/30">
-                <td className="p-4 font-semibold text-slate-600 bg-slate-50/10 border-r border-slate-100">
+              <tr
+                key={label}
+                className="hover:bg-slate-50/30 dark:hover:bg-[#161b22]/50"
+              >
+                <td className="p-4 font-semibold text-slate-600 dark:text-[#8b949e] bg-slate-50/10 dark:bg-[#0d1117] border-r border-slate-100 dark:border-[#30363d]">
                   {icon ? (
                     <div className="flex items-center gap-2">
                       {icon}
@@ -224,30 +259,46 @@ function CompareTable({
                     label
                   )}
                 </td>
+
                 {compared.map((pkg) => (
-                  <td key={pkg.importPath} className={cellCls}>
+                  <td
+                    key={`${label}-${pkg.importPath}`}
+                    className={`${cellCls} border-r border-slate-100 dark:border-[#30363d] last:border-r-0`}
+                  >
                     {render(pkg)}
                   </td>
                 ))}
-                {compared.length < 3 && <td className="bg-slate-50/5" />}
+
+                {compared.length < 3 && (
+                  <td className="bg-slate-50/5 dark:bg-transparent" />
+                )}
               </tr>
             ))}
-            <tr className="bg-slate-50/40">
-              <td className="p-4 font-semibold text-slate-600 bg-slate-50/25 border-r border-slate-100">
+
+            <tr className="bg-slate-50/40 dark:bg-[#0d1117]">
+              <td className="p-4 font-semibold text-slate-600 dark:text-[#8b949e] bg-slate-50/25 dark:bg-[#0d1117] border-r border-slate-100 dark:border-[#30363d]">
                 Actions
               </td>
+
               {compared.map((pkg) => (
-                <td key={pkg.importPath} className="p-4">
+                <td
+                  key={`actions-${pkg.importPath}`}
+                  className="p-4 border-r border-slate-100 dark:border-[#30363d] last:border-r-0"
+                >
                   <button
                     onClick={() => inspectPackage(pkg.importPath)}
-                    className="w-full text-center bg-[#007D9C] hover:bg-[#005a71] text-white text-[11px] font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1 shadow-sm transition-all cursor-pointer"
+                    className="w-full text-center bg-[#007D9C] dark:bg-sky-600 hover:bg-[#005a71] dark:hover:bg-sky-700 text-white text-[11px] font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1 shadow-sm transition-all cursor-pointer"
                   >
                     <span>View Documentation</span>
+
                     <ExternalLink className="w-3 h-3" />
                   </button>
                 </td>
               ))}
-              {compared.length < 3 && <td className="bg-slate-50/5" />}
+
+              {compared.length < 3 && (
+                <td className="bg-slate-50/5 dark:bg-transparent" />
+              )}
             </tr>
           </tbody>
         </table>
@@ -262,15 +313,17 @@ function CompareEmptyState({
   onPreset: (names: string[]) => void;
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 p-8 md:p-14 text-center space-y-6 shadow-sm select-none">
+    <div className="bg-white dark:bg-[#0d1117] rounded-2xl border border-slate-200/80 dark:border-[#30363d] p-8 md:p-14 text-center space-y-6 shadow-sm select-none">
       <div className="max-w-md mx-auto space-y-4 font-sans">
-        <div className="w-16 h-16 bg-sky-50 rounded-2xl flex items-center justify-center mx-auto border border-sky-100">
-          <Scale className="w-8 h-8 text-[#007D9C]" />
+        <div className="w-16 h-16 bg-sky-50 dark:bg-sky-950/30 rounded-2xl flex items-center justify-center mx-auto border border-sky-100 dark:border-sky-900/30">
+          <Scale className="w-8 h-8 text-[#007D9C] dark:text-sky-400" />
         </div>
-        <h2 className="font-display font-extrabold text-xl text-slate-800 tracking-tight">
+
+        <h2 className="font-display font-extrabold text-xl text-slate-800 dark:text-[#f0f6fc] tracking-tight">
           Comparator is empty
         </h2>
-        <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-light">
+
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-[#8b949e] leading-relaxed font-light">
           Add Go modules using the search bar above, or choose one of the
           recommended presets below:
         </p>
@@ -281,13 +334,17 @@ function CompareEmptyState({
           <div
             key={title}
             onClick={() => onPreset(names)}
-            className="bg-slate-50 hover:bg-sky-50/50 border border-slate-200/80 hover:border-sky-200/60 p-4 rounded-xl text-left cursor-pointer transition-all hover:shadow-sm"
+            className="bg-slate-50 dark:bg-[#161b22] hover:bg-sky-50/50 dark:hover:bg-sky-950/20 border border-slate-200/80 dark:border-[#30363d] hover:border-sky-200/60 dark:hover:border-sky-800 p-4 rounded-xl text-left cursor-pointer transition-all hover:shadow-sm"
           >
-            <p className="font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+            <p className="font-bold text-slate-800 dark:text-[#f0f6fc] mb-1 flex items-center gap-1.5">
               <span className="text-[15px]">{emoji}</span> {title}
             </p>
-            <p className="text-[10px] text-slate-400 mb-3">{desc}</p>
-            <span className="text-[10px] text-[#007D9C] font-semibold flex items-center gap-1">
+
+            <p className="text-[10px] text-slate-400 dark:text-[#8b949e] mb-3">
+              {desc}
+            </p>
+
+            <span className="text-[10px] text-[#007D9C] dark:text-sky-400 font-semibold flex items-center gap-1">
               Load Preset →
             </span>
           </div>
@@ -297,27 +354,61 @@ function CompareEmptyState({
   );
 }
 
+const COMPARE_KEY = "gopkg_compared";
+let _compareData: GoPackage[] = [];
+let _compareReady = false;
+const _compareListeners = new Set<() => void>();
+
+function _compareInit() {
+  if (_compareReady) return;
+
+  _compareReady = true;
+
+  try {
+    const s = localStorage.getItem(COMPARE_KEY);
+    if (s) _compareData = JSON.parse(s) as GoPackage[];
+  } catch {}
+}
+
+function _compareSubscribe(cb: () => void) {
+  _compareInit();
+
+  _compareListeners.add(cb);
+
+  return () => _compareListeners.delete(cb);
+}
+
+const _EMPTY_COMPARED: GoPackage[] = [];
+function _compareSnapshot() {
+  return _compareData;
+}
+
+function _compareServerSnapshot() {
+  return _EMPTY_COMPARED;
+}
+
+function _compareSet(next: GoPackage[]) {
+  _compareData = next;
+
+  try {
+    localStorage.setItem(COMPARE_KEY, JSON.stringify(next));
+  } catch {}
+
+  _compareListeners.forEach((cb) => cb());
+}
+
 export function CompareSection() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<GoPackage[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
-  const [compared, setCompared] = useState<GoPackage[]>(() => {
-    if (typeof window === "undefined") return [];
 
-    try {
-      const stored = localStorage.getItem("gopkg_compared");
-
-      return stored ? (JSON.parse(stored) as GoPackage[]) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem("gopkg_compared", JSON.stringify(compared));
-  }, [compared]);
+  const compared = useSyncExternalStore(
+    _compareSubscribe,
+    _compareSnapshot,
+    _compareServerSnapshot,
+  );
 
   useEffect(() => {
     let active = true;
@@ -338,6 +429,7 @@ export function CompareSection() {
                 (pkg: GoPackage) =>
                   !compared.some((cp) => cp.importPath === pkg.importPath),
               );
+
               setSuggestions(filtered.slice(0, 8));
             }
           })
@@ -356,16 +448,16 @@ export function CompareSection() {
   }, [searchQuery, compared]);
 
   const addPackage = (pkg: GoPackage) => {
-    if (compared.some((cp) => cp.importPath === pkg.importPath)) return;
-    if (compared.length >= 3) return;
+    if (_compareData.some((cp) => cp.importPath === pkg.importPath)) return;
+    if (_compareData.length >= 3) return;
 
-    setCompared((prev) => [...prev, pkg]);
+    _compareSet([..._compareData, pkg]);
     setSearchQuery("");
     setDropdownOpen(false);
   };
 
   const removePackage = (importPath: string) => {
-    setCompared((prev) => prev.filter((pkg) => pkg.importPath !== importPath));
+    _compareSet(_compareData.filter((pkg) => pkg.importPath !== importPath));
   };
 
   const handlePreset = (names: string[]) => {
@@ -391,29 +483,31 @@ export function CompareSection() {
   };
 
   const inspectPackage = (importPath: string) => {
-    router.push(`/package/${encodeImportPath(importPath)}` as Route<`/package/${string}`>);
+    router.push(
+      `/package/${encodeImportPath(importPath)}` as Route<`/package/${string}`>,
+    );
   };
 
   return (
-    <div className="bg-slate-50/40 py-8 flex-1">
+    <div className="bg-slate-50/40 dark:bg-[#0b0e14] py-8 flex-1 transition-colors duration-300">
       <div className="container-scale max-w-6xl space-y-8">
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 md:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="bg-white dark:bg-[#0d1117] rounded-2xl border border-slate-200/80 dark:border-[#30363d] p-6 md:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="flex items-center space-x-2 text-[#007D9C]">
+            <div className="flex items-center space-x-2 text-[#007D9C] dark:text-sky-400">
               <Scale className="w-6 h-6" />
 
-              <span className="font-display font-medium text-xs uppercase tracking-widest bg-sky-50 text-[#007D9C] px-3 py-1 rounded-full border border-sky-100">
+              <span className="font-display font-medium text-xs uppercase tracking-widest bg-sky-50 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 px-3 py-1 rounded-full border border-sky-100 dark:border-sky-900/30">
                 Decision Matrix
               </span>
             </div>
 
-            <h1 className="font-display font-bold text-2xl md:text-3xl text-slate-900 tracking-tight">
+            <h1 className="font-display font-bold text-2xl md:text-3xl text-slate-900 dark:text-[#f0f6fc] tracking-tight">
               Go Package Comparator
             </h1>
 
-            <p className="text-sm text-slate-500 leading-relaxed max-w-2xl font-light">
+            <p className="text-sm text-slate-500 dark:text-[#8b949e] leading-relaxed max-w-2xl font-light">
               Choose up to{" "}
-              <strong className="font-semibold text-slate-700">
+              <strong className="font-semibold text-slate-700 dark:text-[#c9d1d9]">
                 three Go modules
               </strong>{" "}
               side by side to contrast stars, forks, dependencies, and official
@@ -437,16 +531,16 @@ export function CompareSection() {
                   setSearchQuery(e.target.value);
                   setDropdownOpen(true);
                 }}
-                className="w-full bg-slate-50 hover:bg-white text-slate-800 placeholder-slate-400 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-[#00ADD8] focus:ring-2 focus:ring-[#00ADD8]/20 focus:outline-none py-3 pl-11 pr-10 rounded-xl text-xs sm:text-sm font-sans transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+                className="w-full bg-slate-50 dark:bg-[#0d1117] hover:bg-white dark:hover:bg-[#161b22] text-slate-800 dark:text-[#c9d1d9] placeholder-slate-400 dark:placeholder-[#484f58] border border-slate-200 dark:border-[#30363d] hover:border-slate-300 dark:hover:border-[#484f58] focus:bg-white dark:focus:bg-[#161b22] focus:border-[#00ADD8] dark:focus:border-sky-500 focus:ring-2 focus:ring-[#00ADD8]/20 focus:outline-none py-3 pl-11 pr-10 rounded-xl text-xs sm:text-sm font-sans transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
               />
 
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-[#484f58] pointer-events-none" />
 
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 bg-transparent border-none p-1 transition-colors cursor-pointer rounded-full hover:bg-slate-100"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#484f58] hover:text-slate-600 dark:hover:text-[#f0f6fc] bg-transparent border-none p-1 transition-colors cursor-pointer rounded-full hover:bg-slate-100 dark:hover:bg-[#21262d]"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -454,9 +548,9 @@ export function CompareSection() {
             </div>
 
             {dropdownOpen && (
-              <div className="absolute top-14 left-0 right-0 max-h-60 overflow-y-auto bg-white border border-slate-200 shadow-xl rounded-xl z-50 divide-y divide-slate-50 animate-fade-in font-sans">
+              <div className="absolute top-14 left-0 right-0 max-h-60 overflow-y-auto bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] shadow-xl rounded-xl z-50 divide-y divide-slate-50 dark:divide-[#30363d] animate-fade-in font-sans">
                 {suggestionsLoading && suggestions.length === 0 ? (
-                  <p className="p-4 text-center text-xs text-slate-400 font-mono animate-pulse">
+                  <p className="p-4 text-center text-xs text-slate-400 dark:text-[#8b949e] font-mono animate-pulse">
                     Loading suggestions...
                   </p>
                 ) : suggestions.length > 0 ? (
@@ -464,31 +558,31 @@ export function CompareSection() {
                     <button
                       key={pkg.importPath}
                       onClick={() => addPackage(pkg)}
-                      className="w-full text-left px-4 py-3 hover:bg-slate-50 flex items-center justify-between text-xs transition-colors cursor-pointer text-slate-700"
+                      className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-[#21262d] flex items-center justify-between text-xs transition-colors cursor-pointer text-slate-700 dark:text-[#c9d1d9]"
                     >
                       <div className="min-w-0 pr-2">
-                        <p className="font-bold text-slate-800 truncate">
+                        <p className="font-bold text-slate-800 dark:text-[#f0f6fc] truncate">
                           {pkg.name}
                         </p>
 
-                        <p className="font-mono text-[10px] text-slate-400 truncate">
+                        <p className="font-mono text-[10px] text-slate-400 dark:text-[#8b949e] truncate">
                           {pkg.importPath}
                         </p>
                       </div>
 
-                      <div className="flex items-center space-x-2 text-[#007D9C] shrink-0">
-                        <Star className="w-3.5 h-3.5 fill-[#00ADD8] stroke-[#00ADD8]" />
+                      <div className="flex items-center space-x-2 text-[#007D9C] dark:text-sky-400 shrink-0">
+                        <Star className="w-3.5 h-3.5 fill-[#00ADD8] dark:fill-sky-500 stroke-[#00ADD8] dark:stroke-sky-500" />
 
-                        <span className="font-semibold text-slate-700">
+                        <span className="font-semibold text-slate-700 dark:text-[#c9d1d9]">
                           {(pkg.stars || 0).toLocaleString()}
                         </span>
 
-                        <Plus className="w-3.5 h-3.5 ml-1 bg-sky-50 text-[#007D9C] rounded-full p-0.5" />
+                        <Plus className="w-3.5 h-3.5 ml-1 bg-sky-50 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 rounded-full p-0.5" />
                       </div>
                     </button>
                   ))
                 ) : (
-                  <p className="p-4 text-center text-xs text-slate-400">
+                  <p className="p-4 text-center text-xs text-slate-400 dark:text-[#8b949e]">
                     No packages found for suggestion.
                   </p>
                 )}
