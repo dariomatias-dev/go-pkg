@@ -3,13 +3,12 @@ import { NextResponse } from "next/server";
 
 import { getPackageDetail } from "@/lib/github";
 
-const getCachedPackageDetail = unstable_cache(
-  async (importPath: string) => {
-    return getPackageDetail(importPath);
-  },
-  ["package-detail"],
-  { revalidate: 1800 },
-);
+const getCachedPackageDetail = (importPath: string) =>
+  unstable_cache(
+    async () => getPackageDetail(importPath),
+    ["package-detail", importPath],
+    { revalidate: 1800 },
+  )();
 
 export async function GET(request: Request) {
   try {
