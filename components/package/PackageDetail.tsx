@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { AiSummaryTab } from "@/components/package/AiSummaryTab";
 import { CodeBlock } from "@/components/package/CodeBlock";
@@ -28,7 +28,7 @@ import { ReadmeTab } from "@/components/package/ReadmeTab";
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCompare } from "@/hooks/useCompare";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -48,7 +48,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("readme");
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const scrollBarRef = useRef<HTMLDivElement>(null);
 
   const [aiSummary, setAiSummary] = useState("");
   const [aiSummaryLoading, setAiSummaryLoading] = useState(false);
@@ -122,7 +122,10 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
   useEffect(() => {
     const onScroll = () => {
       const h = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(h > 0 ? (window.scrollY / h) * 100 : 0);
+
+      if (scrollBarRef.current) {
+        scrollBarRef.current.style.width = `${h > 0 ? (window.scrollY / h) * 100 : 0}%`;
+      }
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -142,56 +145,44 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
 
   if (loading) {
     return (
-      <div className="animate-fade-in">
-        <div className="w-full h-1 bg-cyan-100/50 relative overflow-hidden">
-          <div className="h-full bg-[#00ADD8] w-2/5 rounded-full animate-progress-slide absolute top-0 left-0" />
+      <div className="animate-fade-in bg-white dark:bg-[#0d1117]">
+        <div className="w-full h-1 bg-cyan-100/50 dark:bg-sky-900/20 relative overflow-hidden">
+          <div className="h-full bg-[#00ADD8] dark:bg-sky-500 w-2/5 rounded-full animate-progress-slide absolute top-0 left-0" />
         </div>
 
         <div className="container-scale py-10">
-          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-8 mb-8 animate-shimmer relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="bg-slate-50 dark:bg-[#161b22] border border-slate-100 dark:border-[#30363d] rounded-2xl p-8 mb-8 animate-shimmer relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex items-center gap-5">
-              <div className="w-16 h-16 bg-slate-200/80 rounded-2xl shrink-0" />
+              <div className="w-16 h-16 bg-slate-200/80 dark:bg-[#30363d] rounded-2xl shrink-0" />
 
               <div className="space-y-2.5">
-                <div className="h-4 w-20 bg-slate-200/80 rounded-full" />
-                <div className="h-6 w-56 bg-slate-200/80 rounded-lg" />
-                <div className="h-3.5 w-72 bg-slate-100/60 rounded-sm" />
+                <div className="h-4 w-20 bg-slate-200/80 dark:bg-[#30363d] rounded-full" />
+                <div className="h-6 w-56 bg-slate-200/80 dark:bg-[#30363d] rounded-lg" />
+                <div className="h-3.5 w-72 bg-slate-100/60 dark:bg-[#30363d]/50 rounded-sm" />
               </div>
             </div>
 
             <div className="flex gap-2">
-              <div className="h-10 w-28 bg-slate-200/80 rounded-lg" />
-              <div className="h-10 w-12 bg-slate-200/80 rounded-lg" />
+              <div className="h-10 w-28 bg-slate-200/80 dark:bg-[#30363d] rounded-lg" />
+              <div className="h-10 w-12 bg-slate-200/80 dark:bg-[#30363d] rounded-lg" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <div className="lg:col-span-3 bg-white border border-slate-200/60 rounded-xl p-8 space-y-5 animate-shimmer overflow-hidden">
-              <div className="flex gap-2 border-b border-slate-100 pb-4">
+            <div className="lg:col-span-3 bg-white dark:bg-[#161b22] border border-slate-200/60 dark:border-[#30363d] rounded-xl p-8 space-y-5 animate-shimmer overflow-hidden">
+              <div className="flex gap-2 border-b border-slate-100 dark:border-[#30363d] pb-4">
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className={`h-8 rounded-lg ${i === 1 ? "w-24 bg-slate-200/85" : "w-24 bg-slate-100/70"}`}
+                    className={`h-8 rounded-lg ${i === 1 ? "w-24 bg-slate-200/85 dark:bg-[#30363d]" : "w-24 bg-slate-100/70 dark:bg-[#21262d]"}`}
                   />
                 ))}
               </div>
 
               <div className="space-y-3">
-                <div className="h-5 w-1/3 bg-slate-200/80 rounded-md" />
-                <div className="h-3.5 w-full bg-slate-100/80 rounded-md" />
-                <div className="h-3.5 w-11/12 bg-slate-100/80 rounded-md" />
-                <div className="h-3.5 w-4/5 bg-slate-100/60 rounded-md" />
-              </div>
-            </div>
-
-            <div className="lg:col-span-1">
-              <div className="bg-white border border-slate-200/60 rounded-xl p-5 animate-shimmer overflow-hidden space-y-4">
-                <div className="h-4 w-2/3 bg-slate-200/80 rounded-md" />
-
-                <div className="border-t border-slate-100 pt-3 space-y-2">
-                  <div className="h-3 w-full bg-slate-100/70 rounded-sm" />
-                  <div className="h-3 w-4/5 bg-slate-100/70 rounded-sm" />
-                </div>
+                <div className="h-5 w-1/3 bg-slate-200/80 dark:bg-[#30363d] rounded-md" />
+                <div className="h-3.5 w-full bg-slate-100/80 dark:bg-[#21262d] rounded-md" />
+                <div className="h-3.5 w-11/12 bg-slate-100/80 dark:bg-[#21262d] rounded-md" />
               </div>
             </div>
           </div>
@@ -203,21 +194,21 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
   if (error || !data) {
     return (
       <div className="container-scale py-12">
-        <div className="max-w-md mx-auto bg-rose-50 border border-rose-200 p-8 rounded-xl text-center">
+        <div className="max-w-md mx-auto bg-rose-50 dark:bg-rose-950/10 border border-rose-200 dark:border-rose-900/30 p-8 rounded-xl text-center">
           <HeartOff className="w-12 h-12 text-rose-500 mx-auto mb-4" />
 
-          <h3 className="font-semibold text-slate-900 text-lg">
+          <h3 className="font-semibold text-slate-900 dark:text-[#f0f6fc] text-lg">
             Module Resolution Error
           </h3>
 
-          <p className="text-slate-500 text-sm mt-2">
+          <p className="text-slate-500 dark:text-[#8b949e] text-sm mt-2">
             {error ?? "Failed to load this package."}
           </p>
 
           <div className="mt-6 flex justify-center gap-3">
             <Link
               href="/"
-              className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer"
+              className="bg-white dark:bg-[#21262d] border border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer"
             >
               Back to Home
             </Link>
@@ -235,7 +226,6 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
   }
 
   const { pkg, goMod } = data;
-
   const favorite = isFavorite(importPath);
   const compared = isCompared(importPath);
 
@@ -243,7 +233,9 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
     {
       id: "summary",
       label: "AI Summary",
-      icon: <Sparkles className="w-3.5 h-3.5 text-cyan-600 animate-pulse" />,
+      icon: (
+        <Sparkles className="w-3.5 h-3.5 text-cyan-600 dark:text-sky-400 animate-pulse" />
+      ),
     },
     {
       id: "readme",
@@ -264,41 +256,44 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
 
   return (
     <>
-      <div className="fixed top-16 left-0 right-0 h-1.5 bg-slate-200/50 z-30 shadow-sm pointer-events-none select-none">
+      <div className="fixed top-16 left-0 right-0 h-1.5 bg-slate-200/50 dark:bg-[#30363d]/50 z-30 shadow-sm pointer-events-none select-none">
         <div
+          ref={scrollBarRef}
           className="h-full bg-linear-to-r from-cyan-400 via-[#00ADD8] to-[#007D9C] transition-all duration-75 ease-out"
-          style={{ width: `${scrollProgress}%` }}
+          style={{ width: "0%" }}
         />
       </div>
 
-      <div className="flex-1 flex flex-col animate-fade-in relative">
-        <div className="bg-slate-50 border-b border-slate-200 py-3 block select-none">
-          <div className="container-scale flex items-center justify-between text-xs text-slate-500">
+      <div className="flex-1 flex flex-col animate-fade-in relative transition-colors duration-300">
+        <div className="bg-slate-50 dark:bg-[#0d1117] border-b border-slate-200 dark:border-[#30363d] py-3 block select-none">
+          <div className="container-scale flex items-center justify-between text-xs text-slate-500 dark:text-[#8b949e]">
             <div className="flex items-center space-x-1 overflow-x-auto whitespace-nowrap py-1">
-              <Link href="/" className="hover:text-slate-800 cursor-pointer">
+              <Link
+                href="/"
+                className="hover:text-slate-800 dark:hover:text-[#f0f6fc] cursor-pointer"
+              >
                 Home
               </Link>
 
-              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-[#484f58]" />
 
               <Link
                 href="/search"
-                className="hover:text-slate-800 cursor-pointer"
+                className="hover:text-slate-800 dark:hover:text-[#f0f6fc] cursor-pointer"
               >
                 Packages
               </Link>
 
-              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-
-              <span className="font-mono font-semibold text-slate-700 bg-slate-100/50 px-2 py-0.5 rounded truncate">
+              <ChevronRight className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-[#484f58]" />
+              <span className="font-mono font-semibold text-slate-700 dark:text-[#c9d1d9] bg-slate-100/50 dark:bg-[#161b22] px-2 py-0.5 rounded truncate">
                 {pkg.importPath}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="bg-linear-to-b from-sky-50/10 via-slate-50/45 to-white border-b border-slate-200/80 py-10 sm:py-14 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(#00ADD8_1px,transparent_1px)] bg-size-[16px_16px] opacity-[0.035] pointer-events-none" />
+        <div className="bg-linear-to-b from-sky-50/10 via-slate-50/45 to-white dark:from-sky-950/5 dark:via-[#0d1117] dark:to-[#0d1117] border-b border-slate-200/80 dark:border-[#30363d] py-10 sm:py-14 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(#00ADD8_1px,transparent_1px)] bg-size-[16px_16px] opacity-[0.035] dark:opacity-[0.015] pointer-events-none" />
 
           <div className="container-scale relative z-10 font-sans">
             <div className="space-y-6 min-w-0">
@@ -307,7 +302,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                   {pkg.category && (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className="bg-[#00ADD8]/10 text-[#007D9C] border border-[#00ADD8]/20 font-bold text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-sm inline-block cursor-default">
+                        <span className="bg-[#00ADD8]/10 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 border border-[#00ADD8]/20 dark:border-sky-800/30 font-bold text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-sm inline-block cursor-default">
                           {pkg.category}
                         </span>
                       </TooltipTrigger>
@@ -321,7 +316,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                   {pkg.stars > 1000 && (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className="bg-linear-to-r from-[#00ADD8] to-cyan-600 text-white font-extrabold text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full inline-block cursor-default">
+                        <span className="bg-linear-to-r from-[#00ADD8] to-cyan-600 dark:from-sky-600 dark:to-cyan-700 text-white font-extrabold text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full inline-block cursor-default">
                           High Demand
                         </span>
                       </TooltipTrigger>
@@ -338,7 +333,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                     ) && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="text-slate-400 font-normal text-xs bg-slate-100/50 px-2.5 py-0.5 rounded-md border border-slate-200/30 inline-block cursor-default">
+                          <span className="text-slate-400 dark:text-[#8b949e] font-normal text-xs bg-slate-100/50 dark:bg-[#161b22] px-2.5 py-0.5 rounded-md border border-slate-200/30 dark:border-[#30363d] inline-block cursor-default">
                             Published on {pkg.publishedAt}
                           </span>
                         </TooltipTrigger>
@@ -351,22 +346,22 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                 </div>
               </div>
 
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/50 pb-5">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/50 dark:border-[#30363d] pb-5">
                 <div className="space-y-2 min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="font-display font-black text-3xl sm:text-4xl tracking-tight leading-none bg-linear-to-r from-slate-950 via-slate-900 to-slate-800 bg-clip-text text-transparent">
+                    <h2 className="font-display font-black text-3xl sm:text-4xl tracking-tight leading-none text-slate-950 dark:text-[#f0f6fc]">
                       {pkg.name}
                     </h2>
 
                     {pkg.latestVersion && (
-                      <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-mono text-xs font-bold px-2.5 py-0.5 rounded-md shadow-sm">
+                      <span className="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/30 font-mono text-xs font-bold px-2.5 py-0.5 rounded-md shadow-sm">
                         {pkg.latestVersion}
                       </span>
                     )}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="font-mono text-slate-600 select-all tracking-tight text-xs sm:text-sm font-medium bg-slate-100/60 px-2 py-1 rounded">
+                    <span className="font-mono text-slate-600 dark:text-[#8b949e] select-all tracking-tight text-xs sm:text-sm font-medium bg-slate-100/60 dark:bg-[#161b22] px-2 py-1 rounded">
                       import &quot;{pkg.importPath}&quot;
                     </span>
 
@@ -375,11 +370,11 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                         href={pkg.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-[#007D9C] hover:text-[#005F77] font-semibold border-l border-slate-200 pl-3 transition-colors shrink-0 group font-sans"
+                        className="inline-flex items-center gap-1.5 text-xs text-[#007D9C] dark:text-sky-400 hover:text-[#005F77] dark:hover:text-sky-300 font-semibold border-l border-slate-200 dark:border-[#30363d] pl-3 transition-colors shrink-0 group font-sans"
                       >
                         <svg
                           viewBox="0 0 24 24"
-                          className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700"
+                          className="w-3.5 h-3.5 text-slate-400 dark:text-[#484f58] group-hover:text-slate-700 dark:group-hover:text-[#f0f6fc]"
                           fill="currentColor"
                         >
                           <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" />
@@ -389,7 +384,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                           {pkg.githubUrl.replace("https://", "")}
                         </span>
 
-                        <ExternalLink className="w-2.5 h-2.5 text-[#00ADD8]" />
+                        <ExternalLink className="w-2.5 h-2.5 text-[#00ADD8] dark:text-sky-500" />
                       </a>
                     )}
                   </div>
@@ -406,27 +401,27 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                       }
                     }}
                     disabled={!compared && isFull}
-                    className={`flex items-center justify-center gap-1.5 border px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer active:scale-95 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed ${
+                    className={`flex items-center justify-center gap-1.5 border px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed ${
                       compared
-                        ? "bg-slate-900 border-slate-950 text-white hover:bg-slate-800"
-                        : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-950 hover:border-slate-300"
+                        ? "bg-slate-900 dark:bg-[#21262d] border-slate-950 dark:border-[#30363d] text-white"
+                        : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]"
                     }`}
                   >
-                    <Scale className="w-3.5 h-3.5 shrink-0 text-[#007D9C]" />
+                    <Scale className="w-3.5 h-3.5 shrink-0 text-[#007D9C] dark:text-sky-400" />
 
                     <span>{compared ? "In Comparator" : "Compare"}</span>
                   </button>
 
                   <button
                     onClick={() => toggleFavorite(pkg)}
-                    className={`flex items-center justify-center border px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer active:scale-95 shadow-sm shrink-0 ${
+                    className={`flex items-center justify-center border px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm shrink-0 ${
                       favorite
-                        ? "bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100/50"
-                        : "bg-white border-slate-200 text-slate-700 hover:bg-rose-50/25 hover:text-rose-600 hover:border-rose-200"
+                        ? "bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/40 text-rose-600 dark:text-rose-400"
+                        : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:text-rose-600"
                     }`}
                   >
                     <Heart
-                      className={`w-3.5 h-3.5 shrink-0 ${favorite ? "fill-rose-500 text-rose-500" : "text-slate-400"}`}
+                      className={`w-3.5 h-3.5 shrink-0 ${favorite ? "fill-rose-500 text-rose-500" : "text-slate-400 dark:text-[#484f58]"}`}
                     />
 
                     <span className="ml-1.5">
@@ -437,7 +432,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
               </div>
 
               <div className="space-y-1.5 text-left">
-                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block select-none">
+                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-[#484f58] tracking-wider block select-none">
                   Install Command:
                 </span>
 
@@ -446,7 +441,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                 </div>
               </div>
 
-              <p className="text-slate-600 text-sm sm:text-base max-w-4xl leading-relaxed font-light">
+              <p className="text-slate-600 dark:text-[#8b949e] text-sm sm:text-base max-w-4xl leading-relaxed font-light">
                 {pkg.description}
               </p>
 
@@ -454,8 +449,8 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                 {pkg.stars > 0 && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="inline-flex items-center gap-1.5 border border-slate-200/60 bg-slate-100/35 text-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
-                        <Star className="w-3.5 h-3.5 fill-sky-300 text-sky-500 shrink-0" />
+                      <span className="inline-flex items-center gap-1.5 border border-slate-200/60 dark:border-[#30363d] bg-slate-100/35 dark:bg-[#161b22] text-slate-700 dark:text-[#c9d1d9] rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
+                        <Star className="w-3.5 h-3.5 fill-sky-300 dark:fill-sky-500 text-sky-500 shrink-0" />
                         <span>{pkg.stars.toLocaleString()} stars</span>
                       </span>
                     </TooltipTrigger>
@@ -469,8 +464,8 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                 {pkg.forks !== undefined && pkg.forks > 0 && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="inline-flex items-center gap-1.5 border border-slate-200/60 bg-slate-100/35 text-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
-                        <GitFork className="w-3.5 h-3.5 text-[#00ADD8] shrink-0" />
+                      <span className="inline-flex items-center gap-1.5 border border-slate-200/60 dark:border-[#30363d] bg-slate-100/35 dark:bg-[#161b22] text-slate-700 dark:text-[#c9d1d9] rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
+                        <GitFork className="w-3.5 h-3.5 text-[#00ADD8] dark:text-sky-500 shrink-0" />
                         <span>{pkg.forks.toLocaleString()} forks</span>
                       </span>
                     </TooltipTrigger>
@@ -484,8 +479,8 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                 {pkg.dependenciesCount !== undefined && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="inline-flex items-center gap-1.5 border border-slate-200/60 bg-slate-100/35 text-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
-                        <Database className="w-3.5 h-3.5 text-[#007D9C] shrink-0" />
+                      <span className="inline-flex items-center gap-1.5 border border-slate-200/60 dark:border-[#30363d] bg-slate-100/35 dark:bg-[#161b22] text-slate-700 dark:text-[#c9d1d9] rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
+                        <Database className="w-3.5 h-3.5 text-[#007D9C] dark:text-sky-400 shrink-0" />
                         <span>
                           {pkg.dependenciesCount === 0
                             ? "No dependencies"
@@ -503,14 +498,14 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
 
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex items-center gap-1.5 border border-slate-200/60 bg-slate-100/35 text-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
+                    <span className="inline-flex items-center gap-1.5 border border-slate-200/60 dark:border-[#30363d] bg-slate-100/35 dark:bg-[#161b22] text-slate-700 dark:text-[#c9d1d9] rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
                       <Shield className="w-3.5 h-3.5 text-slate-500 shrink-0" />
 
                       <span className="font-semibold text-slate-500 text-[11px] uppercase">
                         License:
                       </span>
 
-                      <span className="font-mono font-bold text-slate-800">
+                      <span className="font-mono font-bold text-slate-800 dark:text-[#f0f6fc]">
                         {pkg.license || "N/A"}
                       </span>
                     </span>
@@ -527,7 +522,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                   ) && (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className="inline-flex items-center gap-1.5 border border-slate-200/60 bg-slate-100/35 text-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
+                        <span className="inline-flex items-center gap-1.5 border border-slate-200/60 dark:border-[#30363d] bg-slate-100/35 dark:bg-[#161b22] text-slate-700 dark:text-[#c9d1d9] rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-default">
                           <User className="w-3.5 h-3.5 text-slate-500 shrink-0" />
 
                           <span className="font-semibold text-slate-500 text-[11px] uppercase font-sans">
@@ -538,7 +533,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                             href={`https://github.com/${pkg.author}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-bold text-[#007D9C] hover:text-[#00ADD8] hover:underline transition-colors shrink-0"
+                            className="font-bold text-[#007D9C] dark:text-sky-400 hover:text-[#00ADD8] hover:underline transition-colors shrink-0"
                             onClick={(e) => e.stopPropagation()}
                           >
                             @{pkg.author}
@@ -557,22 +552,21 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
           </div>
         </div>
 
-        <div className="bg-[#F8FAFC]">
+        <div className="bg-[#F8FAFC] dark:bg-[#0b0e14]">
           <div className="container-scale grid grid-cols-1 lg:grid-cols-4 gap-8 py-8 items-start">
-            <div className="lg:col-span-3 bg-white rounded-xl shadow-sm border border-slate-200/70 overflow-hidden flex flex-col">
-              <div className="border-b border-slate-200/60 bg-slate-50/50 px-4 flex items-center h-12 overflow-x-auto scrollbar-none select-none">
+            <div className="lg:col-span-3 bg-white dark:bg-[#0d1117] rounded-xl shadow-sm border border-slate-200/70 dark:border-[#30363d] overflow-hidden flex flex-col">
+              <div className="border-b border-slate-200/60 dark:border-[#30363d] bg-slate-50/50 dark:bg-[#161b22] px-4 flex items-center h-12 overflow-x-auto scrollbar-none select-none">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => handleSetActiveTab(tab.id)}
                     className={`px-4 h-full text-xs font-semibold flex items-center space-x-1.5 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
                       activeTab === tab.id
-                        ? "border-[#00ADD8] text-[#00ADD8] bg-white font-bold"
-                        : "border-transparent text-slate-500 hover:text-slate-800"
+                        ? "border-[#00ADD8] dark:border-sky-500 text-[#00ADD8] dark:text-sky-400 bg-white dark:bg-[#0d1117] font-bold"
+                        : "border-transparent text-slate-500 dark:text-[#8b949e] hover:text-slate-800 dark:hover:text-[#f0f6fc]"
                     }`}
                   >
                     {tab.icon}
-
                     <span>{tab.label}</span>
                   </button>
                 ))}
@@ -596,9 +590,9 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                 )}
 
                 {activeTab === "goMod" && (
-                  <div className="space-y-4 font-mono select-text animate-fade-in">
-                    <div className="flex items-center justify-between pb-2 border-b border-slate-100 select-none">
-                      <span className="text-xs text-slate-500 font-semibold block">
+                  <div className="space-y-4 font-mono select-text animate-fade-in dark:text-[#c9d1d9]">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#30363d] select-none">
+                      <span className="text-xs text-slate-500 dark:text-[#8b949e] font-semibold block">
                         go.mod file for version {pkg.latestVersion}
                       </span>
                     </div>
@@ -606,8 +600,8 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                     {goMod ? (
                       <CodeBlock code={goMod} language="gomod" />
                     ) : (
-                      <div className="p-8 text-center text-slate-400 text-sm select-none">
-                        No go.mod file provided for this module version.
+                      <div className="p-8 text-center text-slate-400 dark:text-[#8b949e] text-sm select-none">
+                        No go.mod file provided.
                       </div>
                     )}
                   </div>
@@ -615,25 +609,16 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
 
                 {activeTab === "versions" && (
                   <div className="space-y-4 animate-fade-in">
-                    <h3 className="font-display font-semibold text-slate-800 text-base border-b border-slate-100 pb-2">
-                      Version History from Go Proxy
+                    <h3 className="font-display font-semibold text-slate-800 dark:text-[#f0f6fc] text-base border-b border-slate-100 dark:border-[#30363d] pb-2">
+                      Version History
                     </h3>
-
-                    <p className="text-xs text-slate-400">
-                      The following version tags were registered for this
-                      library in the official upstream response.
-                    </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
                       {pkg.versions && pkg.versions.length > 0 ? (
                         pkg.versions.map((ver) => (
                           <div
                             key={ver}
-                            className={`p-3.5 rounded-lg border text-xs text-slate-700 flex items-center justify-between hover:bg-slate-50 transition-colors ${
-                              ver === pkg.latestVersion
-                                ? "border-[#00ADD8] bg-sky-50 font-bold text-[#007D9C]"
-                                : "border-slate-200"
-                            }`}
+                            className={`p-3.5 rounded-lg border text-xs flex items-center justify-between transition-colors ${ver === pkg.latestVersion ? "border-[#00ADD8] dark:border-sky-500 bg-sky-50 dark:bg-sky-950/20 font-bold text-[#007D9C] dark:text-sky-400" : "border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]"}`}
                           >
                             <span className="font-mono">{ver}</span>
 
@@ -646,8 +631,8 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
                         ))
                       ) : (
                         <div className="col-span-full py-8 text-center text-slate-400">
-                          Only the active version &apos;{pkg.latestVersion}
-                          &apos; was mapped.
+                          Only version &apos;{pkg.latestVersion}&apos; was
+                          mapped.
                         </div>
                       )}
                     </div>
