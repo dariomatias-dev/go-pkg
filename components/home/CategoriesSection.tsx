@@ -19,7 +19,7 @@ interface CategoriesSectionProps {
 }
 
 function CategoryIcon({ name }: { name: string }) {
-  const cls = "w-5 h-5 text-[#00ADD8]";
+  const cls = "w-5 h-5 text-[#00ADD8] dark:text-sky-400";
 
   switch (name) {
     case "Globe":
@@ -43,15 +43,15 @@ export function CategoriesSection({ loading }: CategoriesSectionProps) {
   const router = useRouter();
 
   return (
-    <section className="py-12 bg-white">
+    <section className="py-12 bg-white dark:bg-[#0d1117] transition-colors duration-300">
       <div className="container-scale">
-        <div className="border-b border-slate-100 pb-5 mb-8 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+        <div className="border-b border-slate-100 dark:border-[#30363d] pb-5 mb-8 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
           <div>
-            <h2 className="font-display font-medium text-2xl text-slate-900 tracking-tight">
+            <h2 className="font-display font-medium text-2xl text-slate-900 dark:text-[#f0f6fc] tracking-tight">
               Curated Categories
             </h2>
 
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 dark:text-[#8b949e] mt-1">
               Browse the main structural solutions of the language
             </p>
           </div>
@@ -59,7 +59,7 @@ export function CategoriesSection({ loading }: CategoriesSectionProps) {
           <button
             type="button"
             onClick={() => router.push("/search")}
-            className="text-xs font-semibold text-[#00ADD8] hover:text-[#007D9C] flex items-center gap-1 transition-colors"
+            className="text-xs font-semibold text-[#00ADD8] dark:text-sky-400 hover:text-[#007D9C] dark:hover:text-sky-300 flex items-center gap-1 transition-colors"
           >
             View all packages <ChevronRight className="w-3.5 h-3.5" />
           </button>
@@ -70,14 +70,14 @@ export function CategoriesSection({ loading }: CategoriesSectionProps) {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="bg-slate-50 rounded-xl p-6 h-32 border border-slate-100/80 animate-shimmer relative overflow-hidden flex items-start gap-4"
+                className="bg-slate-50 dark:bg-[#161b22] rounded-xl p-6 h-32 border border-slate-100/80 dark:border-[#30363d] animate-shimmer relative overflow-hidden flex items-start gap-4"
               >
-                <div className="w-12 h-12 rounded-lg bg-slate-200/50 shrink-0" />
+                <div className="w-12 h-12 rounded-lg bg-slate-200/50 dark:bg-[#21262d] shrink-0" />
 
                 <div className="space-y-2.5 flex-1">
-                  <div className="h-4 w-32 bg-slate-200/50 rounded-md" />
-                  <div className="h-3 w-5/6 bg-slate-150/40 rounded-sm" />
-                  <div className="h-3 w-1/2 bg-slate-150/40 rounded-sm" />
+                  <div className="h-4 w-32 bg-slate-200/50 dark:bg-[#21262d] rounded-md" />
+                  <div className="h-3 w-5/6 bg-slate-150/40 dark:bg-[#21262d]/50 rounded-sm" />
+                  <div className="h-3 w-1/2 bg-slate-150/40 dark:bg-[#21262d]/50 rounded-sm" />
                 </div>
               </div>
             ))}
@@ -92,19 +92,19 @@ export function CategoriesSection({ loading }: CategoriesSectionProps) {
                     `/search?category=${cat.id}` as Route<`/search?category=${string}`>,
                   )
                 }
-                className="bg-slate-50 hover:bg-white hover:shadow-lg rounded-xl p-6 border border-slate-100 hover:border-sky-200 transition-all cursor-pointer flex items-start space-x-4 group"
+                className="bg-slate-50 dark:bg-[#161b22] hover:bg-white dark:hover:bg-[#21262d] hover:shadow-lg dark:hover:shadow-2xl/20 rounded-xl p-6 border border-slate-100 dark:border-[#30363d] hover:border-sky-200 dark:hover:border-sky-500/30 transition-all cursor-pointer flex items-start space-x-4 group"
               >
-                <div className="bg-sky-50 group-hover:bg-[#E0F2FE] p-3 rounded-lg flex items-center justify-center shrink-0 transition-all">
+                <div className="bg-sky-50 dark:bg-[#0d1117] group-hover:bg-[#E0F2FE] dark:group-hover:bg-[#30363d] p-3 rounded-lg flex items-center justify-center shrink-0 transition-all">
                   <CategoryIcon name={cat.iconName} />
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-semibold text-slate-900 text-base group-hover:text-[#00ADD8] transition-colors flex items-center gap-1">
+                  <h3 className="font-semibold text-slate-900 dark:text-[#f0f6fc] text-base group-hover:text-[#00ADD8] dark:group-hover:text-sky-400 transition-colors flex items-center gap-1">
                     {cat.name}
                     <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
                   </h3>
 
-                  <p className="text-xs text-slate-500 mt-1.5 leading-relaxed line-clamp-2">
+                  <p className="text-xs text-slate-500 dark:text-[#8b949e] mt-1.5 leading-relaxed line-clamp-2">
                     {cat.description}
                   </p>
                 </div>
