@@ -3,18 +3,26 @@
 import { Clock, X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import {
   clearPackageHistory,
-  loadPackageHistory,
+  getPackageHistorySnapshot,
   removeFromPackageHistory,
+  subscribePackageHistory,
 } from "@/lib/package-history";
 import { encodeImportPath } from "@/lib/utils";
 
-export function RecentPackagesWidget() {
+const EMPTY: string[] = [];
+
+export function RecentPackages() {
   const router = useRouter();
-  const [history, setHistory] = useState<string[]>(loadPackageHistory);
+
+  const history = useSyncExternalStore(
+    subscribePackageHistory,
+    getPackageHistorySnapshot,
+    () => EMPTY,
+  );
 
   if (history.length === 0) return null;
 
@@ -27,10 +35,7 @@ export function RecentPackagesWidget() {
         </span>
 
         <button
-          onClick={() => {
-            clearPackageHistory();
-            setHistory([]);
-          }}
+          onClick={clearPackageHistory}
           className="text-[10px] font-bold text-slate-400 dark:text-[#484f58] hover:text-rose-500 dark:hover:text-rose-400 transition-colors cursor-pointer"
         >
           Clear
@@ -61,7 +66,8 @@ export function RecentPackagesWidget() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setHistory(removeFromPackageHistory(importPath));
+
+                removeFromPackageHistory(importPath);
               }}
               className="text-slate-300 dark:text-[#484f58] hover:text-rose-500 dark:hover:text-rose-400 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
             >
