@@ -3,13 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { GopherChat } from "@/components/package/shared/GopherChat";
 import { PackageBreadcrumb } from "@/components/package/detail/PackageBreadcrumb";
 import { PackageDetailError } from "@/components/package/detail/PackageDetailError";
 import { PackageDetailSkeleton } from "@/components/package/detail/PackageDetailSkeleton";
 import { PackageHeader } from "@/components/package/detail/PackageHeader";
-import { PackageTabs } from "@/components/package/detail/tabs/PackageTabs";
 import type { Tab } from "@/components/package/detail/tabs/PackageTabs";
+import { PackageTabs } from "@/components/package/detail/tabs/PackageTabs";
+import { GopherChat } from "@/components/package/shared/GopherChat";
 import { useCompare } from "@/hooks/useCompare";
 import { useFavorites } from "@/hooks/useFavorites";
 import type { PackageDetailResponse } from "@/types";
@@ -56,9 +56,11 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
 
       if (res.ok) {
         const d = await res.json();
+
         setAiSummary(d.summary);
       } else {
         const d = await res.json().catch(() => ({}));
+
         setAiSummaryError(
           d.error || "Failed to generate the AI summary. Check the server.",
         );
@@ -72,12 +74,14 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
     fetch(`/api/package-info?importPath=${encodeURIComponent(importPath)}`)
       .then((r) => {
         if (!r.ok)
           throw new Error(
             "We couldn't load this package. Verify the Go module exists in proxy.golang.org.",
           );
+
         return r.json();
       })
       .then((d: PackageDetailResponse) => {
@@ -104,6 +108,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
+
     onScroll();
 
     return () => window.removeEventListener("scroll", onScroll);
@@ -122,6 +127,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
   if (error || !data) return <PackageDetailError error={error} />;
 
   const { pkg, goMod } = data;
+
   const favorite = isFavorite(importPath);
   const compared = isCompared(importPath);
 
@@ -148,6 +154,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
             if (compared) removeFromCompare(importPath);
             else {
               addToCompare(pkg);
+
               router.push("/compare");
             }
           }}
@@ -169,7 +176,10 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
             </div>
 
             <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-20 lg:self-start">
-              <GopherChat importPath={importPath} description={pkg.description} />
+              <GopherChat
+                importPath={importPath}
+                description={pkg.description}
+              />
             </aside>
           </div>
         </div>
