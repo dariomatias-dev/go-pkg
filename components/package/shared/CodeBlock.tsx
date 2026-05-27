@@ -8,6 +8,21 @@ interface CodeBlockProps {
   language?: string;
 }
 
+function applyToTextNodes(
+  html: string,
+  regex: RegExp,
+  replacement: string | ((...args: string[]) => string),
+): string {
+  return html.replace(/(<[^>]*>)|([^<]+)/g, (match, tag, text) => {
+    if (tag) return tag;
+
+    if (text)
+      return text.replace(regex, replacement as (...args: string[]) => string);
+
+    return match;
+  });
+}
+
 function highlightCode(code: string, language: string): string {
   if (!code) return "";
 
@@ -19,99 +34,131 @@ function highlightCode(code: string, language: string): string {
   const lang = (language || "").toLowerCase();
 
   if (lang === "go" || lang === "golang") {
-    return escaped
-      .replace(
-        /(\/\/.*)/g,
-        '<span class="text-slate-450 dark:text-slate-500 italic font-light">$1</span>',
-      )
-      .replace(
-        /(\/\*[\s\S]*?\*\/)/g,
-        '<span class="text-slate-450 dark:text-slate-500 italic font-light">$1</span>',
-      )
-      .replace(
-        /(&quot;.*?&quot;)/g,
-        '<span class="text-emerald-600 dark:text-emerald-400 font-normal">$1</span>',
-      )
-      .replace(
-        /(`[\s\S]*?`)/g,
-        '<span class="text-emerald-600 dark:text-emerald-400 font-normal">$1</span>',
-      )
-      .replace(
-        /\b(package|import|func|struct|interface|type|var|const|return|if|else|for|range|go|chan|select|defer|map|switch|case|default)\b/g,
-        '<span class="text-[#007D9C] dark:text-sky-400 font-semibold">$1</span>',
-      )
-      .replace(
-        /\b(\d+)\b/g,
-        '<span class="text-[#00ADD8] dark:text-sky-300 font-medium">$1</span>',
-      )
-      .replace(
-        /\b(string|int|int64|float64|bool|error|uint|uint64|byte|rune|any)\b/g,
-        '<span class="text-violet-500 dark:text-orange-400 font-medium">$1</span>',
-      )
-      .replace(
-        /\b(append|make|new|panic|recover|len|cap|print|println)\b/g,
-        '<span class="text-indigo-600 dark:text-violet-400 font-medium">$1</span>',
-      )
-      .replace(
-        /(\btype\s+)(\w+)/g,
-        '$1<span class="text-sky-600 dark:text-orange-300 font-semibold">$2</span>',
-      )
-      .replace(
-        /(\bfunc\s+)(\w+)/g,
-        '$1<span class="text-indigo-600 dark:text-violet-400 font-medium">$2</span>',
-      );
+    let result = escaped;
+
+    result = applyToTextNodes(
+      result,
+      /(\/\/.*)/g,
+      '<span class="text-slate-450 dark:text-slate-500 italic font-light">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /(\/\*[\s\S]*?\*\/)/g,
+      '<span class="text-slate-450 dark:text-slate-500 italic font-light">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /(&quot;.*?&quot;)/g,
+      '<span class="text-emerald-600 dark:text-emerald-400 font-normal">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /(`[\s\S]*?`)/g,
+      '<span class="text-emerald-600 dark:text-emerald-400 font-normal">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /\b(package|import|func|struct|interface|type|var|const|return|if|else|for|range|go|chan|select|defer|map|switch|case|default)\b/g,
+      '<span class="text-[#007D9C] dark:text-sky-400 font-semibold">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /\b(\d+)\b/g,
+      '<span class="text-[#00ADD8] dark:text-sky-300 font-medium">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /\b(string|int|int64|float64|bool|error|uint|uint64|byte|rune|any)\b/g,
+      '<span class="text-violet-500 dark:text-orange-400 font-medium">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /\b(append|make|new|panic|recover|len|cap|print|println)\b/g,
+      '<span class="text-indigo-600 dark:text-violet-400 font-medium">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /(\btype\s+)(\w+)/g,
+      '$1<span class="text-sky-600 dark:text-orange-300 font-semibold">$2</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /(\bfunc\s+)(\w+)/g,
+      '$1<span class="text-indigo-600 dark:text-violet-400 font-medium">$2</span>',
+    );
+
+    return result;
   }
 
   if (lang === "gomod" || lang === "go.mod") {
-    return escaped
-      .replace(
-        /(\/\/.*)/g,
-        '<span class="text-slate-450 dark:text-slate-500 italic font-light">$1</span>',
-      )
-      .replace(
-        /^(module|require|replace|exclude|retract|go|toolchain)(\s)/gm,
-        '<span class="text-[#007D9C] dark:text-sky-400 font-semibold">$1</span>$2',
-      )
-      .replace(
-        /\b(v\d+\.\d+\.\d+(?:-[^\s]+)?)\b/g,
-        '<span class="text-emerald-600 dark:text-emerald-400 font-medium">$1</span>',
-      );
+    let result = escaped;
+
+    result = applyToTextNodes(
+      result,
+      /(\/\/.*)/g,
+      '<span class="text-slate-450 dark:text-slate-500 italic font-light">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /^(module|require|replace|exclude|retract|go|toolchain)(\s)/gm,
+      '<span class="text-[#007D9C] dark:text-sky-400 font-semibold">$1</span>$2',
+    );
+    result = applyToTextNodes(
+      result,
+      /\b(v\d+\.\d+\.\d+(?:-[^\s]+)?)\b/g,
+      '<span class="text-emerald-600 dark:text-emerald-400 font-medium">$1</span>',
+    );
+
+    return result;
   }
 
   if (lang === "json") {
-    return escaped
-      .replace(
-        /(&quot;.*?&quot;)(\s*:)/g,
-        '<span class="text-[#007D9C] dark:text-sky-400 font-semibold">$1</span>$2',
-      )
-      .replace(
-        /(:)(\s*&quot;.*?&quot;)/g,
-        '$1<span class="text-emerald-600 dark:text-emerald-400">$2</span>',
-      )
-      .replace(
-        /\b(true|false|null)\b/g,
-        '<span class="text-indigo-600 dark:text-violet-400 font-semibold">$1</span>',
-      )
-      .replace(
-        /\b(\d+)\b/g,
-        '<span class="text-[#00ADD8] dark:text-sky-300">$1</span>',
-      );
+    let result = escaped;
+
+    result = applyToTextNodes(
+      result,
+      /(&quot;.*?&quot;)(\s*:)/g,
+      '<span class="text-[#007D9C] dark:text-sky-400 font-semibold">$1</span>$2',
+    );
+    result = applyToTextNodes(
+      result,
+      /(:)(\s*&quot;.*?&quot;)/g,
+      '$1<span class="text-emerald-600 dark:text-emerald-400">$2</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /\b(true|false|null)\b/g,
+      '<span class="text-indigo-600 dark:text-violet-400 font-semibold">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /\b(\d+)\b/g,
+      '<span class="text-[#00ADD8] dark:text-sky-300">$1</span>',
+    );
+
+    return result;
   }
 
   if (lang === "sh" || lang === "bash" || lang === "shell") {
-    return escaped
-      .replace(
-        /(#.*)/g,
-        '<span class="text-slate-400 dark:text-slate-500 italic">$1</span>',
-      )
-      .replace(
-        /\b(go|get|run|build|install|git|clone|mkdir|cd|curl|wget|tar|npm|npx)\b/g,
-        '<span class="text-[#007D9C] dark:text-sky-400 font-bold">$1</span>',
-      )
-      .replace(
-        /(\s-[a-zA-Z0-9-]+)/g,
-        '<span class="text-amber-600 dark:text-amber-500">$1</span>',
-      );
+    let result = escaped;
+
+    result = applyToTextNodes(
+      result,
+      /(#.*)/g,
+      '<span class="text-slate-400 dark:text-slate-500 italic">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /\b(go|get|run|build|install|git|clone|mkdir|cd|curl|wget|tar|npm|npx)\b/g,
+      '<span class="text-[#007D9C] dark:text-sky-400 font-bold">$1</span>',
+    );
+    result = applyToTextNodes(
+      result,
+      /(\s-[a-zA-Z0-9-]+)/g,
+      '<span class="text-amber-600 dark:text-amber-500">$1</span>',
+    );
+
+    return result;
   }
 
   return escaped;
