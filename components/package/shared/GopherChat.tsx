@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp, Send, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface ChatMessage {
   role: "user" | "model";
@@ -181,9 +182,13 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
                         : "bg-white dark:bg-[#1c2128] text-slate-800 dark:text-[#c9d1d9] border border-slate-200/80 dark:border-[#30363d] rounded-bl-none",
                     )}
                   >
-                    <p className="whitespace-pre-wrap wrap-break-word font-sans font-normal">
-                      {msg.text}
-                    </p>
+                    {msg.role === "user" ? (
+                      <p className="whitespace-pre-wrap wrap-break-word font-sans font-normal">
+                        {msg.text}
+                      </p>
+                    ) : (
+                      <MarkdownRenderer content={msg.text} size="xs" />
+                    )}
                   </div>
                 </div>
               </div>
