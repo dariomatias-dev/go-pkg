@@ -36,7 +36,8 @@ export function usePackageDetail(importPath: string, initialTab?: Tab) {
   const pushTab = useCallback(
     (tab: Tab) => {
       const params = new URLSearchParams({ tab });
-      router.replace(`${pathname}?${params.toString()}`);
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
     [pathname, router],
   );

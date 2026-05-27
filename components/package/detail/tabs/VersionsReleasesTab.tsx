@@ -8,6 +8,7 @@ import {
   Loader2,
   Tag,
 } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
 import { MarkdownRenderer } from "@/components/package/shared/MarkdownRenderer";
@@ -179,7 +180,8 @@ export function VersionsReleasesTab({
             </p>
           ) : (
             versions.map((ver) => {
-              const hasRelease = !releasesLoading && !!matchRelease(releases, ver);
+              const hasRelease =
+                !releasesLoading && !!matchRelease(releases, ver);
               const isSelected = ver === selected;
               const isLatest = ver === latestVersion;
 
@@ -295,7 +297,27 @@ export function VersionsReleasesTab({
 
               {activeRelease.body ? (
                 <div className="overflow-auto max-h-96 custom-scrollbar">
-                  <MarkdownRenderer content={activeRelease.body} size="xs" />
+                  <MarkdownRenderer
+                    content={activeRelease.body}
+                    size="xs"
+                    useRehypeRaw
+                    extraComponents={{
+                      img: ({ src, alt }) => {
+                        if (!src || typeof src !== "string") return null;
+
+                        return (
+                          <Image
+                            src={src}
+                            alt={alt || "image"}
+                            width={1200}
+                            height={630}
+                            className="my-3 block mx-auto max-w-full rounded-md shadow-sm"
+                            style={{ height: "auto", width: "auto" }}
+                          />
+                        );
+                      },
+                    }}
+                  />
                 </div>
               ) : (
                 <p className="text-xs text-slate-400 dark:text-[#8b949e]">

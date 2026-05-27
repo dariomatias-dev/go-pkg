@@ -1,184 +1,126 @@
 "use client";
 
 import { Check, Copy } from "lucide-react";
-import { useState } from "react";
+import { useTheme } from "next-themes";
+import { type CSSProperties, useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+
+type PrismStyle = Record<string, CSSProperties>;
+
+const BASE: CSSProperties = {
+  fontFamily: "inherit",
+  textAlign: "left",
+  whiteSpace: "pre",
+  wordSpacing: "normal",
+  wordBreak: "normal",
+  lineHeight: "1.6",
+  tabSize: 2,
+  hyphens: "none",
+  background: "transparent",
+};
+
+const lightTheme: PrismStyle = {
+  'code[class*="language-"]': { ...BASE, color: "#1e293b" },
+  'pre[class*="language-"]': { ...BASE, color: "#1e293b" },
+  comment: { color: "#94a3b8", fontStyle: "italic", fontWeight: "300" },
+  prolog: { color: "#94a3b8" },
+  doctype: { color: "#94a3b8" },
+  cdata: { color: "#94a3b8" },
+  string: { color: "#059669" },
+  "attr-value": { color: "#059669" },
+  regex: { color: "#0891b2" },
+  char: { color: "#0e7490" },
+  inserted: { color: "#059669" },
+  version: { color: "#059669", fontWeight: "500" },
+  keyword: { color: "#007D9C", fontWeight: "600" },
+  "control-flow": { color: "#007D9C", fontWeight: "600" },
+  number: { color: "#00ADD8", fontWeight: "500" },
+  constant: { color: "#00ADD8" },
+  boolean: { color: "#8b5cf6", fontWeight: "500" },
+  builtin: { color: "#4f46e5", fontWeight: "500" },
+  function: { color: "#4f46e5", fontWeight: "500" },
+  "function-variable": { color: "#4f46e5", fontWeight: "500" },
+  "class-name": { color: "#0284c7", fontWeight: "600" },
+  "maybe-class-name": { color: "#0284c7", fontWeight: "600" },
+  symbol: { color: "#8b5cf6" },
+  important: { color: "#8b5cf6", fontWeight: "600" },
+  deleted: { color: "#be123c" },
+  operator: { color: "#0e7490" },
+  punctuation: { color: "#64748b" },
+  "attr-name": { color: "#007D9C" },
+  property: { color: "#007D9C" },
+  tag: { color: "#007D9C" },
+  variable: { color: "#d97706" },
+  parameter: { color: "#0e7490" },
+  namespace: { color: "#0284c7", fontStyle: "italic" },
+  label: { color: "#9333ea" },
+};
+
+const darkTheme: PrismStyle = {
+  'code[class*="language-"]': { ...BASE, color: "#c9d1d9" },
+  'pre[class*="language-"]': { ...BASE, color: "#c9d1d9" },
+  comment: { color: "#64748b", fontStyle: "italic", fontWeight: "300" },
+  prolog: { color: "#64748b" },
+  doctype: { color: "#64748b" },
+  cdata: { color: "#64748b" },
+  string: { color: "#34d399" },
+  "attr-value": { color: "#34d399" },
+  regex: { color: "#67e8f9" },
+  char: { color: "#86efac" },
+  inserted: { color: "#34d399" },
+  version: { color: "#34d399", fontWeight: "500" },
+  keyword: { color: "#38bdf8", fontWeight: "600" },
+  "control-flow": { color: "#38bdf8", fontWeight: "600" },
+  number: { color: "#7dd3fc", fontWeight: "500" },
+  constant: { color: "#7dd3fc" },
+  boolean: { color: "#fb923c", fontWeight: "500" },
+  builtin: { color: "#a78bfa", fontWeight: "500" },
+  function: { color: "#a78bfa", fontWeight: "500" },
+  "function-variable": { color: "#a78bfa", fontWeight: "500" },
+  "class-name": { color: "#fdba74", fontWeight: "600" },
+  "maybe-class-name": { color: "#fdba74", fontWeight: "600" },
+  symbol: { color: "#fb923c" },
+  important: { color: "#fb923c", fontWeight: "600" },
+  deleted: { color: "#f87171" },
+  operator: { color: "#38bdf8" },
+  punctuation: { color: "#8b949e" },
+  "attr-name": { color: "#38bdf8" },
+  property: { color: "#38bdf8" },
+  tag: { color: "#38bdf8" },
+  variable: { color: "#fbbf24" },
+  parameter: { color: "#67e8f9" },
+  namespace: { color: "#7dd3fc", fontStyle: "italic" },
+  label: { color: "#f472b6" },
+};
+
+const LANGUAGE_MAP: Record<string, string> = {
+  gomod: "go-module",
+  "go.mod": "go-module",
+  golang: "go",
+  shell: "bash",
+  sh: "bash",
+};
 
 interface CodeBlockProps {
   code: string;
   language?: string;
 }
 
-function applyToTextNodes(
-  html: string,
-  regex: RegExp,
-  replacement: string | ((...args: string[]) => string),
-): string {
-  return html.replace(/(<[^>]*>)|([^<]+)/g, (match, tag, text) => {
-    if (tag) return tag;
-
-    if (text)
-      return text.replace(regex, replacement as (...args: string[]) => string);
-
-    return match;
-  });
-}
-
-function highlightCode(code: string, language: string): string {
-  if (!code) return "";
-
-  const escaped = code
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  const lang = (language || "").toLowerCase();
-
-  if (lang === "go" || lang === "golang") {
-    let result = escaped;
-
-    result = applyToTextNodes(
-      result,
-      /(\/\/.*)/g,
-      '<span class="text-slate-450 dark:text-slate-500 italic font-light">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /(\/\*[\s\S]*?\*\/)/g,
-      '<span class="text-slate-450 dark:text-slate-500 italic font-light">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /(&quot;.*?&quot;)/g,
-      '<span class="text-emerald-600 dark:text-emerald-400 font-normal">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /(`[\s\S]*?`)/g,
-      '<span class="text-emerald-600 dark:text-emerald-400 font-normal">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /\b(package|import|func|struct|interface|type|var|const|return|if|else|for|range|go|chan|select|defer|map|switch|case|default)\b/g,
-      '<span class="text-[#007D9C] dark:text-sky-400 font-semibold">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /\b(\d+)\b/g,
-      '<span class="text-[#00ADD8] dark:text-sky-300 font-medium">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /\b(string|int|int64|float64|bool|error|uint|uint64|byte|rune|any)\b/g,
-      '<span class="text-violet-500 dark:text-orange-400 font-medium">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /\b(append|make|new|panic|recover|len|cap|print|println)\b/g,
-      '<span class="text-indigo-600 dark:text-violet-400 font-medium">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /(\btype\s+)(\w+)/g,
-      '$1<span class="text-sky-600 dark:text-orange-300 font-semibold">$2</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /(\bfunc\s+)(\w+)/g,
-      '$1<span class="text-indigo-600 dark:text-violet-400 font-medium">$2</span>',
-    );
-
-    return result;
-  }
-
-  if (lang === "gomod" || lang === "go.mod") {
-    let result = escaped;
-
-    result = applyToTextNodes(
-      result,
-      /(\/\/.*)/g,
-      '<span class="text-slate-450 dark:text-slate-500 italic font-light">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /^(module|require|replace|exclude|retract|go|toolchain)(\s)/gm,
-      '<span class="text-[#007D9C] dark:text-sky-400 font-semibold">$1</span>$2',
-    );
-    result = applyToTextNodes(
-      result,
-      /\b(v\d+\.\d+\.\d+(?:-[^\s]+)?)\b/g,
-      '<span class="text-emerald-600 dark:text-emerald-400 font-medium">$1</span>',
-    );
-
-    return result;
-  }
-
-  if (lang === "json") {
-    let result = escaped;
-
-    result = applyToTextNodes(
-      result,
-      /(&quot;.*?&quot;)(\s*:)/g,
-      '<span class="text-[#007D9C] dark:text-sky-400 font-semibold">$1</span>$2',
-    );
-    result = applyToTextNodes(
-      result,
-      /(:)(\s*&quot;.*?&quot;)/g,
-      '$1<span class="text-emerald-600 dark:text-emerald-400">$2</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /\b(true|false|null)\b/g,
-      '<span class="text-indigo-600 dark:text-violet-400 font-semibold">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /\b(\d+)\b/g,
-      '<span class="text-[#00ADD8] dark:text-sky-300">$1</span>',
-    );
-
-    return result;
-  }
-
-  if (lang === "sh" || lang === "bash" || lang === "shell") {
-    let result = escaped;
-
-    result = applyToTextNodes(
-      result,
-      /(#.*)/g,
-      '<span class="text-slate-400 dark:text-slate-500 italic">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /\b(go|get|run|build|install|git|clone|mkdir|cd|curl|wget|tar|npm|npx)\b/g,
-      '<span class="text-[#007D9C] dark:text-sky-400 font-bold">$1</span>',
-    );
-    result = applyToTextNodes(
-      result,
-      /(\s-[a-zA-Z0-9-]+)/g,
-      '<span class="text-amber-600 dark:text-amber-500">$1</span>',
-    );
-
-    return result;
-  }
-
-  return escaped;
-}
-
 export function CodeBlock({ code, language = "text" }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
-
     setCopied(true);
-
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const highlightedHtml = highlightCode(code, language);
+  const isDark = resolvedTheme === "dark";
+  const normalizedLang = LANGUAGE_MAP[language.toLowerCase()] ?? language;
 
   return (
-    <div className="relative group my-4 border border-slate-200/80 dark:border-[#30363d] rounded-xl bg-white dark:bg-[#0d1117] shadow-sm overflow-hidden font-mono text-[11px] sm:text-xs transition-colors duration-300">
+    <div className="relative group my-4 border border-slate-200/80 dark:border-[#30363d] rounded-xl overflow-hidden shadow-sm font-mono text-[11px] sm:text-xs">
       <div className="flex items-center justify-end px-3 py-1.5 border-b border-slate-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] select-none">
         <button
           onClick={handleCopy}
@@ -193,9 +135,21 @@ export function CodeBlock({ code, language = "text" }: CodeBlockProps) {
         </button>
       </div>
 
-      <pre className="p-4 pl-10 text-slate-800 dark:text-[#c9d1d9] leading-relaxed select-text font-mono whitespace-pre overflow-x-auto custom-scrollbar">
-        <code dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
-      </pre>
+      <SyntaxHighlighter
+        language={normalizedLang}
+        style={isDark ? darkTheme : lightTheme}
+        customStyle={{
+          margin: 0,
+          borderRadius: 0,
+          fontSize: "inherit",
+          lineHeight: "1.6",
+          padding: "1rem",
+        }}
+        codeTagProps={{ style: { padding: 0, backgroundColor: "transparent" } }}
+        PreTag="div"
+      >
+        {code.trim()}
+      </SyntaxHighlighter>
     </div>
   );
 }

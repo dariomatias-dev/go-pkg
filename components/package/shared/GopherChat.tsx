@@ -176,7 +176,7 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
 
                   <div
                     className={cn(
-                      "text-xs rounded-xl px-3 py-2 shadow-sm leading-relaxed min-w-0",
+                      "text-xs rounded-xl px-3 py-2 shadow-sm leading-relaxed min-w-0 wrap-break-word",
                       msg.role === "user"
                         ? "bg-slate-900 dark:bg-[#21262d] text-white rounded-br-none"
                         : "bg-white dark:bg-[#1c2128] text-slate-800 dark:text-[#c9d1d9] border border-slate-200/80 dark:border-[#30363d] rounded-bl-none",
