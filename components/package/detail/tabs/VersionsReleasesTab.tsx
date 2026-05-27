@@ -1,16 +1,40 @@
 "use client";
 
-import { ExternalLink, GitBranch, Loader2, Tag } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  GitBranch,
+  Loader2,
+  Tag,
+} from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 import { MarkdownRenderer } from "@/components/package/shared/MarkdownRenderer";
 import type { GitHubRelease } from "@/lib/github/types";
 import { cn } from "@/lib/utils";
 
+const VERSIONS_PER_PAGE = 10;
+
 interface VersionsReleasesTabProps {
   importPath: string;
-  versions: string[] | undefined;
   latestVersion: string | undefined;
+}
+
+interface VersionsState {
+  versions: string[];
+  total: number;
+  page: number;
+  totalPages: number;
+  paginating: boolean;
+  error: boolean;
+  forPath: string;
+}
+
+interface ReleasesState {
+  releases: GitHubRelease[];
+  error: boolean;
+  forPath: string;
 }
 
 function matchRelease(
@@ -37,36 +61,84 @@ function formatDate(iso: string | null): string {
 
 export function VersionsReleasesTab({
   importPath,
-  versions,
   latestVersion,
 }: VersionsReleasesTabProps) {
   const [selected, setSelected] = useState<string>(latestVersion ?? "");
-  const [fetchResult, setFetchResult] = useState<{
-    importPath: string;
-    releases: GitHubRelease[];
-    error: boolean;
-  } | null>(null);
+  const [versionsState, setVersionsState] = useState<VersionsState>({
+    versions: [],
+    total: 0,
+    page: 1,
+    totalPages: 1,
+    paginating: false,
+    error: false,
+    forPath: "",
+  });
+  const [releasesState, setReleasesState] = useState<ReleasesState>({
+    releases: [],
+    error: false,
+    forPath: "",
+  });
 
-  const loading = fetchResult?.importPath !== importPath;
-  const error = !loading && (fetchResult?.error ?? false);
-  const releases = loading ? [] : (fetchResult?.releases ?? []);
+  const fetchVersionsPage = useCallback(
+    (page: number) => {
+      fetch(
+        `/api/package-versions?importPath=${encodeURIComponent(importPath)}&page=${page}&perPage=${VERSIONS_PER_PAGE}`,
+      )
+        .then((r) => r.json())
+        .then(
+          (d: {
+            versions?: string[];
+            total?: number;
+            page?: number;
+            totalPages?: number;
+          }) => {
+            setVersionsState({
+              versions: d.versions ?? [],
+              total: d.total ?? 0,
+              page: d.page ?? page,
+              totalPages: d.totalPages ?? 1,
+              paginating: false,
+              error: false,
+              forPath: importPath,
+            });
+          },
+        )
+        .catch(() => {
+          setVersionsState((prev) => ({
+            ...prev,
+            paginating: false,
+            error: true,
+            forPath: importPath,
+          }));
+        });
+    },
+    [importPath],
+  );
+
+  useEffect(() => {
+    fetchVersionsPage(1);
+  }, [fetchVersionsPage]);
 
   useEffect(() => {
     let cancelled = false;
 
-    fetch(`/api/package-releases?importPath=${encodeURIComponent(importPath)}`)
+    fetch(
+      `/api/package-releases?importPath=${encodeURIComponent(importPath)}&perPage=100`,
+    )
       .then((r) => r.json())
       .then((d: { releases?: GitHubRelease[] }) => {
-        if (!cancelled)
-          setFetchResult({
-            importPath,
+        if (!cancelled) {
+          setReleasesState({
             releases: d.releases ?? [],
             error: false,
+            forPath: importPath,
           });
+        }
       })
       .catch(() => {
-        if (!cancelled)
-          setFetchResult({ importPath, releases: [], error: true });
+        if (!cancelled) {
+          setReleasesState({ releases: [], error: true, forPath: importPath });
+        }
       });
 
     return () => {
@@ -74,14 +146,19 @@ export function VersionsReleasesTab({
     };
   }, [importPath]);
 
-  const versionList =
-    versions && versions.length > 0
-      ? versions
-      : latestVersion
-        ? [latestVersion]
-        : [];
+  const versionsLoading =
+    versionsState.forPath !== importPath || versionsState.paginating;
+  const releasesLoading = releasesState.forPath !== importPath;
+
+  const { versions, page, totalPages } = versionsState;
+  const { releases } = releasesState;
 
   const activeRelease = selected ? matchRelease(releases, selected) : undefined;
+
+  const goToPage = (next: number) => {
+    setVersionsState((prev) => ({ ...prev, paginating: true, error: false }));
+    fetchVersionsPage(next);
+  };
 
   return (
     <div className="animate-fade-in space-y-4">
@@ -91,49 +168,83 @@ export function VersionsReleasesTab({
       </h3>
 
       <div className="flex gap-4 min-h-64">
-        <div className="w-44 shrink-0 flex flex-col gap-1 overflow-y-auto max-h-120 pr-1 custom-scrollbar">
-          {versionList.map((ver) => {
-            const hasRelease = !!matchRelease(releases, ver);
-            const isSelected = ver === selected;
-            const isLatest = ver === latestVersion;
+        <div className="w-44 shrink-0 flex flex-col gap-1 pr-1">
+          {versionsLoading ? (
+            <div className="flex items-center justify-center gap-2 py-8 text-slate-400 dark:text-[#8b949e]">
+              <Loader2 className="w-4 h-4 animate-spin" />
+            </div>
+          ) : versionsState.error ? (
+            <p className="text-[11px] text-rose-500 dark:text-rose-400 text-center py-4">
+              Failed to load versions.
+            </p>
+          ) : (
+            versions.map((ver) => {
+              const hasRelease = !releasesLoading && !!matchRelease(releases, ver);
+              const isSelected = ver === selected;
+              const isLatest = ver === latestVersion;
 
-            return (
-              <button
-                key={ver}
-                onClick={() => setSelected(ver)}
-                className={cn(
-                  "w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition-all border",
-                  isSelected
-                    ? "border-[#00ADD8] dark:border-sky-500 bg-sky-50 dark:bg-sky-950/20 text-[#007D9C] dark:text-sky-400 font-bold"
-                    : "border-slate-100 dark:border-[#30363d] text-slate-600 dark:text-[#8b949e] hover:bg-slate-50 dark:hover:bg-[#161b22] hover:border-slate-200 dark:hover:border-[#484f58]",
-                )}
-              >
-                <div className="flex items-center justify-between gap-1">
-                  <span className="truncate">{ver}</span>
+              return (
+                <button
+                  key={ver}
+                  onClick={() => setSelected(ver)}
+                  className={cn(
+                    "w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition-all border",
+                    isSelected
+                      ? "border-[#00ADD8] dark:border-sky-500 bg-sky-50 dark:bg-sky-950/20 text-[#007D9C] dark:text-sky-400 font-bold"
+                      : "border-slate-100 dark:border-[#30363d] text-slate-600 dark:text-[#8b949e] hover:bg-slate-50 dark:hover:bg-[#161b22] hover:border-slate-200 dark:hover:border-[#484f58]",
+                  )}
+                >
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="truncate">{ver}</span>
 
-                  <div className="flex items-center gap-1 shrink-0">
-                    {isLatest && (
-                      <span className="text-[8px] bg-[#00ADD8] text-white px-1 py-0.5 rounded uppercase font-bold tracking-tight">
-                        latest
-                      </span>
-                    )}
-                    {!loading && hasRelease && (
-                      <Tag className="w-2.5 h-2.5 text-emerald-500 dark:text-emerald-400 shrink-0" />
-                    )}
+                    <div className="flex items-center gap-1 shrink-0">
+                      {isLatest && (
+                        <span className="text-[8px] bg-[#00ADD8] text-white px-1 py-0.5 rounded uppercase font-bold tracking-tight">
+                          latest
+                        </span>
+                      )}
+                      {hasRelease && (
+                        <Tag className="w-2.5 h-2.5 text-emerald-500 dark:text-emerald-400 shrink-0" />
+                      )}
+                    </div>
                   </div>
-                </div>
+                </button>
+              );
+            })
+          )}
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 dark:border-[#30363d]">
+              <button
+                onClick={() => goToPage(page - 1)}
+                disabled={page === 1 || versionsLoading}
+                className="p-1 rounded text-slate-400 dark:text-[#8b949e] hover:text-slate-700 dark:hover:text-[#c9d1d9] hover:bg-slate-100 dark:hover:bg-[#21262d] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
               </button>
-            );
-          })}
+
+              <span className="text-[10px] font-semibold text-slate-400 dark:text-[#8b949e] tabular-nums">
+                {page} / {totalPages}
+              </span>
+
+              <button
+                onClick={() => goToPage(page + 1)}
+                disabled={page === totalPages || versionsLoading}
+                className="p-1 rounded text-slate-400 dark:text-[#8b949e] hover:text-slate-700 dark:hover:text-[#c9d1d9] hover:bg-slate-100 dark:hover:bg-[#21262d] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex-1 min-w-0 border border-slate-200 dark:border-[#30363d] rounded-lg bg-slate-50/50 dark:bg-[#161b22] p-4">
-          {loading ? (
+          {releasesLoading ? (
             <div className="flex items-center gap-2 text-slate-400 dark:text-[#8b949e] text-sm h-full justify-center">
               <Loader2 className="w-4 h-4 animate-spin" />
               <span>Loading releases…</span>
             </div>
-          ) : error ? (
+          ) : releasesState.error ? (
             <p className="text-sm text-rose-500 dark:text-rose-400 text-center py-8">
               Failed to load releases.
             </p>

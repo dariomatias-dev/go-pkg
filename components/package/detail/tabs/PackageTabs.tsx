@@ -105,7 +105,6 @@ export function PackageTabs({
         {activeTab === "versions" && (
           <VersionsReleasesTab
             importPath={pkg.importPath}
-            versions={pkg.versions}
             latestVersion={pkg.latestVersion}
           />
         )}
