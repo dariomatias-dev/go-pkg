@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
 import { PackageDetail } from "@/components/package/detail/PackageDetail";
+import type { Tab } from "@/components/package/detail/tabs/PackageTabs";
+
+const VALID_TABS = new Set<Tab>(["summary", "readme", "goMod", "versions"]);
 
 type PackagePageProps = {
-  params: Promise<{
-    importPath: string[];
-  }>;
+  params: Promise<{ importPath: string[] }>;
+  searchParams?: Promise<{ tab?: string }>;
 };
 
 export async function generateMetadata({
@@ -22,10 +24,15 @@ export async function generateMetadata({
   };
 }
 
-export default async function PackagePage({ params }: PackagePageProps) {
+export default async function PackagePage({
+  params,
+  searchParams,
+}: PackagePageProps) {
   const { importPath: segments } = await params;
+  const { tab } = (await searchParams) ?? {};
 
   const importPath = segments.map(decodeURIComponent).join("/");
+  const initialTab = VALID_TABS.has(tab as Tab) ? (tab as Tab) : undefined;
 
-  return <PackageDetail importPath={importPath} />;
+  return <PackageDetail importPath={importPath} initialTab={initialTab} />;
 }

@@ -13,9 +13,10 @@ import { usePackageDetail } from "@/hooks/usePackageDetail";
 
 interface PackageDetailProps {
   importPath: string;
+  initialTab?: import("@/components/package/detail/tabs/PackageTabs").Tab;
 }
 
-export function PackageDetail({ importPath }: PackageDetailProps) {
+export function PackageDetail({ importPath, initialTab }: PackageDetailProps) {
   const {
     data,
     loading,
@@ -26,7 +27,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
     aiSummaryError,
     handleTabChange,
     retryAiSummary,
-  } = usePackageDetail(importPath);
+  } = usePackageDetail(importPath, initialTab);
 
   const scrollBarRef = useRef<HTMLDivElement>(null);
 
@@ -40,6 +41,7 @@ export function PackageDetail({ importPath }: PackageDetailProps) {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
+
     onScroll();
 
     return () => window.removeEventListener("scroll", onScroll);
