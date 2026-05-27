@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { NextResponse } from "next/server";
 
+import type { SearchOrder, SearchSort } from "@/lib/github";
 import { searchGithubPackages } from "@/lib/github";
 
 const getCachedSearch = unstable_cache(
@@ -10,8 +11,10 @@ const getCachedSearch = unstable_cache(
     tag: string,
     page: number,
     perPage: number,
+    sort: SearchSort,
+    order: SearchOrder,
   ) => {
-    return searchGithubPackages(query, category, tag, page, perPage);
+    return searchGithubPackages(query, category, tag, page, perPage, sort, order);
   },
   ["package-search"],
   { revalidate: 300 },
@@ -25,8 +28,10 @@ export async function GET(request: Request) {
     const tag = url.searchParams.get("tag") ?? "";
     const page = Number(url.searchParams.get("page") ?? "1");
     const perPage = Number(url.searchParams.get("perPage") ?? "10");
+    const sort = (url.searchParams.get("sort") ?? "best") as SearchSort;
+    const order = (url.searchParams.get("order") ?? "desc") as SearchOrder;
 
-    const data = await getCachedSearch(query, category, tag, page, perPage);
+    const data = await getCachedSearch(query, category, tag, page, perPage, sort, order);
 
     return NextResponse.json(data, {
       headers: {
