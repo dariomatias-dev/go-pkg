@@ -20,6 +20,9 @@ interface SearchSectionProps {
   initialQuery?: string;
   initialCategory?: string;
   initialTag?: string;
+  initialPage?: number;
+  initialPerPage?: number;
+  initialSemantic?: boolean;
 }
 
 const RESULTS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
@@ -28,20 +31,23 @@ export default function SearchSection({
   initialQuery = "",
   initialCategory = "",
   initialTag = "",
+  initialPage = 1,
+  initialPerPage = 10,
+  initialSemantic = false,
 }: SearchSectionProps) {
   const router = useRouter();
 
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState(initialCategory);
   const [tag, setTag] = useState(initialTag);
-  const [semanticSearch, setSemanticSearch] = useState(false);
+  const [semanticSearch, setSemanticSearch] = useState(initialSemantic);
   const [results, setResults] = useState<GoPackage[]>([]);
   const [totalResults, setTotalResults] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<CuratedCategory[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [perPage, setPerPage] = useState(initialPerPage);
 
   useEffect(() => {
     fetch("/api/popular-package")
@@ -109,19 +115,41 @@ export default function SearchSection({
 
     return () => {
       clearTimeout(delay);
-
       controller.abort();
     };
   }, [query, category, tag, semanticSearch, currentPage, perPage]);
 
-  const pushRoute = (q: string, cat: string, t: string) => {
+  const pushRoute = (
+    overrides: Partial<{
+      q: string;
+      cat: string;
+      t: string;
+      page: number;
+      limit: number;
+      semantic: boolean;
+    }> = {},
+  ) => {
+    const q = overrides.q !== undefined ? overrides.q : query;
+    const cat = overrides.cat !== undefined ? overrides.cat : category;
+    const t = overrides.t !== undefined ? overrides.t : tag;
+    const page = overrides.page !== undefined ? overrides.page : currentPage;
+    const limit = overrides.limit !== undefined ? overrides.limit : perPage;
+    const sem = overrides.semantic !== undefined ? overrides.semantic : semanticSearch;
+
     const params = new URLSearchParams();
 
     if (q) params.set("q", q);
     if (cat) params.set("category", cat);
     if (t) params.set("tag", t);
+    if (page > 1) params.set("page", String(page));
+    if (limit !== 10) params.set("perPage", String(limit));
+    if (sem) params.set("semantic", "true");
 
-    router.push(`/search?${params.toString()}` as Route<`/search?${string}`>);
+    const qs = params.toString();
+    router.push(
+      `/search${qs ? `?${qs}` : ""}` as Route<`/search?${string}`>,
+      { scroll: false },
+    );
   };
 
   const selectCategory = (catId: string) => {
@@ -131,7 +159,7 @@ export default function SearchSection({
     setTag("");
     setCurrentPage(1);
 
-    pushRoute(query, next, "");
+    pushRoute({ cat: next, t: "", page: 1 });
   };
 
   const clearFilters = () => {
@@ -139,6 +167,8 @@ export default function SearchSection({
     setCategory("");
     setTag("");
     setCurrentPage(1);
+    setPerPage(10);
+    setSemanticSearch(false);
 
     router.push("/search");
 
@@ -181,7 +211,7 @@ export default function SearchSection({
                 onClick={() => {
                   setQuery("");
                   setCurrentPage(1);
-                  pushRoute("", category, tag);
+                  pushRoute({ q: "", page: 1 });
                 }}
                 className="text-sky-800 dark:text-sky-300 font-bold hover:text-[#007D9C] dark:hover:text-sky-200 ml-2 cursor-pointer"
               >
@@ -202,8 +232,10 @@ export default function SearchSection({
                   type="checkbox"
                   checked={semanticSearch}
                   onChange={() => {
-                    setSemanticSearch((v) => !v);
+                    const next = !semanticSearch;
+                    setSemanticSearch(next);
                     setCurrentPage(1);
+                    pushRoute({ semantic: next, page: 1 });
                   }}
                   className="sr-only peer"
                 />
@@ -228,7 +260,7 @@ export default function SearchSection({
                 onClick={() => {
                   setCategory("");
                   setCurrentPage(1);
-                  pushRoute(query, "", tag);
+                  pushRoute({ cat: "", page: 1 });
                 }}
                 className={cn(
                   "w-full text-left text-xs px-3 py-2 rounded-lg flex items-center justify-between transition-colors cursor-pointer",
@@ -276,8 +308,7 @@ export default function SearchSection({
                   onClick={() => {
                     setTag("");
                     setCurrentPage(1);
-
-                    pushRoute(query, category, "");
+                    pushRoute({ t: "", page: 1 });
                   }}
                   className="font-bold text-slate-500 hover:text-slate-800 dark:hover:text-[#f0f6fc] px-1 cursor-pointer"
                 >
@@ -320,8 +351,10 @@ export default function SearchSection({
             <select
               value={perPage}
               onChange={(e) => {
-                setPerPage(Number(e.target.value));
+                const next = Number(e.target.value);
+                setPerPage(next);
                 setCurrentPage(1);
+                pushRoute({ limit: next, page: 1 });
               }}
               className="text-xs bg-white dark:bg-[#0d1117] hover:bg-slate-50 dark:hover:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-lg py-1.5 px-3 font-semibold text-slate-700 dark:text-[#c9d1d9] shadow-sm outline-none focus:ring-2 focus:ring-[#00ADD8]/20 dark:focus:ring-sky-500/20 focus:border-[#00ADD8] dark:focus:border-sky-500 cursor-pointer transition-all"
             >
@@ -361,7 +394,10 @@ export default function SearchSection({
                 currentPage={currentPage}
                 totalResults={totalResults}
                 perPage={perPage}
-                onPageChange={(page) => setCurrentPage(page)}
+                onPageChange={(page) => {
+                  setCurrentPage(page);
+                  pushRoute({ page });
+                }}
                 isLoading={loading}
                 itemCountInPage={results.length}
                 label="results found"
