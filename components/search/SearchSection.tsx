@@ -16,6 +16,8 @@ import type {
   PopularPackageResponse,
 } from "@/types";
 
+type SearchSort = "best" | "stars" | "updated" | "forks";
+
 interface SearchSectionProps {
   initialQuery?: string;
   initialCategory?: string;
@@ -23,9 +25,17 @@ interface SearchSectionProps {
   initialPage?: number;
   initialPerPage?: number;
   initialSemantic?: boolean;
+  initialSort?: SearchSort;
 }
 
 const RESULTS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
+
+const SORT_OPTIONS: { value: SearchSort; label: string }[] = [
+  { value: "stars", label: "Stars" },
+  { value: "best", label: "Relevance" },
+  { value: "updated", label: "Recently Updated" },
+  { value: "forks", label: "Forks" },
+];
 
 export default function SearchSection({
   initialQuery = "",
@@ -34,6 +44,7 @@ export default function SearchSection({
   initialPage = 1,
   initialPerPage = 10,
   initialSemantic = false,
+  initialSort = "stars" as SearchSort,
 }: SearchSectionProps) {
   const router = useRouter();
 
@@ -48,6 +59,11 @@ export default function SearchSection({
   const [categories, setCategories] = useState<CuratedCategory[]>([]);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [perPage, setPerPage] = useState(initialPerPage);
+  const [sort, setSort] = useState<SearchSort>(initialSort);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     fetch("/api/popular-package")
@@ -65,6 +81,7 @@ export default function SearchSection({
     page: number,
     limit: number,
     semantic: boolean,
+    sortBy: SearchSort,
     signal?: AbortSignal,
   ) => {
     setError(null);
@@ -79,6 +96,7 @@ export default function SearchSection({
       params.set("semantic", String(semantic));
       params.set("page", String(page));
       params.set("perPage", String(limit));
+      params.set("sort", sortBy);
 
       const res = await fetch(`/api/search?${params.toString()}`, { signal });
 
@@ -109,6 +127,7 @@ export default function SearchSection({
         currentPage,
         perPage,
         semanticSearch,
+        sort,
         controller.signal,
       );
     }, 150);
@@ -117,7 +136,7 @@ export default function SearchSection({
       clearTimeout(delay);
       controller.abort();
     };
-  }, [query, category, tag, semanticSearch, currentPage, perPage]);
+  }, [query, category, tag, semanticSearch, currentPage, perPage, sort]);
 
   const pushRoute = (
     overrides: Partial<{
@@ -127,6 +146,7 @@ export default function SearchSection({
       page: number;
       limit: number;
       semantic: boolean;
+      sortBy: SearchSort;
     }> = {},
   ) => {
     const q = overrides.q !== undefined ? overrides.q : query;
@@ -135,6 +155,7 @@ export default function SearchSection({
     const page = overrides.page !== undefined ? overrides.page : currentPage;
     const limit = overrides.limit !== undefined ? overrides.limit : perPage;
     const sem = overrides.semantic !== undefined ? overrides.semantic : semanticSearch;
+    const sortBy = overrides.sortBy !== undefined ? overrides.sortBy : sort;
 
     const params = new URLSearchParams();
 
@@ -144,6 +165,7 @@ export default function SearchSection({
     if (page > 1) params.set("page", String(page));
     if (limit !== 10) params.set("perPage", String(limit));
     if (sem) params.set("semantic", "true");
+    if (sortBy !== "stars") params.set("sort", sortBy);
 
     const qs = params.toString();
     router.push(
@@ -169,6 +191,7 @@ export default function SearchSection({
     setCurrentPage(1);
     setPerPage(10);
     setSemanticSearch(false);
+    setSort("stars");
 
     router.push("/search");
 
@@ -328,8 +351,8 @@ export default function SearchSection({
       </aside>
 
       <div className="lg:col-span-3 space-y-6">
-        <div className="bg-white dark:bg-[#161b22] rounded-xl py-4 px-6 border border-slate-200/70 dark:border-[#30363d] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="text-sm text-slate-600 dark:text-[#8b949e]">
+        <div className="bg-white dark:bg-[#161b22] rounded-xl py-4 px-6 border border-slate-200/70 dark:border-[#30363d] shadow-sm flex flex-wrap items-center justify-between gap-3">
+          <div className="text-sm text-slate-600 dark:text-[#8b949e] min-w-0">
             {loading ? (
               <span>Searching packages in the index...</span>
             ) : (
@@ -343,27 +366,52 @@ export default function SearchSection({
             )}
           </div>
 
-          <div className="flex items-center gap-2 select-none">
-            <span className="text-xs text-slate-500 dark:text-[#8b949e] font-medium">
-              Per page:
-            </span>
+          <div className="flex flex-wrap items-center gap-4 select-none">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500 dark:text-[#8b949e] font-medium">
+                Sort:
+              </span>
 
-            <select
-              value={perPage}
-              onChange={(e) => {
-                const next = Number(e.target.value);
-                setPerPage(next);
-                setCurrentPage(1);
-                pushRoute({ limit: next, page: 1 });
-              }}
-              className="text-xs bg-white dark:bg-[#0d1117] hover:bg-slate-50 dark:hover:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-lg py-1.5 px-3 font-semibold text-slate-700 dark:text-[#c9d1d9] shadow-sm outline-none focus:ring-2 focus:ring-[#00ADD8]/20 dark:focus:ring-sky-500/20 focus:border-[#00ADD8] dark:focus:border-sky-500 cursor-pointer transition-all"
-            >
-              {RESULTS_PER_PAGE_OPTIONS.map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
+              <select
+                value={sort}
+                onChange={(e) => {
+                  const next = e.target.value as SearchSort;
+                  setSort(next);
+                  setCurrentPage(1);
+                  pushRoute({ sortBy: next, page: 1 });
+                }}
+                className="text-xs bg-white dark:bg-[#0d1117] hover:bg-slate-50 dark:hover:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-lg py-1.5 px-3 font-semibold text-slate-700 dark:text-[#c9d1d9] shadow-sm outline-none focus:ring-2 focus:ring-[#00ADD8]/20 dark:focus:ring-sky-500/20 focus:border-[#00ADD8] dark:focus:border-sky-500 cursor-pointer transition-all"
+              >
+                {SORT_OPTIONS.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500 dark:text-[#8b949e] font-medium">
+                Per page:
+              </span>
+
+              <select
+                value={perPage}
+                onChange={(e) => {
+                  const next = Number(e.target.value);
+                  setPerPage(next);
+                  setCurrentPage(1);
+                  pushRoute({ limit: next, page: 1 });
+                }}
+                className="text-xs bg-white dark:bg-[#0d1117] hover:bg-slate-50 dark:hover:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-lg py-1.5 px-3 font-semibold text-slate-700 dark:text-[#c9d1d9] shadow-sm outline-none focus:ring-2 focus:ring-[#00ADD8]/20 dark:focus:ring-sky-500/20 focus:border-[#00ADD8] dark:focus:border-sky-500 cursor-pointer transition-all"
+              >
+                {RESULTS_PER_PAGE_OPTIONS.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 

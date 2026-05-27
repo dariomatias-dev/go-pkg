@@ -2,6 +2,8 @@ import { Suspense } from "react";
 
 import SearchSection from "@/components/search/SearchSection";
 
+const VALID_SORTS = new Set(["best", "stars", "updated", "forks"]);
+
 type SearchParams = {
   q?: string;
   category?: string;
@@ -9,6 +11,7 @@ type SearchParams = {
   page?: string;
   perPage?: string;
   semantic?: string;
+  sort?: string;
 };
 
 type SearchPageProps = {
@@ -32,16 +35,18 @@ async function SearchPageInner({ searchParams }: SearchPageProps) {
 
   const page = params?.page ? Math.max(1, Number(params.page)) : 1;
   const perPage = params?.perPage ? Number(params.perPage) : 10;
+  const sort = VALID_SORTS.has(params?.sort ?? "") ? params!.sort! : "stars";
 
   return (
     <SearchSection
-      key={`${params?.q ?? ""}|${params?.category ?? ""}|${params?.tag ?? ""}|${page}|${perPage}|${params?.semantic ?? ""}`}
+      key={`${params?.q ?? ""}|${params?.category ?? ""}|${params?.tag ?? ""}|${page}|${perPage}|${params?.semantic ?? ""}|${sort}`}
       initialQuery={params?.q ?? ""}
       initialCategory={params?.category ?? ""}
       initialTag={params?.tag ?? ""}
       initialPage={page}
       initialPerPage={perPage}
       initialSemantic={params?.semantic === "true"}
+      initialSort={sort as "best" | "stars" | "updated" | "forks"}
     />
   );
 }

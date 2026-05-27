@@ -5,15 +5,21 @@ import { enrichWithGoProxy } from "./go-proxy";
 import { buildSearchQuery, guessCategory, normalizePackage } from "./normalize";
 import type { GitHubSearchResponse } from "./types";
 
+export type SearchSort = "best" | "stars" | "updated" | "forks";
+export type SearchOrder = "asc" | "desc";
+
 export async function searchGithubPackages(
   query: string,
   category: string = "",
   tag: string = "",
   page: number = 1,
   perPage: number = 10,
+  sort: SearchSort = "stars",
+  order: SearchOrder = "desc",
 ): Promise<PackageSearchResponse> {
   const q = buildSearchQuery(query, category, tag);
-  const url = `${GITHUB_BASE_URL}/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=${perPage}&page=${page}`;
+  const sortParam = sort === "best" ? "" : `&sort=${sort}&order=${order}`;
+  const url = `${GITHUB_BASE_URL}/search/repositories?q=${encodeURIComponent(q)}${sortParam}&per_page=${perPage}&page=${page}`;
   const response = await fetch(url, { headers: getGithubHeaders() });
 
   if (!response.ok) {
