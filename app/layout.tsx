@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 
 import "./globals.css";
 
@@ -32,7 +33,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
+          <Suspense fallback={<div className="h-16 bg-go-blue dark:bg-[#0d1117] border-b border-[#005a71]/50 dark:border-[#30363d]" />}>
+            <Header />
+          </Suspense>
 
           <TooltipProvider>
             <main className="flex-1 flex flex-col">{children}</main>
