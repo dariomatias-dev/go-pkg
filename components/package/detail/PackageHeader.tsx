@@ -21,7 +21,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useCompare } from "@/hooks/useCompare";
 import { useFavorites } from "@/hooks/useFavorites";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import type { GoPackage } from "@/types";
@@ -33,14 +32,7 @@ interface PackageHeaderProps {
 export function PackageHeader({ pkg }: PackageHeaderProps) {
   const router = useRouter();
   const { isFavorite: checkFavorite, toggleFavorite } = useFavorites();
-  const {
-    isCompared: checkCompared,
-    addToCompare,
-    removeFromCompare,
-    isFull,
-  } = useCompare();
   const isFavorite = checkFavorite(pkg.importPath);
-  const isCompared = checkCompared(pkg.importPath);
   const [copied, setCopied] = useState(false);
 
   function handleShare() {
@@ -188,33 +180,20 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={() => {
-                      if (isCompared) removeFromCompare(pkg.importPath);
-                      else {
-                        addToCompare(pkg);
-
-                        router.push("/compare");
-                      }
-                    }}
-                    disabled={!isCompared && isFull}
-                    className={cn(
-                      "flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed",
-                      isCompared
-                        ? "bg-slate-900 dark:bg-[#21262d] border-slate-950 dark:border-[#30363d] text-white"
-                        : "bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]",
-                    )}
+                    onClick={() =>
+                      router.push(
+                        `/compare?pkg=${encodeURIComponent(pkg.importPath)}`,
+                      )
+                    }
+                    className="flex items-center justify-center gap-1.5 border px-2.5 sm:px-3.5 h-9 rounded-lg text-xs font-bold tracking-tight transition-all duration-150 cursor-pointer shadow-sm bg-white dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]"
                   >
                     <Scale className="w-3.5 h-3.5 shrink-0 text-[#007D9C] dark:text-sky-400" />
 
-                    <span className="hidden sm:inline">
-                      {isCompared ? "In Comparator" : "Compare"}
-                    </span>
+                    <span className="hidden sm:inline">Compare</span>
                   </button>
                 </TooltipTrigger>
 
-                <TooltipContent>
-                  {isCompared ? "Remove from comparison" : "Add to comparison"}
-                </TooltipContent>
+                <TooltipContent>Compare package</TooltipContent>
               </Tooltip>
 
               <Tooltip>
