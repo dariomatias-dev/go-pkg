@@ -9,15 +9,24 @@ import {
 import type { GitHubRelease } from "@/lib/github/types";
 
 const getCachedReleases = unstable_cache(
-  async (owner: string, repo: string): Promise<GitHubRelease[]> => {
+  async (
+    owner: string,
+    repo: string,
+    page: number,
+    perPage: number,
+  ): Promise<{ releases: GitHubRelease[]; hasNextPage: boolean }> => {
     const res = await fetch(
-      `${GITHUB_BASE_URL}/repos/${owner}/${repo}/releases?per_page=30`,
+      `${GITHUB_BASE_URL}/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`,
       { headers: getGithubHeaders() },
     );
 
-    if (!res.ok) return [];
+    if (!res.ok) return { releases: [], hasNextPage: false };
 
-    return res.json() as Promise<GitHubRelease[]>;
+    const releases = (await res.json()) as GitHubRelease[];
+    const linkHeader = res.headers.get("Link") ?? "";
+    const hasNextPage = linkHeader.includes('rel="next"');
+
+    return { releases, hasNextPage };
   },
   ["package-releases"],
   { revalidate: 3600 },
@@ -26,6 +35,11 @@ const getCachedReleases = unstable_cache(
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const importPath = url.searchParams.get("importPath");
+  const page = Math.max(1, Number(url.searchParams.get("page") ?? "1"));
+  const perPage = Math.min(
+    100,
+    Math.max(1, Number(url.searchParams.get("perPage") ?? "30")),
+  );
 
   if (!importPath) {
     return NextResponse.json({ error: "Missing importPath" }, { status: 400 });
@@ -34,21 +48,22 @@ export async function GET(request: Request) {
   const repoInfo = parseGithubRepo(importPath);
 
   if (!repoInfo) {
-    return NextResponse.json({ releases: [] });
+    return NextResponse.json({ releases: [], hasNextPage: false });
   }
 
   try {
-    const releases = await getCachedReleases(repoInfo.owner, repoInfo.repo);
-
-    return NextResponse.json(
-      { releases },
-      {
-        headers: {
-          "Cache-Control":
-            "public, s-maxage=3600, stale-while-revalidate=86400",
-        },
-      },
+    const result = await getCachedReleases(
+      repoInfo.owner,
+      repoInfo.repo,
+      page,
+      perPage,
     );
+
+    return NextResponse.json(result, {
+      headers: {
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      },
+    });
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch releases" },
