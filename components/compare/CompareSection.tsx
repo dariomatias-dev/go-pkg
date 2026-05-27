@@ -1,36 +1,57 @@
 "use client";
 
-import { Plus, Scale, Search, Star, X } from "lucide-react";
+import { Loader2, Plus, Scale, Search, Star, X } from "lucide-react";
 import type { Route } from "next";
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { CompareEmptyState } from "@/components/compare/CompareEmptyState";
-import { PRESET_PATH_MAP } from "@/components/compare/data/comparePresets";
 import { CompareTable } from "@/components/compare/CompareTable";
-import {
-  compareServerSnapshot,
-  compareSnapshot,
-  compareSubscribe,
-  getCompareData,
-  setCompareData,
-} from "@/components/compare/data/compareStore";
+import { PRESET_PATH_MAP } from "@/components/compare/data/comparePresets";
 import { encodeImportPath } from "@/lib/utils";
 import type { GoPackage } from "@/types";
 
 export function CompareSection() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
+  const searchParamsStr = searchParams.toString();
+  const pkgPaths = useMemo(
+    () => new URLSearchParams(searchParamsStr).getAll("pkg"),
+    [searchParamsStr],
+  );
+
+  const [compared, setCompared] = useState<GoPackage[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<GoPackage[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
 
-  const compared = useSyncExternalStore(
-    compareSubscribe,
-    compareSnapshot,
-    compareServerSnapshot,
-  );
+  const loadedRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    const toFetch = pkgPaths.filter((path) => !loadedRef.current.has(path));
+
+    toFetch.forEach((path) => {
+      loadedRef.current.add(path);
+
+      fetch(`/api/package-info?importPath=${encodeURIComponent(path)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.pkg) {
+            setCompared((prev) => {
+              if (prev.some((p) => p.importPath === path)) return prev;
+
+              return [...prev, data.pkg as GoPackage];
+            });
+          }
+        })
+        .catch(() => {
+          loadedRef.current.delete(path);
+        });
+    });
+  }, [pkgPaths]);
 
   useEffect(() => {
     let active = true;
@@ -50,9 +71,8 @@ export function CompareSection() {
           .then((res) => res.json())
           .then((data) => {
             if (active && data?.results) {
-              const filtered = data.results.filter(
-                (pkg: GoPackage) =>
-                  !compared.some((cp) => cp.importPath === pkg.importPath),
+              const filtered = (data.results as GoPackage[]).filter(
+                (pkg) => !pkgPaths.includes(pkg.importPath),
               );
 
               setSuggestions(filtered.slice(0, 8));
@@ -71,38 +91,51 @@ export function CompareSection() {
 
       clearTimeout(timer);
     };
-  }, [searchQuery, compared]);
+  }, [searchQuery, pkgPaths]);
 
   const addPackage = (pkg: GoPackage) => {
-    const current = getCompareData();
+    if (pkgPaths.length >= 3) return;
+    if (pkgPaths.includes(pkg.importPath)) return;
 
-    if (current.some((cp) => cp.importPath === pkg.importPath)) return;
-    if (current.length >= 3) return;
+    loadedRef.current.add(pkg.importPath);
 
-    setCompareData([...current, pkg]);
+    setCompared((prev) => [...prev, pkg]);
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.append("pkg", pkg.importPath);
+
+    router.push(`${pathname}?${params.toString()}`);
+
     setSearchQuery("");
     setDropdownOpen(false);
   };
 
   const removePackage = (importPath: string) => {
-    setCompareData(
-      getCompareData().filter((pkg) => pkg.importPath !== importPath),
-    );
+    loadedRef.current.delete(importPath);
+
+    setCompared((prev) => prev.filter((p) => p.importPath !== importPath));
+
+    const newPaths = pkgPaths.filter((p) => p !== importPath);
+    const params = new URLSearchParams();
+
+    newPaths.forEach((p) => params.append("pkg", p));
+
+    const query = params.toString();
+
+    router.push(`${pathname}${query ? `?${query}` : ""}`);
   };
 
   const handlePreset = (names: string[]) => {
-    compared.forEach((cp) => removePackage(cp.importPath));
+    const paths = names.map((name) => PRESET_PATH_MAP[name] ?? name);
 
-    names.forEach((name) => {
-      const importPath = PRESET_PATH_MAP[name] || name;
+    paths.forEach((p) => loadedRef.current.delete(p));
 
-      fetch(`/api/package-info?module=${encodeURIComponent(importPath)}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data?.pkg) addPackage(data.pkg);
-        })
-        .catch(() => {});
-    });
+    const params = new URLSearchParams();
+
+    paths.forEach((p) => params.append("pkg", p));
+
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const inspectPackage = (importPath: string) => {
@@ -110,6 +143,14 @@ export function CompareSection() {
       `/package/${encodeImportPath(importPath)}` as Route<`/package/${string}`>,
     );
   };
+
+  const orderedCompared = pkgPaths
+    .map((path) => compared.find((p) => p.importPath === path))
+    .filter(Boolean) as GoPackage[];
+
+  const loadingPaths = pkgPaths.filter(
+    (path) => !compared.some((p) => p.importPath === path),
+  );
 
   return (
     <div className="bg-slate-50/40 dark:bg-[#0b0e14] py-8 flex-1 transition-colors duration-300">
@@ -142,9 +183,9 @@ export function CompareSection() {
             <div className="relative flex items-center">
               <input
                 type="text"
-                disabled={compared.length >= 3}
+                disabled={pkgPaths.length >= 3}
                 placeholder={
-                  compared.length >= 3
+                  pkgPaths.length >= 3
                     ? "Maximum of 3 packages reached"
                     : "Add a package to compare..."
                 }
@@ -221,13 +262,27 @@ export function CompareSection() {
           </div>
         </div>
 
-        {compared.length > 0 ? (
+        {orderedCompared.length > 0 && (
           <CompareTable
-            compared={compared}
+            compared={orderedCompared}
             removePackage={removePackage}
             inspectPackage={inspectPackage}
           />
-        ) : (
+        )}
+
+        {loadingPaths.length > 0 && (
+          <div className="flex items-center justify-center gap-3 py-12 text-slate-400 dark:text-[#8b949e]">
+            <Loader2 className="w-5 h-5 animate-spin text-[#00ADD8] dark:text-sky-400" />
+
+            <span className="text-sm font-mono">
+              {loadingPaths.length === 1
+                ? `Fetching ${loadingPaths[0]}...`
+                : `Fetching ${loadingPaths.length} packages...`}
+            </span>
+          </div>
+        )}
+
+        {orderedCompared.length === 0 && loadingPaths.length === 0 && (
           <CompareEmptyState onPreset={handlePreset} />
         )}
       </div>
