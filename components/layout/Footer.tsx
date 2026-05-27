@@ -28,6 +28,8 @@ const RESOURCE_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "https://go.dev/doc", label: "Documentation", icon: BookOpen },
 ];
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 const navLinkClass =
   "group flex items-center gap-2.5 text-slate-400 hover:text-[#00ADD8] transition-all duration-200 text-xs font-medium";
 const externalLinkClass =
@@ -144,8 +146,7 @@ export function Footer() {
 
           <div className="flex items-center gap-2">
             <span>
-              © {new Date().getFullYear()} GOPKG.DEV. Todos os direitos
-              reservados.
+              © {CURRENT_YEAR} GOPKG.DEV. Todos os direitos reservados.
             </span>
           </div>
         </div>
