@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { PackageCardSkeleton } from "@/components/common/PackageCardSkeleton";
 import { Pagination } from "@/components/common/Pagination";
 import { PackageCard } from "@/components/package/card/PackageCard";
+import { Select } from "@/components/common/select";
 import { cn, encodeImportPath } from "@/lib/utils";
 import type {
   CuratedCategory,
@@ -154,7 +155,8 @@ export default function SearchSection({
     const t = overrides.t !== undefined ? overrides.t : tag;
     const page = overrides.page !== undefined ? overrides.page : currentPage;
     const limit = overrides.limit !== undefined ? overrides.limit : perPage;
-    const sem = overrides.semantic !== undefined ? overrides.semantic : semanticSearch;
+    const sem =
+      overrides.semantic !== undefined ? overrides.semantic : semanticSearch;
     const sortBy = overrides.sortBy !== undefined ? overrides.sortBy : sort;
 
     const params = new URLSearchParams();
@@ -168,10 +170,9 @@ export default function SearchSection({
     if (sortBy !== "stars") params.set("sort", sortBy);
 
     const qs = params.toString();
-    router.push(
-      `/search${qs ? `?${qs}` : ""}` as Route<`/search?${string}`>,
-      { scroll: false },
-    );
+    router.push(`/search${qs ? `?${qs}` : ""}` as Route<`/search?${string}`>, {
+      scroll: false,
+    });
   };
 
   const selectCategory = (catId: string) => {
@@ -372,22 +373,16 @@ export default function SearchSection({
                 Sort:
               </span>
 
-              <select
+              <Select
                 value={sort}
-                onChange={(e) => {
-                  const next = e.target.value as SearchSort;
+                options={SORT_OPTIONS}
+                onChange={(next) => {
                   setSort(next);
                   setCurrentPage(1);
+
                   pushRoute({ sortBy: next, page: 1 });
                 }}
-                className="text-xs bg-white dark:bg-[#0d1117] hover:bg-slate-50 dark:hover:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-lg py-1.5 px-3 font-semibold text-slate-700 dark:text-[#c9d1d9] shadow-sm outline-none focus:ring-2 focus:ring-[#00ADD8]/20 dark:focus:ring-sky-500/20 focus:border-[#00ADD8] dark:focus:border-sky-500 cursor-pointer transition-all"
-              >
-                {SORT_OPTIONS.map(({ value, label }) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <div className="flex items-center gap-2">
@@ -395,22 +390,21 @@ export default function SearchSection({
                 Per page:
               </span>
 
-              <select
-                value={perPage}
-                onChange={(e) => {
-                  const next = Number(e.target.value);
-                  setPerPage(next);
+              <Select
+                value={String(perPage)}
+                options={RESULTS_PER_PAGE_OPTIONS.map((n) => ({
+                  value: String(n),
+                  label: String(n),
+                }))}
+                onChange={(next) => {
+                  const n = Number(next);
+
+                  setPerPage(n);
                   setCurrentPage(1);
-                  pushRoute({ limit: next, page: 1 });
+
+                  pushRoute({ limit: n, page: 1 });
                 }}
-                className="text-xs bg-white dark:bg-[#0d1117] hover:bg-slate-50 dark:hover:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-lg py-1.5 px-3 font-semibold text-slate-700 dark:text-[#c9d1d9] shadow-sm outline-none focus:ring-2 focus:ring-[#00ADD8]/20 dark:focus:ring-sky-500/20 focus:border-[#00ADD8] dark:focus:border-sky-500 cursor-pointer transition-all"
-              >
-                {RESULTS_PER_PAGE_OPTIONS.map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
           </div>
         </div>
