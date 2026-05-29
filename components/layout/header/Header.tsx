@@ -1,25 +1,13 @@
 "use client";
 
-import {
-  BookOpen,
-  Box,
-  ChevronDown,
-  Code,
-  Globe,
-  Heart,
-  Moon,
-  Scale,
-  Sun,
-  Terminal,
-  TrendingUp,
-  type LucideIcon,
-} from "lucide-react";
+import { ChevronDown, Moon, Sun, Terminal } from "lucide-react";
 import type { Route } from "next";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { ECOSYSTEM_LINKS, NAV_LINKS } from "@/components/layout/nav-links";
 import { HeaderSearch } from "@/components/layout/header/HeaderSearch";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,13 +25,6 @@ import {
 import { useFavorites } from "@/hooks/useFavorites";
 import { cn } from "@/lib/utils";
 
-const ECOSYSTEM_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "https://go.dev", label: "Official Website", icon: Globe },
-  { href: "https://go.dev/doc", label: "Documentation", icon: BookOpen },
-  { href: "https://pkg.go.dev", label: "Packages Search", icon: Box },
-  { href: "https://go.dev/ref/spec", label: "Language Spec", icon: Code },
-];
-
 export function Header() {
   const pathname = usePathname();
   const { setTheme } = useTheme();
@@ -52,11 +33,11 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const navLinks = [
-    { href: "/popular", label: "Popular Modules", icon: TrendingUp, badge: undefined as number | undefined },
-    { href: "/compare", label: "Package Compare", icon: Scale, badge: undefined },
-    { href: "/favorites", label: "My Favorites", icon: Heart, badge: favorites.length || undefined },
-  ];
+  const navLinks = NAV_LINKS.map((link) => ({
+    ...link,
+    badge:
+      link.href === "/favorites" ? favorites.length || undefined : undefined,
+  }));
 
   useEffect(() => {
     if (menuOpen) document.body.style.overflow = "hidden";

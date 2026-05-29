@@ -1,32 +1,10 @@
 "use client";
 
-import {
-  ArrowUp,
-  BookOpen,
-  Code,
-  GitBranch,
-  Globe,
-  Heart,
-  type LucideIcon,
-  Scale,
-  Server,
-  Terminal,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowUp, Code, GitBranch, Server, Terminal } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 
-const NAV_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "/popular", label: "Popular Modules", icon: TrendingUp },
-  { href: "/compare", label: "Comparison Tool", icon: Scale },
-  { href: "/favorites", label: "My Watchlist", icon: Heart },
-];
-
-const RESOURCE_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "https://go.dev", label: "Official Website", icon: Globe },
-  { href: "https://pkg.go.dev", label: "Module Index", icon: Server },
-  { href: "https://go.dev/doc", label: "Documentation", icon: BookOpen },
-];
+import { ECOSYSTEM_LINKS, NAV_LINKS } from "@/components/layout/nav-links";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -101,7 +79,7 @@ export function Footer() {
               Resources
             </h4>
             <ul className="space-y-3">
-              {RESOURCE_LINKS.map(({ href, label, icon: Icon }) => (
+              {ECOSYSTEM_LINKS.map(({ href, label, icon: Icon }) => (
                 <li key={href}>
                   <a
                     href={href}
