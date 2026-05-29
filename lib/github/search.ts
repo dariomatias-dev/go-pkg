@@ -1,6 +1,6 @@
 import type { PackageSearchResponse, PopularPackage } from "@/types";
 
-import { GITHUB_BASE_URL, getGithubHeaders } from "./client";
+import { GITHUB_BASE_URL, getGithubHeaders, handleGithubError } from "./client";
 import { enrichWithGoProxy } from "./go-proxy";
 import { buildSearchQuery, guessCategory, normalizePackage } from "./normalize";
 import type { GitHubSearchResponse } from "./types";
@@ -23,7 +23,7 @@ export async function searchGithubPackages(
   const response = await fetch(url, { headers: getGithubHeaders() });
 
   if (!response.ok) {
-    throw new Error(`GitHub search failed with status ${response.status}`);
+    throw handleGithubError(response.status, "search");
   }
 
   const data = (await response.json()) as GitHubSearchResponse;
@@ -48,9 +48,7 @@ export async function fetchPopularPackages(
   const response = await fetch(url, { headers: getGithubHeaders() });
 
   if (!response.ok) {
-    throw new Error(
-      `GitHub popular packages fetch failed with status ${response.status}`,
-    );
+    throw handleGithubError(response.status, "popular packages");
   }
 
   const data = (await response.json()) as GitHubSearchResponse;

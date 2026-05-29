@@ -5,6 +5,7 @@ import {
   GO_PROXY_BASE,
   escapeGoModule,
   getGithubHeaders,
+  handleGithubError,
   parseGithubRepo,
 } from "./client";
 import { countGoModDependencies, fetchGoMod } from "./go-proxy";
@@ -80,7 +81,9 @@ export async function getPackageDetail(
         { headers: getGithubHeaders() },
       );
 
-      if (res.ok) {
+      if (!res.ok) {
+        throw handleGithubError(res.status, "repo details");
+      } else {
         const repo = (await res.json()) as GitHubRepo;
 
         pkg.stars = repo.stargazers_count ?? pkg.stars;
