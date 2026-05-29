@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 import { GoReportCard } from "@/components/package/detail/GoReportCard";
 import { PackageBreadcrumb } from "@/components/package/detail/PackageBreadcrumb";
@@ -71,25 +72,36 @@ export function PackageDetail({ importPath, initialTab }: PackageDetailProps) {
         <div className="bg-[#F8FAFC] dark:bg-[#0b0e14]">
           <div className="container-scale grid grid-cols-1 lg:grid-cols-4 gap-8 py-8 items-start">
             <div className="lg:col-span-3">
-              <PackageTabs
-                pkg={pkg}
-                goMod={goMod}
-                activeTab={activeTab}
-                aiSummary={aiSummary}
-                aiSummaryLoading={aiSummaryLoading}
-                aiSummaryError={aiSummaryError}
-                onTabChange={handleTabChange}
-                onRetryAiSummary={retryAiSummary}
-              />
+              <ErrorBoundary
+                resetKeys={[importPath]}
+                fallback={
+                  <div className="bg-white dark:bg-[#0d1117] rounded-xl shadow-sm border border-slate-200/70 dark:border-[#30363d] p-8 text-center text-sm text-slate-500 dark:text-[#8b949e]">
+                    Failed to render package content.
+                  </div>
+                }
+              >
+                <PackageTabs
+                  pkg={pkg}
+                  goMod={goMod}
+                  activeTab={activeTab}
+                  aiSummary={aiSummary}
+                  aiSummaryLoading={aiSummaryLoading}
+                  aiSummaryError={aiSummaryError}
+                  onTabChange={handleTabChange}
+                  onRetryAiSummary={retryAiSummary}
+                />
+              </ErrorBoundary>
             </div>
 
             <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-20 lg:self-start">
               {pkg.githubUrl && <GoReportCard importPath={importPath} />}
 
-              <GopherChat
-                importPath={importPath}
-                description={pkg.description}
-              />
+              <ErrorBoundary resetKeys={[importPath]} fallback={null}>
+                <GopherChat
+                  importPath={importPath}
+                  description={pkg.description}
+                />
+              </ErrorBoundary>
             </aside>
           </div>
         </div>
