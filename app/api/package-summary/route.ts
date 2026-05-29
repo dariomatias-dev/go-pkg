@@ -9,7 +9,9 @@ async function getCachedSummary(importPath: string): Promise<string> {
 
   cacheLife({ revalidate: 86400 });
 
-  const apiKey = process.env.GEMINI_API_KEY!;
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error("GEMINI_API_KEY is not configured.");
+
   const ai = new GoogleGenAI({ apiKey });
   const packageName = importPath.split("/").pop() || importPath;
 
