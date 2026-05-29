@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { AiSummaryTab } from "@/components/package/detail/tabs/AiSummaryTab";
 import { PackageGoModTab } from "@/components/package/detail/tabs/PackageGoModTab";
 import { ReadmeTab } from "@/components/package/detail/tabs/ReadmeTab";
-import { VersionsReleasesTab } from "@/components/package/detail/tabs/VersionsReleasesTab";
+import { VersionsReleasesTab } from "@/components/package/detail/tabs/versions/VersionsReleasesTab";
 import {
   Tooltip,
   TooltipContent,
