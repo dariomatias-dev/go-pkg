@@ -5,6 +5,7 @@ import React, { createContext } from "react";
 import type { Components } from "react-markdown";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 import remarkEmoji from "remark-emoji";
 import remarkGfm from "remark-gfm";
 
@@ -239,7 +240,7 @@ export function MarkdownRenderer({
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkEmoji]}
-      rehypePlugins={enableRehypeRaw ? [rehypeRaw] : []}
+      rehypePlugins={enableRehypeRaw ? [rehypeRaw, rehypeSanitize] : []}
       components={components}
     >
       {content}
