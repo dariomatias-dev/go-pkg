@@ -5,7 +5,7 @@ import type { Route } from "next";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import { ECOSYSTEM_LINKS, NAV_LINKS } from "@/components/layout/nav-links";
 import { HeaderSearch } from "@/components/layout/header/HeaderSearch";
@@ -80,7 +80,7 @@ export function Header() {
         <div className="flex items-center space-x-3 shrink-0">
           <Link
             href="/"
-            className="bg-white dark:bg-[#161b22] p-1.5 rounded-lg flex items-center justify-center shadow-inner hover:scale-105 transition-transform border border-white/20 dark:border-[#30363d]"
+            className="bg-white dark:bg-[#161b22] p-1.5 rounded-lg flex items-center justify-center shadow-inner   transition-transform border border-white/20 dark:border-[#30363d]"
           >
             <Terminal className="w-5 h-5 text-go-blue dark:text-sky-400 stroke-[2.5]" />
           </Link>
@@ -93,7 +93,9 @@ export function Header() {
           </Link>
         </div>
 
-        <HeaderSearch onSearch={() => setMenuOpen(false)} />
+        <Suspense fallback={null}>
+          <HeaderSearch onSearch={() => setMenuOpen(false)} />
+        </Suspense>
 
         <div className="flex items-center gap-3 shrink-0">
           <TooltipProvider>
@@ -162,7 +164,9 @@ export function Header() {
                   <p className="px-3.5 py-2 text-[10px] font-black text-slate-400 dark:text-[#8b949e] uppercase tracking-widest">
                     Search
                   </p>
-                  <HeaderSearch mobile onSearch={() => setMenuOpen(false)} />
+                  <Suspense fallback={null}>
+                    <HeaderSearch mobile onSearch={() => setMenuOpen(false)} />
+                  </Suspense>
                 </div>
 
                 <div className="space-y-1 mb-4">
