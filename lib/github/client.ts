@@ -15,6 +15,16 @@ export function getGithubHeaders(): Record<string, string> {
   return headers;
 }
 
+export function handleGithubError(status: number, context: string): Error {
+  if ((status === 403 || status === 429) && !process.env.GITHUB_TOKEN) {
+    return new Error(
+      `GitHub API rate limit exceeded (${context}). Set GITHUB_TOKEN in your environment to increase the limit from 60 to 5000 requests/hour.`,
+    );
+  }
+
+  return new Error(`GitHub API error: ${context} failed with status ${status}`);
+}
+
 export function escapeGoModule(importPath: string): string {
   return importPath.replace(/([A-Z])/g, "!$1").toLowerCase();
 }
