@@ -173,18 +173,11 @@ export default function SearchSection({
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
       <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-20 lg:self-start">
         <SearchSidebar
-          query={query}
           category={category}
           tag={tag}
           semanticSearch={semanticSearch}
           categories={categories}
           hasFilter={hasFilter}
-          onClearQuery={() => {
-            setQuery("");
-            setCurrentPage(1);
-
-            pushRoute({ q: "", page: 1 });
-          }}
           onSemanticChange={(val) => {
             setSemanticSearch(val);
             setCurrentPage(1);

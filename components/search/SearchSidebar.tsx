@@ -1,18 +1,16 @@
 "use client";
 
-import { ChevronRight, Sparkles, X } from "lucide-react";
+import { ChevronRight, Sparkles } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { CuratedCategory } from "@/types";
 
 interface SearchSidebarProps {
-  query: string;
   category: string;
   tag: string;
   semanticSearch: boolean;
   categories: CuratedCategory[];
   hasFilter: boolean;
-  onClearQuery: () => void;
   onSemanticChange: (val: boolean) => void;
   onCategoryChange: (catId: string) => void;
   onTagClear: () => void;
@@ -20,13 +18,11 @@ interface SearchSidebarProps {
 }
 
 export function SearchSidebar({
-  query,
   category,
   tag,
   semanticSearch,
   categories,
   hasFilter,
-  onClearQuery,
   onSemanticChange,
   onCategoryChange,
   onTagClear,
@@ -48,26 +44,6 @@ export function SearchSidebar({
           </button>
         )}
       </div>
-
-      {query && (
-        <div className="text-xs bg-[#E0F2FE] dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 p-2.5 rounded-lg border border-sky-100 dark:border-sky-900/30 flex items-center justify-between">
-          <div className="truncate">
-            <span className="font-semibold block text-[10px] uppercase text-sky-700 dark:text-sky-500">
-              Search Term
-            </span>
-
-            <span className="font-mono">&quot;{query}&quot;</span>
-          </div>
-
-          <button
-            onClick={onClearQuery}
-            className="text-sky-800 dark:text-sky-300 font-bold hover:text-[#007D9C] dark:hover:text-sky-200 ml-2 cursor-pointer"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
-
       <div className="bg-slate-50/50 dark:bg-[#0d1117] rounded-xl p-3.5 border border-slate-200 dark:border-[#30363d] space-y-2 select-none">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold text-slate-700 dark:text-[#c9d1d9] flex items-center gap-1">
