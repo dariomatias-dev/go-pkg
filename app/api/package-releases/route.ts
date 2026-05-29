@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife } from "next/cache";
 import { NextResponse } from "next/server";
 
 import {
@@ -8,29 +8,29 @@ import {
 } from "@/lib/github/client";
 import type { GitHubRelease } from "@/lib/github/types";
 
-const getCachedReleases = unstable_cache(
-  async (
-    owner: string,
-    repo: string,
-    page: number,
-    perPage: number,
-  ): Promise<{ releases: GitHubRelease[]; hasNextPage: boolean }> => {
-    const res = await fetch(
-      `${GITHUB_BASE_URL}/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`,
-      { headers: getGithubHeaders() },
-    );
+async function getCachedReleases(
+  owner: string,
+  repo: string,
+  page: number,
+  perPage: number,
+): Promise<{ releases: GitHubRelease[]; hasNextPage: boolean }> {
+  "use cache";
 
-    if (!res.ok) return { releases: [], hasNextPage: false };
+  cacheLife({ revalidate: 3600 });
 
-    const releases = (await res.json()) as GitHubRelease[];
-    const linkHeader = res.headers.get("Link") ?? "";
-    const hasNextPage = linkHeader.includes('rel="next"');
+  const res = await fetch(
+    `${GITHUB_BASE_URL}/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`,
+    { headers: getGithubHeaders() },
+  );
 
-    return { releases, hasNextPage };
-  },
-  ["package-releases"],
-  { revalidate: 3600 },
-);
+  if (!res.ok) return { releases: [], hasNextPage: false };
+
+  const releases = (await res.json()) as GitHubRelease[];
+  const linkHeader = res.headers.get("Link") ?? "";
+  const hasNextPage = linkHeader.includes('rel="next"');
+
+  return { releases, hasNextPage };
+}
 
 export async function GET(request: Request) {
   const url = new URL(request.url);

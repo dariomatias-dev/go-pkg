@@ -1,24 +1,24 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife } from "next/cache";
 import { NextResponse } from "next/server";
 
 import type { SearchOrder, SearchSort } from "@/lib/github";
 import { searchGithubPackages } from "@/lib/github";
 
-const getCachedSearch = unstable_cache(
-  async (
-    query: string,
-    category: string,
-    tag: string,
-    page: number,
-    perPage: number,
-    sort: SearchSort,
-    order: SearchOrder,
-  ) => {
-    return searchGithubPackages(query, category, tag, page, perPage, sort, order);
-  },
-  ["package-search"],
-  { revalidate: 300 },
-);
+async function getCachedSearch(
+  query: string,
+  category: string,
+  tag: string,
+  page: number,
+  perPage: number,
+  sort: SearchSort,
+  order: SearchOrder,
+) {
+  "use cache";
+
+  cacheLife({ revalidate: 300 });
+
+  return searchGithubPackages(query, category, tag, page, perPage, sort, order);
+}
 
 export async function GET(request: Request) {
   try {
@@ -31,7 +31,15 @@ export async function GET(request: Request) {
     const sort = (url.searchParams.get("sort") ?? "best") as SearchSort;
     const order = (url.searchParams.get("order") ?? "desc") as SearchOrder;
 
-    const data = await getCachedSearch(query, category, tag, page, perPage, sort, order);
+    const data = await getCachedSearch(
+      query,
+      category,
+      tag,
+      page,
+      perPage,
+      sort,
+      order,
+    );
 
     return NextResponse.json(data, {
       headers: {

@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { parseGithubRepo } from "@/lib/github/client";
@@ -29,28 +29,29 @@ function extractGrade(svg: string): string {
   return "";
 }
 
-const fetchReportCard = (repo: string) =>
-  unstable_cache(
-    async (): Promise<GoReportCardResult | null> => {
-      const reportUrl = `https://goreportcard.com/report/${repo}`;
-      const badgeUrl = `https://goreportcard.com/badge/${repo}`;
+async function fetchReportCard(
+  repo: string,
+): Promise<GoReportCardResult | null> {
+  "use cache";
 
-      const res = await fetch(badgeUrl, {
-        headers: { "User-Agent": "GoPackageSearchApp" },
-      });
+  cacheLife({ revalidate: 86400 });
 
-      if (!res.ok) return null;
+  const reportUrl = `https://goreportcard.com/report/${repo}`;
+  const badgeUrl = `https://goreportcard.com/badge/${repo}`;
 
-      const svg = await res.text();
-      const grade = extractGrade(svg);
+  const res = await fetch(badgeUrl, {
+    headers: { "User-Agent": "GoPackageSearchApp" },
+  });
 
-      if (!grade) return null;
+  if (!res.ok) return null;
 
-      return { grade, reportUrl };
-    },
-    ["go-report-card", repo],
-    { revalidate: 86400 },
-  )();
+  const svg = await res.text();
+  const grade = extractGrade(svg);
+
+  if (!grade) return null;
+
+  return { grade, reportUrl };
+}
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
