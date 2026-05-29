@@ -34,6 +34,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useFavorites } from "@/hooks/useFavorites";
 import { cn } from "@/lib/utils";
 
 const ECOSYSTEM_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
@@ -46,14 +47,15 @@ const ECOSYSTEM_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
 export function Header() {
   const pathname = usePathname();
   const { setTheme } = useTheme();
+  const { favorites } = useFavorites();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const navLinks = [
-    { href: "/popular", label: "Popular Modules", icon: TrendingUp },
-    { href: "/compare", label: "Package Compare", icon: Scale },
-    { href: "/favorites", label: "My Favorites", icon: Heart },
+    { href: "/popular", label: "Popular Modules", icon: TrendingUp, badge: undefined as number | undefined },
+    { href: "/compare", label: "Package Compare", icon: Scale, badge: undefined },
+    { href: "/favorites", label: "My Favorites", icon: Heart, badge: favorites.length || undefined },
   ];
 
   useEffect(() => {
@@ -186,7 +188,7 @@ export function Header() {
                   <p className="px-3.5 py-2 text-[10px] font-black text-slate-400 dark:text-[#8b949e] uppercase tracking-widest">
                     Navigation
                   </p>
-                  {navLinks.map(({ href, label, icon: Icon }) => (
+                  {navLinks.map(({ href, label, icon: Icon, badge }) => (
                     <Link
                       key={href}
                       href={href as Route}
@@ -197,6 +199,11 @@ export function Header() {
                         <Icon className="w-4 h-4 opacity-70" />
                         <span>{label}</span>
                       </div>
+                      {badge !== undefined && (
+                        <span className="min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 text-[10px] font-black">
+                          {badge}
+                        </span>
+                      )}
                     </Link>
                   ))}
                 </div>
