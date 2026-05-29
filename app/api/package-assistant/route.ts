@@ -138,7 +138,7 @@ Guidelines:
     }));
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash",
       contents: [
         ...formattedHistory,
         {
@@ -160,25 +160,30 @@ Guidelines:
   } catch (error) {
     console.error("Assistant error:", error);
 
+    const msg = error instanceof Error ? error.message : String(error);
     const isRateLimit =
-      typeof error === "object" &&
-      error !== null &&
-      "status" in error &&
-      (error as { status: number }).status === 429;
+      msg.includes("429") ||
+      msg.includes("RESOURCE_EXHAUSTED") ||
+      msg.includes("quota");
+    const isUnavailable =
+      msg.includes("503") || msg.includes("UNAVAILABLE");
 
     if (isRateLimit) {
       return NextResponse.json(
-        {
-          error: "API rate limit exceeded. Please try again in a few seconds.",
-        },
+        { error: "AI quota reached. Please try again later." },
         { status: 429 },
       );
     }
 
+    if (isUnavailable) {
+      return NextResponse.json(
+        { error: "AI service temporarily unavailable. Please try again." },
+        { status: 503 },
+      );
+    }
+
     return NextResponse.json(
-      {
-        error: "Failed to connect to the Gopher AI assistant service.",
-      },
+      { error: "Failed to connect to the Gopher AI assistant service." },
       { status: 500 },
     );
   }
