@@ -1,6 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
+import { isValidImportPath } from "@/lib/validations";
+
 interface ChatMessage {
   role: "user" | "model";
   text: string;
@@ -12,8 +14,6 @@ interface AssistantRequestBody {
   message: string;
   history?: ChatMessage[];
 }
-
-const GO_MODULE_PATH_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9._/\-~]*$/;
 
 export async function POST(request: Request) {
   const {
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   }
 
   if (importPath !== undefined) {
-    if (importPath.length > 300 || !GO_MODULE_PATH_REGEX.test(importPath)) {
+    if (!isValidImportPath(importPath)) {
       return NextResponse.json(
         { error: "Invalid import path." },
         { status: 400 },

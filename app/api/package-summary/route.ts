@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import { cacheLife } from "next/cache";
 import { NextResponse } from "next/server";
 
-const GO_MODULE_PATH_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9._/\-~]*$/;
+import { isValidImportPath } from "@/lib/validations";
 
 async function getCachedSummary(importPath: string): Promise<string> {
   "use cache";
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
     );
   }
 
-  if (importPath.length > 300 || !GO_MODULE_PATH_REGEX.test(importPath)) {
+  if (!isValidImportPath(importPath)) {
     return NextResponse.json(
       { error: "Invalid import path." },
       { status: 400 },
