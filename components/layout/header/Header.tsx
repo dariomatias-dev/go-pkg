@@ -28,6 +28,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 const ECOSYSTEM_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
@@ -107,43 +113,51 @@ export function Header() {
         <HeaderSearch onSearch={() => setMenuOpen(false)} />
 
         <div className="flex items-center gap-3 shrink-0">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative h-9 w-9 text-white dark:text-[#8b949e] hover:bg-white dark:hover:bg-[#30363d] border border-sky-400/20 dark:border-[#30363d] rounded-full focus-visible:ring-0 transition-all"
-              >
-                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              </Button>
-            </DropdownMenuTrigger>
+          <TooltipProvider>
+            <DropdownMenu>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative h-9 w-9 text-white dark:text-[#8b949e] hover:bg-white dark:hover:bg-[#30363d] border border-sky-400/20 dark:border-[#30363d] rounded-full focus-visible:ring-0 transition-all"
+                    >
+                      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                </TooltipTrigger>
 
-            <DropdownMenuContent
-              align="end"
-              sideOffset={12}
-              className="w-40 p-1.5 rounded-2xl bg-white dark:bg-[#161b22] border-slate-200 dark:border-[#30363d] shadow-2xl z-110"
-            >
-              <DropdownMenuItem
-                onClick={() => setTheme("light")}
-                className="px-3 py-2 rounded-xl cursor-pointer text-sm font-medium dark:text-[#c9d1d9] dark:focus:bg-[#21262d] dark:focus:text-[#f0f6fc]"
+                <TooltipContent>Change theme</TooltipContent>
+              </Tooltip>
+
+              <DropdownMenuContent
+                align="end"
+                sideOffset={12}
+                className="w-40 p-1.5 rounded-2xl bg-white dark:bg-[#161b22] border-slate-200 dark:border-[#30363d] shadow-2xl z-110"
               >
-                Light
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTheme("dark")}
-                className="px-3 py-2 rounded-xl cursor-pointer text-sm font-medium dark:text-[#c9d1d9] dark:focus:bg-[#21262d] dark:focus:text-[#f0f6fc]"
-              >
-                Dark
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTheme("system")}
-                className="px-3 py-2 rounded-xl cursor-pointer text-sm font-medium dark:text-[#c9d1d9] dark:focus:bg-[#21262d] dark:focus:text-[#f0f6fc]"
-              >
-                System
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem
+                  onClick={() => setTheme("light")}
+                  className="px-3 py-2 rounded-xl cursor-pointer text-sm font-medium dark:text-[#c9d1d9] dark:focus:bg-[#21262d] dark:focus:text-[#f0f6fc]"
+                >
+                  Light
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setTheme("dark")}
+                  className="px-3 py-2 rounded-xl cursor-pointer text-sm font-medium dark:text-[#c9d1d9] dark:focus:bg-[#21262d] dark:focus:text-[#f0f6fc]"
+                >
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setTheme("system")}
+                  className="px-3 py-2 rounded-xl cursor-pointer text-sm font-medium dark:text-[#c9d1d9] dark:focus:bg-[#21262d] dark:focus:text-[#f0f6fc]"
+                >
+                  System
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </TooltipProvider>
 
           <div className="relative" ref={menuRef}>
             <button
@@ -152,7 +166,10 @@ export function Header() {
             >
               <span>Menu</span>
               <ChevronDown
-                className={cn("w-3.5 h-3.5 transition-transform duration-300", menuOpen && "rotate-180")}
+                className={cn(
+                  "w-3.5 h-3.5 transition-transform duration-300",
+                  menuOpen && "rotate-180",
+                )}
               />
             </button>
 

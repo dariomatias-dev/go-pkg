@@ -3,6 +3,12 @@
 import { Check, Copy, Terminal } from "lucide-react";
 import { useState } from "react";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 interface GoInstallBlockProps {
   importPath: string;
 }
@@ -35,17 +41,24 @@ export function GoInstallBlock({ importPath }: GoInstallBlockProps) {
         </span>
       </div>
 
-      <button
-        onClick={handleCopy}
-        className="text-slate-400 dark:text-[#484f58] hover:text-[#00ADD8] dark:hover:text-sky-400 p-1.5 rounded-md hover:bg-white dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d] transition-all cursor-pointer shrink-0 active:scale-90"
-        title="Copy install command"
-      >
-        {copied ? (
-          <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500" />
-        ) : (
-          <Copy className="w-3.5 h-3.5" />
-        )}
-      </button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={handleCopy}
+            className="text-slate-400 dark:text-[#484f58] hover:text-[#00ADD8] dark:hover:text-sky-400 p-1.5 rounded-md hover:bg-white dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d] transition-all cursor-pointer shrink-0 active:scale-90"
+          >
+            {copied ? (
+              <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500" />
+            ) : (
+              <Copy className="w-3.5 h-3.5" />
+            )}
+          </button>
+        </TooltipTrigger>
+
+        <TooltipContent>
+          {copied ? "Copied!" : "Copy install command"}
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
 }

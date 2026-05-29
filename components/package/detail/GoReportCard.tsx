@@ -4,7 +4,21 @@ import { ExternalLink, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import type { GoReportCardResult } from "@/app/api/package-report/route";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+
+const GRADE_DESCRIPTIONS: Record<string, string> = {
+  "A+": "Exceptional code quality — passes all checks",
+  A: "Excellent code quality — passes nearly all checks",
+  B: "Good code quality — minor issues found",
+  C: "Moderate issues — some improvements recommended",
+  D: "Significant issues — multiple checks failing",
+  F: "Poor code quality — many checks failing",
+};
 
 const GRADE_STYLES: Record<
   string,
@@ -91,9 +105,23 @@ export function GoReportCard({ importPath }: { importPath: string }) {
             </h3>
           </div>
 
-          <div className={cn("font-mono font-black text-xl", style.color)}>
-            {state.result.grade}
-          </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                className={cn(
+                  "font-mono font-black text-xl cursor-default",
+                  style.color,
+                )}
+              >
+                {state.result.grade}
+              </div>
+            </TooltipTrigger>
+
+            <TooltipContent>
+              {GRADE_DESCRIPTIONS[state.result.grade] ??
+                "Code quality grade from goreportcard.com"}
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         <a
