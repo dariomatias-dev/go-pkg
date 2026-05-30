@@ -45,7 +45,7 @@ export function VersionList({
   onPageChange,
 }: VersionListProps) {
   return (
-    <div className="w-44 shrink-0 flex flex-col gap-1 pr-1">
+    <div className="w-full sm:w-44 sm:shrink-0 flex flex-col gap-1 pr-1">
       {loading ? (
         <div className="flex items-center justify-center gap-2 py-8 text-slate-400 dark:text-[#8b949e]">
           <Loader2 className="w-4 h-4 animate-spin" />

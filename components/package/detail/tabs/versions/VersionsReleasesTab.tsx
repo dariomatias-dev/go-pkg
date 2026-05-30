@@ -150,7 +150,7 @@ export function VersionsReleasesTab({
         Versions &amp; Releases
       </h3>
 
-      <div className="flex gap-4 min-h-64">
+      <div className="flex flex-col sm:flex-row gap-4 min-h-64">
         <VersionList
           versions={versions}
           loading={versionsLoading}
