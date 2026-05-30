@@ -55,7 +55,7 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
         <div className="relative flex items-center">
           <input
             type="text"
-            placeholder="Pesquisar pacotes Go..."
+            placeholder="Search Go packages..."
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
             onFocus={() => setShowHistory(true)}

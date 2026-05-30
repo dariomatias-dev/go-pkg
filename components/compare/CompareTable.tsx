@@ -25,7 +25,7 @@ export function CompareTable({
         <table className="w-full border-collapse table-fixed text-left min-w-175">
           <thead>
             <tr className="bg-slate-50/60 dark:bg-[#161b22] border-b border-slate-200 dark:border-[#30363d]">
-              <th className="p-6 text-xs uppercase font-black tracking-[0.15em] text-slate-400 dark:text-[#8b949e] w-64 border-r border-slate-100 dark:border-[#30363d] bg-slate-50/30 dark:bg-[#0d1117]">
+              <th className="p-6 text-xs uppercase font-black tracking-[0.15em] text-slate-400 dark:text-[#8b949e] w-44 border-r border-slate-100 dark:border-[#30363d] bg-slate-50/30 dark:bg-[#0d1117]">
                 <span>Technical Attributes</span>
               </th>
 

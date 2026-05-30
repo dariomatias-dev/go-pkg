@@ -61,6 +61,7 @@ export function Footer() {
             <h4 className="text-[10px] font-black text-white uppercase tracking-[0.2em] opacity-40">
               Navigation
             </h4>
+
             <ul className="space-y-3">
               {NAV_LINKS.map(({ href, label, icon: Icon }) => (
                 <li key={href}>
@@ -78,6 +79,7 @@ export function Footer() {
             <h4 className="text-[10px] font-black text-white uppercase tracking-[0.2em] opacity-40">
               Resources
             </h4>
+
             <ul className="space-y-3">
               {ECOSYSTEM_LINKS.map(({ href, label, icon: Icon }) => (
                 <li key={href}>
@@ -123,9 +125,7 @@ export function Footer() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span>
-              © {CURRENT_YEAR} GOPKG.DEV. Todos os direitos reservados.
-            </span>
+            <span>© {CURRENT_YEAR} GOPKG.DEV. All rights reserved.</span>
           </div>
         </div>
       </div>

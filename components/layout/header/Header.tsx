@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { ChevronDown, Moon, Sun, Terminal } from "lucide-react";
 import type { Route } from "next";
@@ -147,9 +147,10 @@ export function Header() {
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex items-center gap-2.5 px-4 py-1.5 bg-[#005a71] dark:bg-[#21262d] border border-sky-400/30 dark:border-[#30363d] rounded-full text-white dark:text-[#c9d1d9] font-bold text-sm transition-all hover:bg-[#004d61] dark:hover:bg-[#30363d] dark:hover:text-[#f0f6fc] active:scale-95 shadow-sm"
+              className="flex items-center gap-2.5 px-4 py-1.5 bg-[#005a71] dark:bg-[#21262d] border border-sky-400/30 dark:border-[#30363d] rounded-full text-white dark:text-[#c9d1d9] font-bold text-sm transition-all hover:bg-[#004d61] dark:hover:bg-[#30363d] dark:hover:text-[#f0f6fc] shadow-sm"
             >
               <span>Menu</span>
+
               <ChevronDown
                 className={cn(
                   "w-3.5 h-3.5 transition-transform duration-300",

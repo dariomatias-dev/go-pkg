@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 
 import { PackageDetail } from "@/components/package/detail/PackageDetail";
 import type { Tab } from "@/components/package/detail/tabs/PackageTabs";
@@ -25,15 +24,10 @@ export async function generateMetadata({
   };
 }
 
-export default function PackagePage(props: PackagePageProps) {
-  return (
-    <Suspense>
-      <PackagePageInner {...props} />
-    </Suspense>
-  );
-}
-
-async function PackagePageInner({ params, searchParams }: PackagePageProps) {
+export default async function PackagePage({
+  params,
+  searchParams,
+}: PackagePageProps) {
   const { importPath: segments } = await params;
   const { tab } = (await searchParams) ?? {};
 
