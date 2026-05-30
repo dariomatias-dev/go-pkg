@@ -53,6 +53,13 @@ export function VersionsReleasesTab({
   const [selected, setSelected] = useState<string>(
     searchParams.get("version") ?? latestVersion ?? "",
   );
+  const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
+
+  if (prevSearchParams !== searchParams) {
+    setPrevSearchParams(searchParams);
+    setSelected(searchParams.get("version") ?? latestVersion ?? "");
+  }
+
   const [versionsState, setVersionsState] = useState<VersionsState>({
     versions: [],
     total: 0,
@@ -151,14 +158,21 @@ export function VersionsReleasesTab({
 
   const handleSelect = (ver: string) => {
     setSelected(ver);
+
+    if (releasesLoading) return;
+
     const hasRelease = !!matchRelease(releases, ver);
     const params = new URLSearchParams(searchParams.toString());
+
     if (hasRelease) {
       params.set("version", ver);
     } else {
       params.delete("version");
     }
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+
+    const newUrl = params.size > 0 ? `${pathname}?${params}` : pathname;
+
+    router.replace(newUrl, { scroll: false });
   };
 
   return (
