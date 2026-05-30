@@ -7,6 +7,7 @@ import "./globals.css";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/header/Header";
+import { ScrollToTop } from "@/components/providers/ScrollToTop";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           <Suspense fallback={<div className="h-16 bg-go-blue dark:bg-[#0d1117] border-b border-[#005a71]/50 dark:border-[#30363d]" />}>
             <Header />
+          </Suspense>
+
+          <Suspense>
+            <ScrollToTop />
           </Suspense>
 
           <TooltipProvider>
