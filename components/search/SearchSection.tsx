@@ -44,7 +44,7 @@ export default function SearchSection({
   const [semanticSearch, setSemanticSearch] = useState(initialSemantic);
   const [results, setResults] = useState<GoPackage[]>([]);
   const [totalResults, setTotalResults] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<CuratedCategory[]>([]);
   const [currentPage, setCurrentPage] = useState(initialPage);
