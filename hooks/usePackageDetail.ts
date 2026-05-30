@@ -76,7 +76,7 @@ export function usePackageDetail(importPath: string, initialTab?: Tab) {
       .then((r) => {
         if (!r.ok)
           throw new Error(
-            "We couldn't load this package. Verify the Go module exists in proxy.golang.org.",
+            "We couldn't load this package. Verify the Go package exists in proxy.golang.org.",
           );
 
         return r.json();

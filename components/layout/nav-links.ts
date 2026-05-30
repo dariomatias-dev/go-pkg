@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 export const NAV_LINKS = [
-  { href: "/popular", label: "Popular Modules", icon: TrendingUp },
+  { href: "/popular", label: "Popular Packages", icon: TrendingUp },
   { href: "/compare", label: "Package Compare", icon: Scale },
   { href: "/favorites", label: "My Favorites", icon: Heart },
 ] as const;

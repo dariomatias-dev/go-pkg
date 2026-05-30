@@ -14,7 +14,7 @@ export function PackageDetailError({ error }: PackageDetailErrorProps) {
         <HeartOff className="w-12 h-12 text-rose-500 mx-auto mb-4" />
 
         <h3 className="font-semibold text-slate-900 dark:text-[#f0f6fc] text-lg">
-          Module Resolution Error
+          Package Resolution Error
         </h3>
 
         <p className="text-slate-500 dark:text-[#8b949e] text-sm mt-2">

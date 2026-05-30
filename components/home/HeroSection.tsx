@@ -44,7 +44,7 @@ export function HeroSection() {
         </h1>
 
         <p className="text-base sm:text-lg text-slate-100/90 dark:text-[#8b949e] max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-          Find trusted modules from the Official Go Proxy with real GitHub
+          Find trusted packages from the Official Go Proxy with real GitHub
           statistics, dependencies, and version history.
         </p>
 
@@ -54,7 +54,7 @@ export function HeroSection() {
 
             <input
               type="text"
-              placeholder="Search by module path (e.g. github.com/gin-gonic/gin, cobra)..."
+              placeholder="Search by package path (e.g. github.com/gin-gonic/gin, cobra)..."
               className="w-full pl-8 pr-8 py-3 bg-transparent text-slate-800 dark:text-[#c9d1d9] placeholder-slate-400 dark:placeholder-[#484f58] font-sans text-sm sm:text-base focus:outline-none focus:ring-0"
               value={query}
               onChange={(e) => setQuery(e.target.value)}

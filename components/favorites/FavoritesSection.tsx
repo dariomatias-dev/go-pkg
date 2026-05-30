@@ -43,7 +43,7 @@ export function FavoritesSection() {
 
             <h1 className="font-display font-black text-4xl sm:text-6xl text-slate-950 dark:text-[#f0f6fc] tracking-tight leading-[0.9]">
               Saved <br />
-              <span className="text-[#00ADD8]">Modules.</span>
+              <span className="text-[#00ADD8]">Packages.</span>
             </h1>
 
             <p className="text-base sm:text-lg text-slate-500 dark:text-[#8b949e] font-light max-w-xl leading-relaxed">

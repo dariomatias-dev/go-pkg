@@ -21,7 +21,7 @@ export function CompareEmptyState({ onPreset }: CompareEmptyStateProps) {
         </h2>
 
         <p className="text-xs sm:text-sm text-slate-500 dark:text-[#8b949e] leading-relaxed font-light">
-          Add Go modules using the search bar above, or choose one of the
+          Add Go packages using the search bar above, or choose one of the
           recommended presets below:
         </p>
       </div>

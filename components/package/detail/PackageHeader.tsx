@@ -258,7 +258,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
               </div>
             </TooltipTrigger>
 
-            <TooltipContent>Module Dependencies</TooltipContent>
+            <TooltipContent>Package Dependencies</TooltipContent>
           </Tooltip>
 
           <Tooltip>

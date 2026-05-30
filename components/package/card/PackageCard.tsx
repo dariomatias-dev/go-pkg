@@ -223,7 +223,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
             <TooltipContent>
               {pkg.dependenciesCount === 0
                 ? "No external dependencies"
-                : "Direct and indirect Go module dependencies"}
+                : "Direct and indirect Go package dependencies"}
             </TooltipContent>
           </Tooltip>
 

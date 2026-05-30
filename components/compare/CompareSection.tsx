@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Scale } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import type { Route } from "next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -159,8 +159,6 @@ export function CompareSection() {
         <div className="bg-white dark:bg-[#0d1117] rounded-2xl border border-slate-200/80 dark:border-[#30363d] p-6 md:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center space-x-2 text-[#007D9C] dark:text-sky-400">
-              <Scale className="w-6 h-6" />
-
               <span className="font-display font-medium text-xs uppercase tracking-widest bg-sky-50 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 px-3 py-1 rounded-full border border-sky-100 dark:border-sky-900/30">
                 Decision Matrix
               </span>
@@ -173,7 +171,7 @@ export function CompareSection() {
             <p className="text-sm text-slate-500 dark:text-[#8b949e] leading-relaxed max-w-2xl font-light">
               Choose up to{" "}
               <strong className="font-semibold text-slate-700 dark:text-[#c9d1d9]">
-                three Go modules
+                three Go packages
               </strong>{" "}
               side by side to contrast stars, forks, dependencies, and official
               licenses.

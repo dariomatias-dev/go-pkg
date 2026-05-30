@@ -36,7 +36,7 @@ export default function NotFound() {
               </h2>
 
               <p className="text-slate-500 text-base max-w-sm mx-auto leading-relaxed font-medium">
-                The requested module path does not exist or has been removed
+                The requested package path does not exist or has been removed
                 from the registry index. Please verify the import path.
               </p>
             </div>
@@ -49,7 +49,7 @@ export default function NotFound() {
             className="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-[#007D9C] hover:bg-[#005F77] text-white px-10 py-4 rounded-xl font-bold text-sm transition-all shadow-xl shadow-[#007D9C]/20 active:scale-95"
           >
             <Search className="w-4.5 h-4.5" />
-            Search Modules
+            Search Packages
           </Link>
 
           <Link

@@ -35,7 +35,7 @@ export function CompareSearchInput({
           type="text"
           disabled={maxReached}
           placeholder={
-            maxReached ? "Limit reached (3/3)" : "Search to add module..."
+            maxReached ? "Limit reached (3/3)" : "Search to add package..."
           }
           value={searchQuery}
           onFocus={onFocus}
@@ -134,7 +134,7 @@ export function CompareSearchInput({
                       </div>
 
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        No modules found
+                        No packages found
                       </p>
                     </div>
                   )}

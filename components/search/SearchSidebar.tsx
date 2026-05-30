@@ -131,7 +131,7 @@ export function SearchSidebar({
 
       <div className="bg-linear-to-br from-indigo-50 to-sky-50 dark:from-[#0d1117] dark:to-[#0d1117] rounded-xl p-4 border border-sky-100/40 dark:border-[#30363d] text-center">
         <p className="text-[11px] text-slate-500 dark:text-[#8b949e] leading-relaxed font-light">
-          Search popular packages or enter a full Go module import path to load
+          Search popular packages or enter a full Go package import path to load
           it on demand!
         </p>
       </div>

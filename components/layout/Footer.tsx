@@ -42,7 +42,7 @@ export function Footer() {
 
             <p className="text-xs leading-relaxed text-slate-500 max-w-sm">
               The high-performance discovery engine for the Golang community.
-              Track dependencies and discover modules with precision.
+              Track dependencies and discover packages with precision.
             </p>
 
             <a

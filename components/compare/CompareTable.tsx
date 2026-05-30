@@ -37,7 +37,7 @@ export function CompareTable({
                   <div className="space-y-3">
                     <div className="flex justify-between items-start">
                       <span className="inline-block bg-sky-50 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 font-mono text-[10px] uppercase font-bold py-0.5 px-2 rounded-full mb-1 border border-sky-100 dark:border-sky-900/30">
-                        Module {index + 1}
+                        Package {index + 1}
                       </span>
 
                       <button

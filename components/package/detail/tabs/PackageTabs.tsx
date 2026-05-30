@@ -3,15 +3,15 @@
 import { BookOpen, FileCode2, GitBranch, Sparkles } from "lucide-react";
 import { Suspense, type ReactNode } from "react";
 
-import { AiSummaryTab } from "@/components/package/detail/tabs/AiSummaryTab";
-import { PackageGoModTab } from "@/components/package/detail/tabs/PackageGoModTab";
-import { ReadmeTab } from "@/components/package/detail/tabs/ReadmeTab";
-import { VersionsReleasesTab } from "@/components/package/detail/tabs/versions/VersionsReleasesTab";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/common/Tooltip";
+import { AiSummaryTab } from "@/components/package/detail/tabs/AiSummaryTab";
+import { PackageGoModTab } from "@/components/package/detail/tabs/PackageGoModTab";
+import { ReadmeTab } from "@/components/package/detail/tabs/ReadmeTab";
+import { VersionsReleasesTab } from "@/components/package/detail/tabs/versions/VersionsReleasesTab";
 import { cn } from "@/lib/utils";
 import type { GoPackage } from "@/types";
 
@@ -43,7 +43,7 @@ const TABS: TabDef[] = [
     id: "goMod",
     label: "Inspect go.mod",
     icon: <FileCode2 className="w-3.5 h-3.5" />,
-    tooltip: "View the module's go.mod dependency file",
+    tooltip: "View the package's go.mod dependency file",
   },
   {
     id: "versions",
