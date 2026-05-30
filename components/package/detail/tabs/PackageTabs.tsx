@@ -1,7 +1,7 @@
 "use client";
 
 import { BookOpen, FileCode2, GitBranch, Sparkles } from "lucide-react";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 
 import { AiSummaryTab } from "@/components/package/detail/tabs/AiSummaryTab";
 import { PackageGoModTab } from "@/components/package/detail/tabs/PackageGoModTab";
@@ -118,10 +118,12 @@ export function PackageTabs({
         )}
 
         {activeTab === "versions" && (
-          <VersionsReleasesTab
-            importPath={pkg.importPath}
-            latestVersion={pkg.latestVersion}
-          />
+          <Suspense>
+            <VersionsReleasesTab
+              importPath={pkg.importPath}
+              latestVersion={pkg.latestVersion}
+            />
+          </Suspense>
         )}
       </div>
     </div>
