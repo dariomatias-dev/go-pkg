@@ -46,7 +46,7 @@ export function Footer() {
             </p>
 
             <a
-              href="https://github.com/dariomatias-dev"
+              href="https://github.com/dariomatias-dev/go-pkg"
               target="_blank"
               rel="noopener"
               className="inline-flex items-center gap-2 text-slate-500 hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest pt-1"
