@@ -1,6 +1,7 @@
 "use client";
 
 import { GitBranch } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import { ReleaseDetail } from "@/components/package/detail/tabs/versions/ReleaseDetail";
@@ -46,7 +47,12 @@ export function VersionsReleasesTab({
   importPath,
   latestVersion,
 }: VersionsReleasesTabProps) {
-  const [selected, setSelected] = useState<string>(latestVersion ?? "");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [selected, setSelected] = useState<string>(
+    searchParams.get("version") ?? latestVersion ?? "",
+  );
   const [versionsState, setVersionsState] = useState<VersionsState>({
     versions: [],
     total: 0,
@@ -143,6 +149,18 @@ export function VersionsReleasesTab({
     fetchVersionsPage(next);
   };
 
+  const handleSelect = (ver: string) => {
+    setSelected(ver);
+    const hasRelease = !!matchRelease(releases, ver);
+    const params = new URLSearchParams(searchParams.toString());
+    if (hasRelease) {
+      params.set("version", ver);
+    } else {
+      params.delete("version");
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   return (
     <div className="animate-fade-in space-y-4">
       <h3 className="font-display font-semibold text-slate-800 dark:text-[#f0f6fc] text-base border-b border-slate-100 dark:border-[#30363d] pb-2 flex items-center gap-2">
@@ -161,7 +179,7 @@ export function VersionsReleasesTab({
           releasesLoading={releasesLoading}
           page={page}
           totalPages={totalPages}
-          onSelect={setSelected}
+          onSelect={handleSelect}
           onPageChange={goToPage}
         />
 
