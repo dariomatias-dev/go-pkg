@@ -107,7 +107,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <code className="text-xs font-medium text-[#007D9C]/60 dark:text-sky-400/40 truncate bg-slate-50/30 dark:bg-[#161b22]/30 px-2 py-1 rounded-md w-fit max-w-full border border-slate-100/50 dark:border-[#30363d]/20">
+              <code className="text-xs font-medium text-[#007D9C] dark:text-sky-400/70 truncate bg-slate-50/30 dark:bg-[#161b22]/30 px-2 py-1 rounded-md w-fit max-w-full border border-slate-100/50 dark:border-[#30363d]/20">
                 {pkg.importPath}
               </code>
 
