@@ -1,6 +1,5 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import type { Route } from "next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -149,9 +148,6 @@ export function CompareSection() {
     .map((path) => compared.find((p) => p.importPath === path))
     .filter(Boolean) as GoPackage[];
 
-  const loadingPaths = pkgPaths.filter(
-    (path) => !compared.some((p) => p.importPath === path),
-  );
 
   return (
     <div className="bg-slate-50/40 dark:bg-[#0b0e14] py-8 flex-1 transition-colors duration-300">
@@ -194,27 +190,14 @@ export function CompareSection() {
           />
         </div>
 
-        {orderedCompared.length > 0 && (
+        {pkgPaths.length > 0 ? (
           <CompareTable
+            pkgPaths={pkgPaths}
             compared={orderedCompared}
             removePackage={removePackage}
             inspectPackage={inspectPackage}
           />
-        )}
-
-        {loadingPaths.length > 0 && (
-          <div className="flex items-center justify-center gap-3 py-12 text-slate-400 dark:text-[#8b949e]">
-            <Loader2 className="w-5 h-5 animate-spin text-[#00ADD8] dark:text-sky-400" />
-
-            <span className="text-sm font-mono">
-              {loadingPaths.length === 1
-                ? `Fetching ${loadingPaths[0]}...`
-                : `Fetching ${loadingPaths.length} packages...`}
-            </span>
-          </div>
-        )}
-
-        {orderedCompared.length === 0 && loadingPaths.length === 0 && (
+        ) : (
           <CompareEmptyState onPreset={handlePreset} />
         )}
       </div>
