@@ -1,24 +1,15 @@
 "use client";
 
-import { ArrowRight, BookOpen, Loader2, Search } from "lucide-react";
+import { ArrowRight, BookOpen, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 import { PackageCard } from "@/components/package/card/PackageCard";
 import { useFavorites } from "@/hooks/useFavorites";
 
 export function FavoritesSection() {
   const router = useRouter();
+
   const { favorites } = useFavorites();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 650);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="bg-white dark:bg-[#0b0e14] py-12 sm:py-20 flex-1 transition-colors duration-300">
@@ -32,7 +23,7 @@ export function FavoritesSection() {
                 Local Storage Sync
               </span>
 
-              {!loading && favorites.length > 0 && (
+              {favorites.length > 0 && (
                 <div className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#00ADD8]/10 border border-[#00ADD8]/20 animate-in fade-in duration-500">
                   <span className="text-[10px] font-black text-[#00ADD8] dark:text-sky-400 tabular-nums">
                     {favorites.length} PACKAGES
@@ -54,26 +45,7 @@ export function FavoritesSection() {
         </div>
 
         <div className="relative min-h-100">
-          {loading ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
-              <div className="relative flex items-center justify-center">
-                <Loader2 className="w-10 h-10 text-[#00ADD8] animate-spin opacity-20" />
-                <Loader2 className="absolute w-10 h-10 text-[#00ADD8] animate-spin animation-duration-[3s]" />
-              </div>
-
-              <div className="flex flex-col items-center gap-1">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
-                  Retrieving Packages
-                </span>
-
-                <div className="flex gap-1">
-                  <div className="w-1 h-1 rounded-full bg-[#00ADD8] animate-bounce [animation-delay:-0.3s]" />
-                  <div className="w-1 h-1 rounded-full bg-[#00ADD8] animate-bounce [animation-delay:-0.15s]" />
-                  <div className="w-1 h-1 rounded-full bg-[#00ADD8] animate-bounce" />
-                </div>
-              </div>
-            </div>
-          ) : favorites.length === 0 ? (
+          {favorites.length === 0 ? (
             <div className="relative group max-w-2xl mx-auto mt-10 animate-in fade-in zoom-in-95 duration-500">
               <div className="absolute inset-0 bg-linear-to-r from-[#00ADD8]/10 to-sky-500/10 rounded-[40px] blur-3xl opacity-50" />
 
