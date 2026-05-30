@@ -144,6 +144,7 @@ export function CodeBlock({ code, language = "text" }: CodeBlockProps) {
           fontSize: "inherit",
           lineHeight: "1.6",
           padding: "1rem",
+          overflowX: "auto",
         }}
         codeTagProps={{ style: { padding: 0, backgroundColor: "transparent" } }}
         PreTag="div"
