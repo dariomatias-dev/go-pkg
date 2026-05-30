@@ -20,7 +20,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/common/Tooltip";
 import { useFavorites } from "@/hooks/useFavorites";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import type { GoPackage } from "@/types";

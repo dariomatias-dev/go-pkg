@@ -21,7 +21,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/common/Tooltip";
 import { useFavorites } from "@/hooks/useFavorites";
 import { cn } from "@/lib/utils";
 
