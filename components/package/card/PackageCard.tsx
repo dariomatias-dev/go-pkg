@@ -1,8 +1,10 @@
 "use client";
 
 import {
+  ArrowRight,
   Clock,
   Database,
+  ExternalLink,
   GitFork,
   Heart,
   Shield,
@@ -11,6 +13,7 @@ import {
 } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
+import { FaGithub } from "react-icons/fa6";
 
 import {
   Tooltip,
@@ -64,219 +67,201 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
   return (
     <div
       onClick={navigateToPkg}
-      style={{ contentVisibility: "auto" }}
-      className="bg-white dark:bg-[#0d1117] hover:border-[#00ADD8] dark:hover:border-sky-500/40 hover:shadow-md dark:hover:shadow-black/40 rounded-xl p-6 border border-slate-200/70 dark:border-[#30363d] transition-all duration-300 cursor-pointer flex flex-col md:flex-row justify-between items-start gap-4 relative group overflow-hidden shadow-sm pt-8 sm:pt-6"
+      className="group relative flex flex-col gap-5 rounded-2xl border border-slate-200/80 bg-white p-5 transition-all duration-500 hover:border-[#00ADD8]/40 hover:shadow-2xl hover:shadow-sky-500/10 dark:border-[#30363d] dark:bg-[#0d1117] dark:hover:border-sky-500/30 dark:hover:shadow-black/60 sm:p-6 cursor-pointer overflow-hidden"
     >
       {scoreValue !== undefined && scoreValue > 0 && (
-        <div className="absolute top-0 left-0 right-0 h-0.75 bg-slate-100 dark:bg-[#21262d] overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-slate-100 dark:bg-[#21262d]">
           <div
-            className="h-full bg-linear-to-r from-cyan-400 via-[#00ADD8] to-sky-600 transition-all duration-500"
+            className="h-full bg-linear-to-r from-cyan-400 via-[#00ADD8] to-sky-600 transition-all duration-1000 group-hover:brightness-110"
             style={{ width: `${Math.min(100, scoreValue)}%` }}
           />
         </div>
       )}
 
-      {pkg.stars > 1000 && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="absolute top-2.5 right-3 bg-linear-to-r from-[#00ADD8] to-cyan-600 dark:from-sky-700 dark:to-cyan-800 text-white font-bold text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-md shadow select-none cursor-default">
-              High Demand
-            </span>
-          </TooltipTrigger>
-
-          <TooltipContent>
-            Extremely popular in the Go ecosystem (+1,000 stars)
-          </TooltipContent>
-        </Tooltip>
-      )}
-
-      <div className="min-w-0 flex-1 space-y-2">
-        <div className="flex flex-wrap items-center gap-2 select-none">
-          {index !== undefined && (
-            <span
-              className={cn(
-                "inline-flex items-center justify-center font-sans font-extrabold text-xs px-2.5 py-0.5 rounded-md select-none shrink-0 border",
-                index === 1
-                  ? "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-500/5 dark:text-amber-500/90 dark:border-amber-500/20"
-                  : index === 2
-                    ? "bg-slate-400/10 text-slate-500 border-slate-400/30 dark:bg-[#21262d] dark:text-slate-400 dark:border-[#30363d]"
-                    : index === 3
-                      ? "bg-amber-700/10 text-amber-700 border-amber-700/20 dark:bg-amber-700/5 dark:text-amber-600/90 dark:border-amber-700/20"
-                      : "bg-slate-100 text-slate-600 border-slate-200/60 dark:bg-[#161b22] dark:text-[#8b949e] dark:border-[#30363d]",
+      <div className="flex flex-col gap-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-2.5 min-w-0">
+            <div className="flex flex-wrap items-center gap-2.5">
+              {index !== undefined && (
+                <div className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-black dark:bg-white shadow-sm">
+                  <span className="text-[10px] font-black font-mono text-white dark:text-black">
+                    #{index.toString().padStart(2, "0")}
+                  </span>
+                </div>
               )}
-            >
-              #{index}
-            </span>
-          )}
 
+              <h3 className="font-display text-lg font-bold tracking-tight text-slate-900 group-hover:text-[#00ADD8] dark:text-[#f0f6fc] dark:group-hover:text-sky-400 sm:text-xl transition-colors truncate">
+                {pkg.name}
+              </h3>
+
+              {pkg.latestVersion && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="rounded-md bg-emerald-50/50 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-600 border border-emerald-100 dark:bg-emerald-500/5 dark:text-emerald-400 dark:border-emerald-500/20 cursor-default">
+                      {pkg.latestVersion}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Latest published version</TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <code className="text-xs font-medium text-[#007D9C]/60 dark:text-sky-400/40 truncate bg-slate-50/30 dark:bg-[#161b22]/30 px-2 py-1 rounded-md w-fit max-w-full border border-slate-100/50 dark:border-[#30363d]/20">
+                {pkg.importPath}
+              </code>
+
+              {pkg.githubUrl && (
+                <a
+                  href={pkg.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-400 hover:text-black dark:text-slate-500 dark:hover:text-white transition-colors"
+                >
+                  <FaGithub className="h-3.5 w-3.5" />
+                  <span>GitHub</span>
+                  <ExternalLink className="h-2.5 w-2.5 opacity-50" />
+                </a>
+              )}
+            </div>
+          </div>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(toGoPackage(pkg));
+                }}
+                className={cn(
+                  "flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300 active:scale-90 shrink-0",
+                  saved
+                    ? "bg-rose-50 text-rose-500 dark:bg-rose-950/20 dark:text-rose-400 shadow-sm"
+                    : "bg-slate-50/50 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:bg-[#161b22]/50 dark:text-[#484f58] dark:hover:bg-rose-950/20 dark:hover:text-rose-400",
+                )}
+              >
+                <Heart className={cn("h-4.5 w-4.5", saved && "fill-current")} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {saved ? "Remove from favorites" : "Save to favorites"}
+            </TooltipContent>
+          </Tooltip>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
           {pkg.category && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="text-[9px] uppercase tracking-wider font-bold text-[#007D9C] dark:text-sky-400 bg-sky-50 dark:bg-sky-950/30 px-2.5 py-0.5 rounded-full border border-sky-100/50 dark:border-sky-800/50 shrink-0 cursor-default">
+                <span className="rounded-full bg-sky-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#007D9C] border border-sky-100 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800/50 cursor-default">
                   {pkg.category}
                 </span>
               </TooltipTrigger>
-
               <TooltipContent>
                 Curated thematic category for this package
               </TooltipContent>
             </Tooltip>
           )}
-
           {pkg.license && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="text-[9px] bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-900/30 font-mono font-bold uppercase flex items-center gap-1 shrink-0 cursor-default">
-                  <Shield className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-500" />
-                  <span>{pkg.license}</span>
-                </span>
+                <a
+                  href={
+                    pkg.githubUrl ? `${pkg.githubUrl}/blob/HEAD/LICENSE` : "#"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-50/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 border border-slate-200/60 transition-colors hover:border-[#00ADD8]/40 hover:text-[#00ADD8] dark:bg-[#21262d]/80 dark:text-slate-400 dark:border-[#30363d] dark:hover:text-sky-400"
+                >
+                  <Shield className="h-3 w-3" />
+                  {pkg.license}
+                </a>
               </TooltipTrigger>
-
               <TooltipContent>
                 Open source license for this package
               </TooltipContent>
             </Tooltip>
           )}
-
-          {pkg.latestVersion && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="text-[9px] bg-slate-50 dark:bg-[#161b22] text-slate-500 dark:text-[#8b949e] px-1.5 py-0.5 rounded border border-slate-200 dark:border-[#30363d] font-mono font-semibold shrink-0 cursor-default">
-                  {pkg.latestVersion}
-                </span>
-              </TooltipTrigger>
-
-              <TooltipContent>Latest published version</TooltipContent>
-            </Tooltip>
-          )}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-2.5 min-w-0 pt-0.5">
-          <h3 className="font-sans font-bold text-base text-slate-900 dark:text-[#f0f6fc] group-hover:text-[#00ADD8] dark:group-hover:text-sky-400 transition-colors truncate">
-            {pkg.name}
-          </h3>
-
-          {pkg.githubUrl ? (
-            <a
-              href={pkg.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="text-[11px] text-[#007D9C] dark:text-sky-400/80 hover:text-[#005F77] dark:hover:text-sky-300 hover:underline font-mono truncate select-all font-medium"
-            >
-              {pkg.importPath}
-            </a>
-          ) : (
-            <span className="text-[11px] text-slate-400 dark:text-[#484f58] font-mono truncate select-all">
-              {pkg.importPath}
-            </span>
-          )}
-        </div>
-
-        <p className="text-slate-600 dark:text-[#8b949e] text-xs sm:text-sm line-clamp-2 leading-relaxed font-light">
-          {pkg.description}
+        <p className="line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-[#8b949e] font-light">
+          {pkg.description || "No description provided for this package."}
         </p>
+      </div>
 
-        <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-[#8b949e] relative z-10 pt-1 select-none font-sans">
-          {pkg.stars > 0 && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="relative group/tooltip flex items-center gap-1 font-semibold text-[#007D9C] dark:text-sky-400 bg-[#00ADD8]/8 dark:bg-sky-950/40 px-2.5 py-0.5 rounded-full border border-[#00ADD8]/20 dark:border-sky-800/50 hover:bg-[#00ADD8]/15 dark:hover:bg-sky-900/40 transition-colors cursor-default">
-                  <Star className="w-3.5 h-3.5 fill-[#00ADD8] dark:fill-sky-500 stroke-[#00ADD8] dark:stroke-sky-500" />
-                  <span>{pkg.stars.toLocaleString()} stars</span>
-                </div>
-              </TooltipTrigger>
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-4 pt-5 border-t border-slate-100 dark:border-[#30363d]/50">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-1.5 text-xs font-bold text-[#00ADD8] dark:text-sky-400 cursor-default">
+                <Star className="h-4 w-4 fill-[#00ADD8] stroke-[#00ADD8]" />
+                <span>{pkg.stars.toLocaleString()}</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>Total GitHub stars</TooltipContent>
+          </Tooltip>
 
-              <TooltipContent>Total GitHub stars</TooltipContent>
-            </Tooltip>
-          )}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-[#8b949e] cursor-default">
+                <GitFork className="h-4 w-4" />
+                <span>{(pkg.forks ?? 0).toLocaleString()}</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>Number of GitHub repository forks</TooltipContent>
+          </Tooltip>
 
-          {(pkg.forks ?? 0) > 0 && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center gap-1 text-slate-500 dark:text-[#8b949e] cursor-default">
-                  <GitFork className="w-3.5 h-3.5 text-slate-400 dark:text-[#484f58]" />
-                  <span>{(pkg.forks ?? 0).toLocaleString()} forks</span>
-                </div>
-              </TooltipTrigger>
-
-              <TooltipContent>Number of GitHub repository forks</TooltipContent>
-            </Tooltip>
-          )}
-
-          {pkg.dependenciesCount !== undefined && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center gap-1 text-slate-500 dark:text-[#8b949e] cursor-default">
-                  <Database className="w-3.5 h-3.5 text-slate-400 dark:text-[#484f58]" />
-                  <span>{pkg.dependenciesCount} deps</span>
-                </div>
-              </TooltipTrigger>
-
-              <TooltipContent>
-                {pkg.dependenciesCount === 0
-                  ? "No external dependencies"
-                  : "Direct and indirect Go module dependencies"}
-              </TooltipContent>
-            </Tooltip>
-          )}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-[#8b949e] cursor-default">
+                <Database className="h-4 w-4" />
+                <span>{pkg.dependenciesCount ?? 0} deps</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              {pkg.dependenciesCount === 0
+                ? "No external dependencies"
+                : "Direct and indirect Go module dependencies"}
+            </TooltipContent>
+          </Tooltip>
 
           {pkg.author && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-1 text-slate-500 dark:text-[#8b949e] cursor-default">
-                  <User className="w-3.5 h-3.5 text-slate-400 dark:text-[#484f58]" />
-                  <span className="truncate max-w-30">{pkg.author}</span>
-                </div>
+                <a
+                  href={`https://github.com/${pkg.author}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#00ADD8] dark:text-[#8b949e] dark:hover:text-sky-400 transition-colors"
+                >
+                  <User className="h-4 w-4" />
+                  <span className="truncate max-w-30">@{pkg.author}</span>
+                </a>
               </TooltipTrigger>
-
               <TooltipContent>Package author on GitHub</TooltipContent>
             </Tooltip>
           )}
+        </div>
 
+        <div className="flex items-center gap-4 ml-auto">
           {relativeTime && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-1 text-slate-500 dark:text-[#8b949e] cursor-default">
-                  <Clock className="w-3.5 h-3.5 text-slate-400 dark:text-[#484f58]" />
+                <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 dark:text-slate-500 cursor-default">
+                  <Clock className="h-3.5 w-3.5" />
                   <span>{relativeTime}</span>
                 </div>
               </TooltipTrigger>
-
               <TooltipContent>Last updated on {pkg.publishedAt}</TooltipContent>
             </Tooltip>
           )}
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-slate-300 group-hover:bg-[#00ADD8] group-hover:text-white transition-all duration-500 dark:bg-[#161b22] dark:group-hover:bg-sky-500/20 dark:group-hover:text-sky-400 border border-slate-100 dark:border-white/5 shadow-sm">
+            <ArrowRight className="h-4 w-4 -translate-x-px group-hover:translate-x-0 transition-transform" />
+          </div>
         </div>
-      </div>
-
-      <div className="flex items-center gap-2 sm:self-center shrink-0 select-none pt-2 md:pt-0">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleFavorite(toGoPackage(pkg));
-              }}
-              className={cn(
-                "p-2.5 rounded-lg border transition-all duration-150 cursor-pointer active:scale-90 flex items-center justify-center shadow-sm",
-                saved
-                  ? "bg-rose-50 dark:bg-rose-950/10 border-rose-200 dark:border-rose-900/40 text-rose-500 dark:text-rose-400"
-                  : "bg-white dark:bg-[#161b22] border-slate-200 dark:border-[#30363d] text-slate-400 dark:text-[#484f58] hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20",
-              )}
-            >
-              <Heart
-                className={cn(
-                  "w-4 h-4",
-                  saved && "fill-rose-500 text-rose-500",
-                )}
-              />
-            </button>
-          </TooltipTrigger>
-
-          <TooltipContent>
-            {saved ? "Remove from favorites" : "Save to favorites"}
-          </TooltipContent>
-        </Tooltip>
       </div>
     </div>
   );
