@@ -1,14 +1,21 @@
- "use client";
+"use client";
 
-import { ChevronDown, Moon, Sun, Terminal } from "lucide-react";
+import { ChevronDown, Moon, Sun } from "lucide-react";
 import type { Route } from "next";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
-import { ECOSYSTEM_LINKS, NAV_LINKS } from "@/components/layout/nav-links";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/common/Tooltip";
 import { HeaderSearch } from "@/components/layout/header/HeaderSearch";
+import { ECOSYSTEM_LINKS, NAV_LINKS } from "@/components/layout/nav-links";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,12 +23,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/common/Tooltip";
 import { useFavorites } from "@/hooks/useFavorites";
 import { cn } from "@/lib/utils";
 
@@ -77,19 +78,25 @@ export function Header() {
   return (
     <header className="sticky top-0 z-100 bg-go-blue dark:bg-[#0d1117] shadow-md select-none border-b border-[#005a71]/50 dark:border-[#30363d] h-16 w-full transition-colors duration-300">
       <div className="container-scale h-full flex items-center justify-between gap-6">
-        <div className="flex items-center space-x-3 shrink-0">
+        <div className="flex items-center space-x-1 shrink-0">
           <Link
             href="/"
-            className="bg-white dark:bg-[#161b22] p-1.5 rounded-lg flex items-center justify-center shadow-inner   transition-transform border border-white/20 dark:border-[#30363d]"
+            className="flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
           >
-            <Terminal className="w-5 h-5 text-go-blue dark:text-sky-400 stroke-[2.5]" />
+            <Image
+              src="/logo.png"
+              alt="GoPkg"
+              width={48}
+              height={48}
+              className="object-contain"
+            />
           </Link>
 
           <Link
             href="/"
-            className="font-display font-black text-xl tracking-tight text-white dark:text-[#f0f6fc] hover:opacity-90 transition-opacity"
+            className="font-display font-black text-2xl tracking-tight text-white dark:text-[#f0f6fc] hover:opacity-90 transition-opacity"
           >
-            GoPkg
+            Pkg
           </Link>
         </div>
 
