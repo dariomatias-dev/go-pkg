@@ -6,6 +6,7 @@ import {
   getGithubHeaders,
   parseGithubRepo,
 } from "@/lib/github/client";
+import { isValidImportPath } from "@/lib/validations";
 import type { GitHubRelease } from "@/lib/github/types";
 
 async function getCachedReleases(
@@ -43,6 +44,10 @@ export async function GET(request: Request) {
 
   if (!importPath) {
     return NextResponse.json({ error: "Missing importPath" }, { status: 400 });
+  }
+
+  if (!isValidImportPath(importPath)) {
+    return NextResponse.json({ error: "Invalid importPath" }, { status: 400 });
   }
 
   const repoInfo = parseGithubRepo(importPath);

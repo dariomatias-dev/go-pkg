@@ -2,6 +2,7 @@ import { cacheLife } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { getPackageDetail } from "@/lib/github";
+import { isValidImportPath } from "@/lib/validations";
 
 async function getCachedPackageDetail(importPath: string) {
   "use cache";
@@ -21,6 +22,10 @@ export async function GET(request: Request) {
         { error: "Missing importPath path" },
         { status: 400 },
       );
+    }
+
+    if (!isValidImportPath(importPath)) {
+      return NextResponse.json({ error: "Invalid importPath" }, { status: 400 });
     }
 
     const data = await getCachedPackageDetail(importPath);

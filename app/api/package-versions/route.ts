@@ -2,6 +2,7 @@ import { cacheLife } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { GO_PROXY_BASE, escapeGoModule } from "@/lib/github/client";
+import { isValidImportPath } from "@/lib/validations";
 
 async function getVersions(importPath: string): Promise<string[]> {
   "use cache";
@@ -25,6 +26,10 @@ export async function GET(request: Request) {
 
   if (!importPath) {
     return NextResponse.json({ error: "Missing importPath" }, { status: 400 });
+  }
+
+  if (!isValidImportPath(importPath)) {
+    return NextResponse.json({ error: "Invalid importPath" }, { status: 400 });
   }
 
   try {

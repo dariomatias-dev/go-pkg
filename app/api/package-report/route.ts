@@ -2,6 +2,7 @@ import { cacheLife } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { parseGithubRepo } from "@/lib/github/client";
+import { isValidImportPath } from "@/lib/validations";
 
 export interface GoReportCardResult {
   grade: string;
@@ -59,6 +60,10 @@ export async function GET(request: Request) {
 
   if (!importPath) {
     return NextResponse.json({ error: "Missing importPath" }, { status: 400 });
+  }
+
+  if (!isValidImportPath(importPath)) {
+    return NextResponse.json({ error: "Invalid importPath" }, { status: 400 });
   }
 
   const repoInfo = parseGithubRepo(importPath);
