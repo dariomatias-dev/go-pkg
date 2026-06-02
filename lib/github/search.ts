@@ -57,7 +57,6 @@ export async function fetchPopularPackages(
 
   const base: PopularPackage[] = items.map((item) => ({
     importPath: `github.com/${item.full_name}`,
-    change: `+${5 + Math.floor(Math.random() * 20)}%`,
     name: item.name,
     description: item.description ?? "No description available.",
     stars: item.stargazers_count ?? 0,

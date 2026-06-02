@@ -58,9 +58,7 @@ export function parseGithubRepo(
 
   const owner = parts[1];
 
-  let repo = parts[2];
-
-  if (repo.includes(".")) repo = repo.split(".")[0];
+  const repo = parts[2];
 
   return { owner, repo };
 }

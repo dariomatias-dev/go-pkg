@@ -5,7 +5,6 @@ export interface PopularPackage {
   name: string;
   description: string;
   stars: number;
-  change: string;
   category: string;
   tags: string[];
   githubUrl?: string;

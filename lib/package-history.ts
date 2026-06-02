@@ -14,7 +14,7 @@ export function subscribePackageHistory(callback: () => void): () => void {
   return () => window.removeEventListener(EVENT, callback);
 }
 
-let _cachedRaw: string | null = undefined!;
+let _cachedRaw: string | null | undefined = undefined;
 let _cachedSnapshot: string[] = [];
 
 export function getPackageHistorySnapshot(): string[] {
