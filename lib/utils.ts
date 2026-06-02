@@ -12,7 +12,7 @@ export function encodeImportPath(importPath: string): string {
 export function formatRelativeTime(dateStr: string): string {
   if (
     !dateStr ||
-    ["desconhecido", "unknown", "n/a"].includes(dateStr.toLowerCase())
+    ["unknown", "n/a"].includes(dateStr.toLowerCase())
   ) {
     return "";
   }

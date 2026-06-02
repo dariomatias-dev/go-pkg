@@ -31,7 +31,7 @@ export async function GET(request: Request) {
       100,
       Math.max(1, Number(url.searchParams.get("perPage") ?? "10")),
     );
-    const sort = (url.searchParams.get("sort") ?? "best") as SearchSort;
+    const sort = (url.searchParams.get("sort") ?? "stars") as SearchSort;
     const order = (url.searchParams.get("order") ?? "desc") as SearchOrder;
 
     const data = await getCachedSearch(

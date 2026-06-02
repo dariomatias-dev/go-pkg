@@ -65,7 +65,7 @@ export async function fetchPopularPackages(
     license: item.license?.spdx_id || item.license?.name || "",
     author: item.owner?.login || "",
     publishedAt: item.pushed_at
-      ? new Date(item.pushed_at).toLocaleDateString("pt-BR")
+      ? new Date(item.pushed_at).toISOString().split("T")[0]
       : "",
     category: guessCategory(item.name, item.description ?? ""),
     tags: [item.name.toLowerCase(), ...(item.topics ?? []).slice(0, 3)],
