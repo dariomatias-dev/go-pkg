@@ -55,9 +55,8 @@ export async function fetchPopularPackages(
   const items = Array.isArray(data.items) ? data.items : [];
   const total = Number(data.total_count ?? items.length);
 
-  const base: PopularPackage[] = items.map((item, index) => ({
+  const base: PopularPackage[] = items.map((item) => ({
     importPath: `github.com/${item.full_name}`,
-    trendScore: Math.max(0, 100 - index * 1.5),
     change: `+${5 + Math.floor(Math.random() * 20)}%`,
     name: item.name,
     description: item.description ?? "No description available.",

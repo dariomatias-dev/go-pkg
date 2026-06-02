@@ -5,7 +5,6 @@ export interface PopularPackage {
   name: string;
   description: string;
   stars: number;
-  trendScore: number;
   change: string;
   category: string;
   tags: string[];
