@@ -26,8 +26,11 @@ export async function GET(request: Request) {
     const query = url.searchParams.get("q") ?? "";
     const category = url.searchParams.get("category") ?? "";
     const tag = url.searchParams.get("tag") ?? "";
-    const page = Number(url.searchParams.get("page") ?? "1");
-    const perPage = Number(url.searchParams.get("perPage") ?? "10");
+    const page = Math.max(1, Number(url.searchParams.get("page") ?? "1"));
+    const perPage = Math.min(
+      100,
+      Math.max(1, Number(url.searchParams.get("perPage") ?? "10")),
+    );
     const sort = (url.searchParams.get("sort") ?? "best") as SearchSort;
     const order = (url.searchParams.get("order") ?? "desc") as SearchOrder;
 
