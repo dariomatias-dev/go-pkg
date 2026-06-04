@@ -72,7 +72,11 @@ export function usePackageDetail(importPath: string, initialTab?: Tab) {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    fetch(`/api/package-info?importPath=${encodeURIComponent(importPath)}`)
+    const controller = new AbortController();
+
+    fetch(`/api/package-info?importPath=${encodeURIComponent(importPath)}`, {
+      signal: controller.signal,
+    })
       .then((r) => {
         if (!r.ok)
           throw new Error(
@@ -101,8 +105,14 @@ export function usePackageDetail(importPath: string, initialTab?: Tab) {
           pushTab("readme");
         }
       })
-      .catch((e: Error) => setError(e.message))
-      .finally(() => setLoading(false));
+      .catch((e: Error) => {
+        if (e.name !== "AbortError") setError(e.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+
+    return () => controller.abort();
   }, [importPath, capturedInitialTab, pushTab]);
 
   const handleTabChange = (tab: Tab) => {
