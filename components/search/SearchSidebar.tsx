@@ -87,7 +87,7 @@ export function SearchSidebar({
             <span>All Categories</span>
 
             <span className="bg-slate-200/70 dark:bg-[#30363d] text-slate-700 dark:text-[#c9d1d9] min-w-5 h-5 px-1 rounded-full flex items-center justify-center text-[10px] font-bold">
-              {categories.length || 12}
+              {categories.length}
             </span>
           </button>
 

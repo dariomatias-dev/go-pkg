@@ -95,7 +95,7 @@ export default function SearchSection({
 
       const data = (await res.json()) as PackageSearchResponse;
 
-      setResults(data.results);
+      setResults(data.results ?? []);
       setTotalResults(data.totalResults);
     } catch (err: unknown) {
       if ((err as { name?: string }).name === "AbortError") return;
@@ -167,7 +167,7 @@ export default function SearchSection({
     });
   };
 
-  const hasFilter = !!(query || category || tag);
+  const hasFilter = !!(query || category || tag || semanticSearch);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
