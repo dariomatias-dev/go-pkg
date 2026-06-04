@@ -13,10 +13,14 @@ import { encodeImportPath } from "@/lib/utils";
 import type { PopularPackage, PopularPackageResponse } from "@/types";
 
 const PER_PAGE = 4;
+const MAX_PAGES = 10;
 
-async function fetchPage(page: number): Promise<PopularPackageResponse> {
+async function fetchPage(
+  page: number,
+  perPage: number = PER_PAGE,
+): Promise<PopularPackageResponse> {
   const res = await fetch(
-    `/api/popular-package?page=${page}&perPage=${PER_PAGE}`,
+    `/api/popular-package?page=${page}&perPage=${perPage}`,
   );
 
   if (!res.ok) throw new Error("Failed to fetch");
@@ -26,7 +30,6 @@ async function fetchPage(page: number): Promise<PopularPackageResponse> {
 
 export function PopularPackageSection() {
   const router = useRouter();
-
   const { favorites, removeFavorite } = useFavorites();
 
   const [packages, setPackages] = useState<PopularPackage[]>([]);
@@ -37,12 +40,18 @@ export function PopularPackageSection() {
   const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
-    fetchPage(1)
+    const urlPage = Math.min(
+      MAX_PAGES,
+      Math.max(1, Number(new URLSearchParams(window.location.search).get("page") || 1)),
+    );
+    const count = urlPage * PER_PAGE;
+
+    fetchPage(1, count)
       .then((data) => {
         setPackages(data.packages ?? []);
         setPopularTags(data.popularTags ?? []);
         setHasMore(data.hasMore);
-        setPage(1);
+        setPage(Math.ceil((data.packages?.length ?? PER_PAGE) / PER_PAGE));
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -58,6 +67,7 @@ export function PopularPackageSection() {
         setPackages((prev) => [...prev, ...(data.packages ?? [])]);
         setHasMore(data.hasMore);
         setPage(nextPage);
+        router.replace(`?page=${nextPage}`, { scroll: false });
       })
       .catch(() => {})
       .finally(() => setLoadingMore(false));
