@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -48,6 +49,9 @@ export function Pagination({
 }: PaginationProps) {
   const totalPages = Math.ceil(totalResults / perPage);
 
+  const [jumpIdx, setJumpIdx] = useState<number | null>(null);
+  const [jumpVal, setJumpVal] = useState("");
+
   if (totalPages <= 1) return null;
 
   const pages = buildPages(currentPage, totalPages);
@@ -56,6 +60,19 @@ export function Pagination({
     onPageChange(page);
 
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const openJump = (i: number) => {
+    setJumpIdx(i);
+    setJumpVal("");
+  };
+
+  const commitJump = () => {
+    const n = parseInt(jumpVal, 10);
+
+    if (!isNaN(n) && n >= 1 && n <= totalPages) go(n);
+
+    setJumpIdx(null);
   };
 
   return (
@@ -87,24 +104,36 @@ export function Pagination({
         <div className="flex items-center gap-0.5 sm:gap-1 flex-wrap justify-center">
           {pages.map((p, i) =>
             p === "..." ? (
-              <button
-                key={`ellipsis-${i}`}
-                type="button"
-                onClick={() => {
-                  const prev = pages[i - 1];
-                  const next = pages[i + 1];
-                  if (typeof prev === "number" && typeof next === "number") {
-                    go(Math.round((prev + next) / 2));
-                  }
-                }}
-                className={cn(
-                  btnBase,
-                  "text-slate-400 dark:text-[#484f58] hover:text-[#007D9C] dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d] tracking-wider",
-                )}
-                title="Jump to middle"
-              >
-                &hellip;
-              </button>
+              jumpIdx === i ? (
+                <input
+                  key={`ellipsis-${i}`}
+                  autoFocus
+                  type="number"
+                  min={1}
+                  max={totalPages}
+                  value={jumpVal}
+                  onChange={(e) => setJumpVal(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") commitJump();
+                    if (e.key === "Escape") setJumpIdx(null);
+                  }}
+                  onBlur={() => setJumpIdx(null)}
+                  className="h-8 sm:h-9 w-14 px-1.5 rounded-lg border border-[#00ADD8] dark:border-sky-500 text-xs font-bold text-center bg-white dark:bg-[#0d1117] text-slate-800 dark:text-[#f0f6fc] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              ) : (
+                <button
+                  key={`ellipsis-${i}`}
+                  type="button"
+                  onClick={() => openJump(i)}
+                  className={cn(
+                    btnBase,
+                    "text-slate-400 dark:text-[#484f58] hover:text-[#007D9C] dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d] tracking-wider",
+                  )}
+                  title="Jump to page"
+                >
+                  &hellip;
+                </button>
+              )
             ) : (
               <button
                 type="button"
