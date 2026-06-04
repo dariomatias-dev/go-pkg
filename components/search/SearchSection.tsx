@@ -12,7 +12,7 @@ import type {
   CuratedCategory,
   GoPackage,
   PackageSearchResponse,
-  PopularPackageResponse,
+
 } from "@/types";
 
 type SearchSort = "best" | "stars" | "updated" | "forks";
@@ -25,6 +25,7 @@ interface SearchSectionProps {
   initialPerPage?: number;
   initialSemantic?: boolean;
   initialSort?: SearchSort;
+  initialCategories?: CuratedCategory[];
 }
 
 export default function SearchSection({
@@ -35,6 +36,7 @@ export default function SearchSection({
   initialPerPage = 10,
   initialSemantic = false,
   initialSort = "stars" as SearchSort,
+  initialCategories = [],
 }: SearchSectionProps) {
   const router = useRouter();
 
@@ -46,22 +48,13 @@ export default function SearchSection({
   const [totalResults, setTotalResults] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [categories, setCategories] = useState<CuratedCategory[]>([]);
+  const [categories] = useState<CuratedCategory[]>(initialCategories);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [perPage, setPerPage] = useState(initialPerPage);
   const [sort, setSort] = useState<SearchSort>(initialSort);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    fetch("/api/popular-package")
-      .then((r) => r.json())
-      .then((data: PopularPackageResponse) => {
-        if (data.categories) setCategories(data.categories);
-      })
-      .catch(() => {});
   }, []);
 
   const runSearch = async (

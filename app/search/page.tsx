@@ -1,4 +1,5 @@
 import SearchSection from "@/components/search/SearchSection";
+import { CURATED_CATEGORIES } from "@/lib/curated-categories";
 
 const VALID_SORTS = new Set(["best", "stars", "updated", "forks"]);
 
@@ -35,6 +36,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           initialPerPage={perPage}
           initialSemantic={params?.semantic === "true"}
           initialSort={sort as "best" | "stars" | "updated" | "forks"}
+          initialCategories={CURATED_CATEGORIES}
         />
       </div>
     </div>
