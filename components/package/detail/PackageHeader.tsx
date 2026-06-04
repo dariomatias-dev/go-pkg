@@ -263,18 +263,24 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <a
-                href={
-                  pkg.githubUrl ? `${pkg.githubUrl}/blob/HEAD/LICENSE` : "#"
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold text-slate-700 dark:text-[#c9d1d9] hover:border-[#00ADD8]/50 transition-colors"
-              >
-                <Shield className="h-4 w-4 text-slate-400" />
-                LICENSE:{" "}
-                <span className="text-[#007D9C]">{pkg.license || "N/A"}</span>
-              </a>
+              {pkg.githubUrl ? (
+                <a
+                  href={`${pkg.githubUrl}/blob/HEAD/LICENSE`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold text-slate-700 dark:text-[#c9d1d9] hover:border-[#00ADD8]/50 transition-colors"
+                >
+                  <Shield className="h-4 w-4 text-slate-400" />
+                  LICENSE:{" "}
+                  <span className="text-[#007D9C]">{pkg.license || "N/A"}</span>
+                </a>
+              ) : (
+                <span className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold text-slate-700 dark:text-[#c9d1d9]">
+                  <Shield className="h-4 w-4 text-slate-400" />
+                  LICENSE:{" "}
+                  <span className="text-[#007D9C]">{pkg.license || "N/A"}</span>
+                </span>
+              )}
             </TooltipTrigger>
 
             <TooltipContent>View License</TooltipContent>
