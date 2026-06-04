@@ -10,15 +10,15 @@ import type { PopularPackage, PopularPackageResponse } from "@/types";
 
 const PER_PAGE = 10;
 
-interface Props {
-  initialPage: number;
-}
-
-export function PopularPageContent({ initialPage }: Props) {
+export function PopularPageContent() {
   const router = useRouter();
   const [packages, setPackages] = useState<PopularPackage[]>([]);
   const [total, setTotal] = useState(0);
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [currentPage, setCurrentPage] = useState(() =>
+    typeof window !== "undefined"
+      ? Math.max(1, Number(new URLSearchParams(window.location.search).get("page") || 1))
+      : 1,
+  );
   const [fetchedPage, setFetchedPage] = useState(0);
 
   const loading = fetchedPage !== currentPage;
