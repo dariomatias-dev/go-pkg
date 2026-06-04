@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface ChatMessage {
+  id: string;
   role: "user" | "model";
   text: string;
 }
@@ -21,6 +22,7 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
   const [prevModulePath, setPrevModulePath] = useState(importPath);
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
+      id: crypto.randomUUID(),
       role: "model",
       text: `Hello! I'm Gopher AI. I can help with code examples, architecture questions, or how to integrate **${importPath}** into your Go project. What would you like to know?`,
     },
@@ -33,6 +35,7 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
     setPrevModulePath(importPath);
     setMessages([
       {
+        id: crypto.randomUUID(),
         role: "model",
         text: `Hello! I'm Gopher AI. I can help with code examples, architecture questions, or how to integrate **${importPath}** into your Go project. What would you like to know?`,
       },
@@ -57,7 +60,10 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
 
     setInput("");
 
-    const updated: ChatMessage[] = [...messages, { role: "user", text }];
+    const updated: ChatMessage[] = [
+      ...messages,
+      { id: crypto.randomUUID(), role: "user", text },
+    ];
 
     setMessages(updated);
     setLoading(true);
@@ -79,6 +85,7 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
       setMessages([
         ...updated,
         {
+          id: crypto.randomUUID(),
           role: "model",
           text: res.ok ? d.text : "An error occurred. Please try again.",
         },
@@ -86,7 +93,11 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
     } catch {
       setMessages([
         ...updated,
-        { role: "model", text: "No response from server. Please try again." },
+        {
+          id: crypto.randomUUID(),
+          role: "model",
+          text: "No response from server. Please try again.",
+        },
       ]);
     } finally {
       setLoading(false);
@@ -159,9 +170,9 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
               </div>
             )}
 
-            {messages.map((msg, i) => (
+            {messages.map((msg) => (
               <div
-                key={i}
+                key={msg.id}
                 className={cn(
                   "flex",
                   msg.role === "user" ? "justify-end" : "justify-start",
