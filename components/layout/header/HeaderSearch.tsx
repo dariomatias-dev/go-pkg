@@ -3,7 +3,7 @@
 import { Search, X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { SearchHistoryDropdown } from "@/components/common/SearchHistoryDropdown";
 import { cn } from "@/lib/utils";
@@ -22,6 +22,7 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
   const [inputQuery, setInputQuery] = useState(urlQuery);
   const [syncedUrl, setSyncedUrl] = useState(urlQuery);
   const [showHistory, setShowHistory] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   if (syncedUrl !== urlQuery) {
     setSyncedUrl(urlQuery);
@@ -33,6 +34,9 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
 
     saveToHistory(q.trim());
     setShowHistory(false);
+
+    inputRef.current?.blur();
+
     onSearch?.();
 
     router.push(`/search?q=${encodeURIComponent(q.trim())}` as Route);
@@ -54,6 +58,7 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
       >
         <div className="relative flex items-center">
           <input
+            ref={inputRef}
             type="text"
             placeholder="Search Go packages..."
             value={inputQuery}
