@@ -113,9 +113,10 @@ export function Header() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="relative h-9 w-9 text-white dark:text-[#8b949e] hover:bg-white dark:hover:bg-[#30363d] border border-sky-400/20 dark:border-[#30363d] rounded-full focus-visible:ring-0 transition-all"
+                      className="relative h-9 w-9 text-white dark:text-[#8b949e] hover:bg-white dark:hover:bg-[#30363d] border border-sky-400/20 dark:border-[#30363d] rounded-full focus-visible:ring-0 transition-all cursor-pointer"
                     >
                       <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+
                       <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -135,12 +136,14 @@ export function Header() {
                 >
                   Light
                 </DropdownMenuItem>
+
                 <DropdownMenuItem
                   onClick={() => setTheme("dark")}
                   className="px-3 py-2 rounded-xl cursor-pointer text-sm font-medium dark:text-[#c9d1d9] dark:focus:bg-[#21262d] dark:focus:text-[#f0f6fc]"
                 >
                   Dark
                 </DropdownMenuItem>
+
                 <DropdownMenuItem
                   onClick={() => setTheme("system")}
                   className="px-3 py-2 rounded-xl cursor-pointer text-sm font-medium dark:text-[#c9d1d9] dark:focus:bg-[#21262d] dark:focus:text-[#f0f6fc]"
@@ -154,7 +157,7 @@ export function Header() {
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex items-center gap-2.5 px-4 py-1.5 bg-[#005a71] dark:bg-[#21262d] border border-sky-400/30 dark:border-[#30363d] rounded-full text-white dark:text-[#c9d1d9] font-bold text-sm transition-all hover:bg-[#004d61] dark:hover:bg-[#30363d] dark:hover:text-[#f0f6fc] shadow-sm"
+              className="flex items-center gap-2.5 px-4 py-1.5 bg-[#005a71] dark:bg-[#21262d] border border-sky-400/30 dark:border-[#30363d] rounded-full text-white dark:text-[#c9d1d9] font-bold text-sm transition-all hover:bg-[#004d61] dark:hover:bg-[#30363d] dark:hover:text-[#f0f6fc] shadow-sm cursor-pointer"
             >
               <span>Menu</span>
 
@@ -172,6 +175,7 @@ export function Header() {
                   <p className="px-3.5 py-2 text-[10px] font-black text-slate-400 dark:text-[#8b949e] uppercase tracking-widest">
                     Search
                   </p>
+
                   <Suspense fallback={null}>
                     <HeaderSearch mobile onSearch={() => setMenuOpen(false)} />
                   </Suspense>
@@ -181,6 +185,7 @@ export function Header() {
                   <p className="px-3.5 py-2 text-[10px] font-black text-slate-400 dark:text-[#8b949e] uppercase tracking-widest">
                     Navigation
                   </p>
+
                   {navLinks.map(({ href, label, icon: Icon, badge }) => (
                     <Link
                       key={href}
@@ -192,6 +197,7 @@ export function Header() {
                         <Icon className="w-4 h-4 opacity-70" />
                         <span>{label}</span>
                       </div>
+
                       {badge !== undefined && (
                         <span className="min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 text-[10px] font-black">
                           {badge}
@@ -205,6 +211,7 @@ export function Header() {
                   <p className="px-3.5 py-2 text-[10px] font-black text-slate-400 dark:text-[#8b949e] uppercase tracking-widest">
                     Go Ecosystem
                   </p>
+
                   {ECOSYSTEM_LINKS.map(({ href, label, icon: Icon }) => (
                     <a
                       key={href}
@@ -214,6 +221,7 @@ export function Header() {
                       className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-[#c9d1d9] hover:bg-slate-100 dark:hover:bg-[#30363d] dark:hover:text-[#f0f6fc] transition-all"
                     >
                       <Icon className="w-4 h-4 opacity-70" />
+
                       <span>{label}</span>
                     </a>
                   ))}
