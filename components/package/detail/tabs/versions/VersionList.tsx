@@ -65,7 +65,7 @@ export function VersionList({
               key={ver}
               onClick={() => onSelect(ver)}
               className={cn(
-                "w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition-all border",
+                "w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition-all border cursor-pointer",
                 isSelected
                   ? "border-[#00ADD8] dark:border-sky-500 bg-sky-50 dark:bg-sky-950/20 text-[#007D9C] dark:text-sky-400 font-bold"
                   : "border-slate-100 dark:border-[#30363d] text-slate-600 dark:text-[#8b949e] hover:bg-slate-50 dark:hover:bg-[#161b22] hover:border-slate-200 dark:hover:border-[#484f58]",

@@ -117,7 +117,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-400 hover:text-black dark:text-slate-500 dark:hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-400 hover:text-black dark:text-slate-500 dark:hover:text-white transition-colors cursor-pointer"
                 >
                   <FaGithub className="h-3.5 w-3.5" />
                   <span>GitHub</span>
@@ -135,7 +135,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
                   toggleFavorite(toGoPackage(pkg));
                 }}
                 className={cn(
-                  "flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300 active:scale-90 shrink-0",
+                  "flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300 active:scale-90 shrink-0 cursor-pointer",
                   saved
                     ? "bg-rose-50 text-rose-500 dark:bg-rose-950/20 dark:text-rose-400 shadow-sm"
                     : "bg-slate-50/50 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:bg-[#161b22]/50 dark:text-[#484f58] dark:hover:bg-rose-950/20 dark:hover:text-rose-400",
@@ -173,7 +173,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-50/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 border border-slate-200/60 transition-colors hover:border-[#00ADD8]/40 hover:text-[#00ADD8] dark:bg-[#21262d]/80 dark:text-slate-400 dark:border-[#30363d] dark:hover:text-sky-400"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-50/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 border border-slate-200/60 transition-colors hover:border-[#00ADD8]/40 hover:text-[#00ADD8] dark:bg-[#21262d]/80 dark:text-slate-400 dark:border-[#30363d] dark:hover:text-sky-400 cursor-pointer"
                 >
                   <Shield className="h-3 w-3" />
                   {pkg.license}
@@ -235,7 +235,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#00ADD8] dark:text-[#8b949e] dark:hover:text-sky-400 transition-colors"
+                  className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#00ADD8] dark:text-[#8b949e] dark:hover:text-sky-400 transition-colors cursor-pointer"
                 >
                   <User className="h-4 w-4" />
                   <span className="truncate max-w-30">@{pkg.author}</span>

@@ -160,7 +160,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
               <TooltipTrigger asChild>
                 <button
                   onClick={handleShare}
-                  className="flex h-10 px-4 items-center gap-2 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold transition-all active:scale-95 shadow-sm hover:bg-slate-50 dark:hover:bg-[#161b22]"
+                  className="flex h-10 px-4 items-center gap-2 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold transition-all active:scale-95 shadow-sm hover:bg-slate-50 dark:hover:bg-[#161b22] cursor-pointer"
                 >
                   <Link2 className="h-3.5 w-3.5 text-[#00ADD8]" />
                   {copied ? "Copied" : "Share"}
@@ -178,7 +178,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                       `/compare?pkg=${encodeURIComponent(pkg.importPath)}`,
                     )
                   }
-                  className="flex h-10 px-4 items-center gap-2 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold transition-all active:scale-95 shadow-sm hover:bg-slate-50 dark:hover:bg-[#161b22]"
+                  className="flex h-10 px-4 items-center gap-2 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold transition-all active:scale-95 shadow-sm hover:bg-slate-50 dark:hover:bg-[#161b22] cursor-pointer"
                 >
                   <Scale className="h-3.5 w-3.5 text-[#00ADD8]" />
                   Compare
@@ -193,7 +193,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                 <button
                   onClick={() => toggleFavorite(pkg)}
                   className={cn(
-                    "flex h-10 px-4 items-center gap-2 rounded-lg font-bold text-xs transition-all active:scale-95 shadow-sm border",
+                    "flex h-10 px-4 items-center gap-2 rounded-lg font-bold text-xs transition-all active:scale-95 shadow-sm border cursor-pointer",
                     isFavorite
                       ? "bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-950/20 dark:border-rose-900/40 dark:text-rose-400"
                       : "bg-white border-slate-200 text-slate-700 dark:bg-[#0d1117] dark:border-[#30363d] dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]",

@@ -59,7 +59,7 @@ export function CategoriesSection({ loading }: CategoriesSectionProps) {
           <button
             type="button"
             onClick={() => router.push("/search")}
-            className="text-xs font-semibold text-[#00ADD8] dark:text-sky-400 hover:text-[#007D9C] dark:hover:text-sky-300 flex items-center gap-1 transition-colors"
+            className="text-xs font-semibold text-[#00ADD8] dark:text-sky-400 hover:text-[#007D9C] dark:hover:text-sky-300 flex items-center gap-1 transition-colors cursor-pointer"
           >
             View all packages <ChevronRight className="w-3.5 h-3.5" />
           </button>

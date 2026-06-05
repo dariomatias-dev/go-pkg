@@ -50,7 +50,7 @@ export function CompareTable({
 
                         <button
                           onClick={() => removePackage(path)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all active:scale-90"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all active:scale-90 cursor-pointer"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

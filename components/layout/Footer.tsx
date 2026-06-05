@@ -9,9 +9,9 @@ import { ECOSYSTEM_LINKS, NAV_LINKS } from "@/components/layout/nav-links";
 const CURRENT_YEAR = new Date().getFullYear();
 
 const navLinkClass =
-  "group flex items-center gap-2.5 text-slate-400 hover:text-[#00ADD8] transition-all duration-200 text-xs font-medium";
+  "group flex items-center gap-2.5 text-slate-400 hover:text-[#00ADD8] transition-all duration-200 text-xs font-medium cursor-pointer";
 const externalLinkClass =
-  "group flex items-center gap-2 text-slate-500 hover:text-white transition-all duration-200 text-xs font-medium";
+  "group flex items-center gap-2 text-slate-500 hover:text-white transition-all duration-200 text-xs font-medium cursor-pointer";
 
 export function Footer() {
   return (
@@ -110,7 +110,7 @@ export function Footer() {
                   href="https://github.com/dariomatias-dev"
                   target="_blank"
                   rel="noopener"
-                  className="text-slate-400 hover:text-[#00ADD8] transition-colors"
+                  className="text-slate-400 hover:text-[#00ADD8] transition-colors cursor-pointer"
                 >
                   dariomatias-dev
                 </a>
