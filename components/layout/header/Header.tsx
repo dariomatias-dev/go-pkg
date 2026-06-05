@@ -128,6 +128,7 @@ export function Header() {
               <DropdownMenuContent
                 align="end"
                 sideOffset={12}
+                onCloseAutoFocus={(e) => e.preventDefault()}
                 className="w-40 p-1.5 rounded-2xl bg-white dark:bg-[#161b22] border-slate-200 dark:border-[#30363d] shadow-2xl z-110"
               >
                 <DropdownMenuItem
