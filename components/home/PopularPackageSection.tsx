@@ -42,7 +42,10 @@ export function PopularPackageSection() {
   useEffect(() => {
     const urlPage = Math.min(
       MAX_PAGES,
-      Math.max(1, Number(new URLSearchParams(window.location.search).get("page") || 1)),
+      Math.max(
+        1,
+        Number(new URLSearchParams(window.location.search).get("page") || 1),
+      ),
     );
     const count = urlPage * PER_PAGE;
 
@@ -144,6 +147,7 @@ export function PopularPackageSection() {
                 <p className="text-xs text-slate-400 dark:text-[#8b949e]">
                   No saved packages.
                 </p>
+
                 <p className="text-[10px] text-slate-400/85 dark:text-[#8b949e]/60 mt-1">
                   Click the heart on package cards to save them.
                 </p>
@@ -175,7 +179,7 @@ export function PopularPackageSection() {
                         e.stopPropagation();
                         removeFavorite(pkg.importPath);
                       }}
-                      className="text-slate-300 dark:text-[#484f58] hover:text-rose-500 dark:hover:text-rose-400 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
+                      className="text-slate-300 dark:text-[#484f58] hover:text-rose-500 dark:hover:text-rose-400 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0 cursor-pointer"
                     >
                       <HeartOff className="w-3.5 h-3.5" />
                     </button>
