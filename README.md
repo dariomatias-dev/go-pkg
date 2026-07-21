@@ -32,6 +32,7 @@
 - [Screenshots](#screenshots)
 - [Getting Started](#getting-started)
 - [Scripts](#scripts)
+- [Contributing](#contributing)
 - [License](#license)
 - [Author](#author)
 
@@ -138,6 +139,12 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 | `start`      | `pnpm start`      | Runs the production build. Requires `pnpm build` first.                                                                                               |
 | `lint`       | `pnpm lint`       | Runs ESLint across the project.                                                                                                                       |
 | `screenshot` | `pnpm screenshot` | Launches a headless browser against a running dev server and captures a screenshot of every app page into `public/screenshots/`, used for the README. |
+
+## Contributing
+
+Contributions make the open-source community an amazing place to learn and create. Any contributions you make are greatly appreciated.
+
+Before opening a pull request, see [CONTRIBUTING.md](CONTRIBUTING.md) for the local setup, commit message convention (Conventional Commits), and branching rules this project follows.
 
 ## License
 

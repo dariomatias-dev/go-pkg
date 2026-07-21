@@ -32,6 +32,7 @@
 - [Capturas de Tela](#capturas-de-tela)
 - [Como Começar](#como-começar)
 - [Scripts](#scripts)
+- [Contribuindo](#contribuindo)
 - [Licença](#licença)
 - [Autor](#autor)
 
@@ -138,6 +139,12 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador para visualizar
 | `start`      | `pnpm start`      | Executa a build de produção. Requer `pnpm build` antes.                                                                                                   |
 | `lint`       | `pnpm lint`       | Executa o ESLint em todo o projeto.                                                                                                                       |
 | `screenshot` | `pnpm screenshot` | Abre um navegador headless contra o servidor de desenvolvimento em execução e captura um print de cada página em `public/screenshots/`, usados no README. |
+
+## Contribuindo
+
+Contribuições tornam a comunidade de código aberto um lugar excelente para aprender e criar. Toda contribuição é bem-vinda.
+
+Antes de abrir um pull request, consulte o [CONTRIBUTING.md](CONTRIBUTING.md) para o setup local, a convenção de mensagens de commit (Conventional Commits) e as regras de branching deste projeto.
 
 ## Licença
 
