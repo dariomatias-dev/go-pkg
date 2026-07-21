@@ -9,7 +9,7 @@
 <br>
 
 <p align="center">
-  <strong>Idioma:</strong> <a href="README.md">English</a> | Português
+  <strong>Idioma:</strong> <a href="README.md">English</a> | Português (BR) | <a href="README.es.md">Español</a>
 </p>
 
 <h1 align="center">GoPkg</h1>
@@ -24,11 +24,12 @@
   <a href="https://github.com/dariomatias-dev/go-pkg/issues">Solicitar Funcionalidade</a>
 </p>
 
-## Sumário
+## Índice
 
 - [Sobre o Projeto](#sobre-o-projeto)
 - [Funcionalidades](#funcionalidades)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Capturas de Tela](#capturas-de-tela)
 - [Como Começar](#como-começar)
 - [Licença](#licença)
 - [Autor](#autor)
@@ -63,6 +64,17 @@ A plataforma também integra o **Gopher AI**, um assistente de chat baseado no G
 - **[Google Gemini](https://ai.google.dev/)**: Modelo de IA que alimenta o Gopher AI e os resumos de pacotes.
 - **[GitHub REST API](https://docs.github.com/en/rest)**: Metadados de repositórios, releases e conteúdo do README.
 - **[Go Module Proxy](https://proxy.golang.org/)**: Listas de versões, arquivos `go.mod` e contagem de dependências.
+
+## Capturas de Tela
+
+<div align="center">
+  <img src="public/screenshots/home.png" width="400" alt="Início"/>
+  <img src="public/screenshots/search.png" width="400" alt="Busca"/>
+  <img src="public/screenshots/popular.png" width="400" alt="Pacotes Populares"/>
+  <img src="public/screenshots/package-detail.png" width="400" alt="Detalhe do Pacote"/>
+  <img src="public/screenshots/compare.png" width="400" alt="Comparar"/>
+  <img src="public/screenshots/favorites.png" width="400" alt="Favoritos"/>
+</div>
 
 ## Como Começar
 
@@ -101,10 +113,10 @@ Copie o arquivo de exemplo e preencha os valores:
 cp .env.example .env
 ```
 
-| Variável | Obrigatória | Descrição |
-|---|---|---|
-| `GEMINI_API_KEY` | Sim | Chave da API do Google Gemini para o Gopher AI e resumos de pacotes. Obtenha uma em [aistudio.google.com](https://aistudio.google.com). |
-| `GITHUB_TOKEN` | Não | Token de acesso pessoal do GitHub. Eleva o limite de requisições da API de 60 para 5.000 por hora. Gere um em [github.com/settings/tokens](https://github.com/settings/tokens): nenhuma permissão especial é necessária para repositórios públicos. |
+| Variável         | Obrigatória | Descrição                                                                                                                                                                                                                                           |
+| ---------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GEMINI_API_KEY` | Sim         | Chave da API do Google Gemini para o Gopher AI e resumos de pacotes. Obtenha uma em [aistudio.google.com](https://aistudio.google.com).                                                                                                             |
+| `GITHUB_TOKEN`   | Não         | Token de acesso pessoal do GitHub. Eleva o limite de requisições da API de 60 para 5.000 por hora. Gere um em [github.com/settings/tokens](https://github.com/settings/tokens): nenhuma permissão especial é necessária para repositórios públicos. |
 
 ### Executando o Projeto
 
@@ -126,6 +138,6 @@ Desenvolvido por **Dário Matias**:
 
 - **Portfólio**: [dariomatias-dev.com](https://dariomatias-dev.com)
 - **GitHub**: [dariomatias-dev](https://github.com/dariomatias-dev)
-- **E-mail**: [matiasdario75@gmail.com](mailto:matiasdario75@gmail.com)
+- **E-mail**: [dariomatias.dev@gmail.com](mailto:dariomatias.dev@gmail.com)
 - **Instagram**: [@dariomatias_dev](https://instagram.com/dariomatias_dev)
 - **LinkedIn**: [linkedin.com/in/dariomatias-dev](https://linkedin.com/in/dariomatias-dev)
