@@ -31,6 +31,7 @@
 - [Built With](#built-with)
 - [Screenshots](#screenshots)
 - [Getting Started](#getting-started)
+- [Scripts](#scripts)
 - [License](#license)
 - [Author](#author)
 
@@ -127,6 +128,16 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the result.
+
+## Scripts
+
+| Script       | Command           | Description                                                                                                                                           |
+| ------------ | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dev`        | `pnpm dev`        | Starts the development server with hot reload.                                                                                                        |
+| `build`      | `pnpm build`      | Creates an optimized production build.                                                                                                                |
+| `start`      | `pnpm start`      | Runs the production build. Requires `pnpm build` first.                                                                                               |
+| `lint`       | `pnpm lint`       | Runs ESLint across the project.                                                                                                                       |
+| `screenshot` | `pnpm screenshot` | Launches a headless browser against a running dev server and captures a screenshot of every app page into `public/screenshots/`, used for the README. |
 
 ## License
 

@@ -31,6 +31,7 @@
 - [Tecnologías Utilizadas](#tecnolog%C3%ADas-utilizadas)
 - [Capturas de Pantalla](#capturas-de-pantalla)
 - [Cómo Empezar](#c%C3%B3mo-empezar)
+- [Scripts](#scripts)
 - [Licencia](#licencia)
 - [Autor](#autor)
 
@@ -127,6 +128,16 @@ pnpm dev
 ```
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
+
+## Scripts
+
+| Script       | Comando           | Descripción                                                                                                                                                  |
+| ------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `dev`        | `pnpm dev`        | Inicia el servidor de desarrollo con hot reload.                                                                                                             |
+| `build`      | `pnpm build`      | Crea una build de producción optimizada.                                                                                                                     |
+| `start`      | `pnpm start`      | Ejecuta la build de producción. Requiere `pnpm build` antes.                                                                                                 |
+| `lint`       | `pnpm lint`       | Ejecuta ESLint en todo el proyecto.                                                                                                                          |
+| `screenshot` | `pnpm screenshot` | Abre un navegador headless contra el servidor de desarrollo en ejecución y captura una captura de cada página en `public/screenshots/`, usadas en el README. |
 
 ## Licencia
 
