@@ -25,7 +25,10 @@ export async function GET(request: Request) {
     }
 
     if (!isValidImportPath(importPath)) {
-      return NextResponse.json({ error: "Invalid importPath" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid importPath" },
+        { status: 400 },
+      );
     }
 
     const data = await getCachedPackageDetail(importPath);

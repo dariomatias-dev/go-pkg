@@ -107,7 +107,7 @@ export function MarkdownRenderer({
     h1: ({ children }) => {
       const id = slugify(extractText(children));
       return (
-        <h1 id={id} className={`${s.h1} scroll-mt-20 group`}>
+        <h1 id={id} className={`${s.h1} group scroll-mt-20`}>
           {children}
           <a
             href={`#${id}`}
@@ -123,7 +123,7 @@ export function MarkdownRenderer({
     h2: ({ children }) => {
       const id = slugify(extractText(children));
       return (
-        <h2 id={id} className={`${s.h2} scroll-mt-20 group`}>
+        <h2 id={id} className={`${s.h2} group scroll-mt-20`}>
           {children}
           <a
             href={`#${id}`}
@@ -139,7 +139,7 @@ export function MarkdownRenderer({
     h3: ({ children }) => {
       const id = slugify(extractText(children));
       return (
-        <h3 id={id} className={`${s.h3} scroll-mt-20 group`}>
+        <h3 id={id} className={`${s.h3} group scroll-mt-20`}>
           {children}
           <a
             href={`#${id}`}
@@ -187,7 +187,7 @@ export function MarkdownRenderer({
       const contentEls = kids.filter((c) => !isSummary(c));
       return (
         <details
-          className="group border border-slate-200/80 dark:border-[#30363d] rounded-lg overflow-hidden"
+          className="group overflow-hidden rounded-lg border border-slate-200/80 dark:border-[#30363d]"
           {...props}
         >
           {summaryEl}
@@ -197,16 +197,16 @@ export function MarkdownRenderer({
     },
     summary: ({ children, ...props }) => (
       <summary
-        className="cursor-pointer flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-[#c9d1d9] bg-slate-50/80 dark:bg-[#161b22] select-none hover:bg-slate-100/60 dark:hover:bg-[#21262d] transition-colors [&::-webkit-details-marker]:hidden list-none"
+        className="flex cursor-pointer list-none items-center gap-2 bg-slate-50/80 px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors select-none hover:bg-slate-100/60 dark:bg-[#161b22] dark:text-[#c9d1d9] dark:hover:bg-[#21262d] [&::-webkit-details-marker]:hidden"
         {...props}
       >
-        <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-[#8b949e] shrink-0 transition-transform group-open:rotate-90" />
+        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform group-open:rotate-90 dark:text-[#8b949e]" />
         {children}
       </summary>
     ),
     table: ({ children }) => (
-      <div className="overflow-x-auto my-6 border border-slate-200/80 dark:border-[#30363d] rounded-xl shadow-sm">
-        <table className="min-w-full divide-y divide-slate-200 dark:divide-[#30363d] text-sm">
+      <div className="my-6 overflow-x-auto rounded-xl border border-slate-200/80 shadow-sm dark:border-[#30363d]">
+        <table className="min-w-full divide-y divide-slate-200 text-sm dark:divide-[#30363d]">
           {children}
         </table>
       </div>
@@ -215,22 +215,22 @@ export function MarkdownRenderer({
       <thead className="bg-slate-50 dark:bg-[#161b22]">{children}</thead>
     ),
     tbody: ({ children }) => (
-      <tbody className="divide-y divide-slate-200 dark:divide-[#30363d] bg-white dark:bg-[#0d1117]">
+      <tbody className="divide-y divide-slate-200 bg-white dark:divide-[#30363d] dark:bg-[#0d1117]">
         {children}
       </tbody>
     ),
     tr: ({ children }) => (
-      <tr className="hover:bg-slate-50/30 dark:hover:bg-[#161b22]/50 transition-colors">
+      <tr className="transition-colors hover:bg-slate-50/30 dark:hover:bg-[#161b22]/50">
         {children}
       </tr>
     ),
     th: ({ children }) => (
-      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-[#f0f6fc] uppercase tracking-wider">
+      <th className="px-4 py-3 text-left text-xs font-semibold tracking-wider text-slate-700 uppercase dark:text-[#f0f6fc]">
         {children}
       </th>
     ),
     td: ({ children }) => (
-      <td className="px-4 py-3 text-slate-600 dark:text-[#c9d1d9] font-light select-text">
+      <td className="px-4 py-3 font-light text-slate-600 select-text dark:text-[#c9d1d9]">
         {children}
       </td>
     ),

@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp, Send, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface ChatMessage {
@@ -111,47 +112,47 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
   ];
 
   return (
-    <div className="bg-white dark:bg-[#0d1117] rounded-xl border border-slate-200/60 dark:border-[#30363d] shadow-sm overflow-hidden flex flex-col transition-all duration-300">
+    <div className="flex flex-col overflow-hidden rounded-xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 dark:border-[#30363d] dark:bg-[#0d1117]">
       <div
-        className="bg-slate-50 dark:bg-[#161b22] border-b border-slate-100 dark:border-[#30363d] px-4 py-3.5 cursor-pointer flex items-center justify-between select-none hover:bg-slate-100/50 dark:hover:bg-[#1c2128] transition-colors"
+        className="flex cursor-pointer items-center justify-between border-b border-slate-100 bg-slate-50 px-4 py-3.5 transition-colors select-none hover:bg-slate-100/50 dark:border-[#30363d] dark:bg-[#161b22] dark:hover:bg-[#1c2128]"
         onClick={() => setOpen(!open)}
       >
         <div className="flex items-center space-x-2.5">
           <div className="relative flex items-center">
-            <div className="w-8 h-8 rounded-full bg-cyan-50 dark:bg-sky-950/40 border border-cyan-200 dark:border-sky-900/40 flex items-center justify-center text-base select-none shadow-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50 text-base shadow-sm select-none dark:border-sky-900/40 dark:bg-sky-950/40">
               🐹
             </div>
 
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#00ADD8] border border-white dark:border-[#161b22] rounded-full animate-ping" />
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#00ADD8] border border-white dark:border-[#161b22] rounded-full" />
+            <span className="absolute right-0 bottom-0 h-2.5 w-2.5 animate-ping rounded-full border border-white bg-[#00ADD8] dark:border-[#161b22]" />
+            <span className="absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border border-white bg-[#00ADD8] dark:border-[#161b22]" />
           </div>
 
           <div className="flex flex-col">
-            <h4 className="font-sans font-bold text-xs text-slate-800 dark:text-[#f0f6fc] tracking-tight leading-none">
+            <h4 className="font-sans text-xs leading-none font-bold tracking-tight text-slate-800 dark:text-[#f0f6fc]">
               Gopher AI Assistant
             </h4>
 
-            <span className="text-[10px] text-[#007D9C] dark:text-sky-400 font-semibold mt-0.5">
+            <span className="mt-0.5 text-[10px] font-semibold text-[#007D9C] dark:text-sky-400">
               Smart Go Support
             </span>
           </div>
         </div>
 
-        <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-[#21262d] border border-slate-200/50 dark:border-[#30363d] flex items-center justify-center text-slate-500 dark:text-[#8b949e] hover:text-[#007D9C] dark:hover:text-[#f0f6fc] hover:bg-white dark:hover:bg-[#30363d] transition-all shadow-sm">
+        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200/50 bg-slate-100 text-slate-500 shadow-sm transition-all hover:bg-white hover:text-[#007D9C] dark:border-[#30363d] dark:bg-[#21262d] dark:text-[#8b949e] dark:hover:bg-[#30363d] dark:hover:text-[#f0f6fc]">
           {open ? (
-            <ChevronUp className="w-3.5 h-3.5" />
+            <ChevronUp className="h-3.5 w-3.5" />
           ) : (
-            <ChevronDown className="w-3.5 h-3.5" />
+            <ChevronDown className="h-3.5 w-3.5" />
           )}
         </div>
       </div>
 
       {open && (
-        <div className="flex flex-col h-100 bg-slate-50/30 dark:bg-[#0d1117]">
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3.5 antialiased custom-scrollbar">
+        <div className="flex h-100 flex-col bg-slate-50/30 dark:bg-[#0d1117]">
+          <div className="custom-scrollbar flex-1 space-y-3.5 overflow-x-hidden overflow-y-auto p-4 antialiased">
             {messages.length <= 1 && (
-              <div className="text-center py-4 px-2 space-y-3">
-                <p className="text-[11px] text-slate-400 dark:text-[#8b949e] leading-relaxed max-w-50 mx-auto">
+              <div className="space-y-3 px-2 py-4 text-center">
+                <p className="mx-auto max-w-50 text-[11px] leading-relaxed text-slate-400 dark:text-[#8b949e]">
                   Ask a question or pick a quick topic below:
                 </p>
 
@@ -161,7 +162,7 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
                       key={q}
                       type="button"
                       onClick={() => setInput(q)}
-                      className="text-left text-[11px] text-[#007D9C] dark:text-sky-400 hover:text-[#005F77] dark:hover:text-sky-300 bg-white dark:bg-[#161b22] hover:bg-sky-50 dark:hover:bg-[#21262d] border border-slate-200 dark:border-[#30363d] rounded-lg px-2.5 py-1.5 transition-colors cursor-pointer font-medium truncate"
+                      className="cursor-pointer truncate rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-left text-[11px] font-medium text-[#007D9C] transition-colors hover:bg-sky-50 hover:text-[#005F77] dark:border-[#30363d] dark:bg-[#161b22] dark:text-sky-400 dark:hover:bg-[#21262d] dark:hover:text-sky-300"
                     >
                       💡 {q}
                     </button>
@@ -178,23 +179,23 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
                   msg.role === "user" ? "justify-end" : "justify-start",
                 )}
               >
-                <div className="flex gap-2 items-end max-w-[88%] min-w-0">
+                <div className="flex max-w-[88%] min-w-0 items-end gap-2">
                   {msg.role !== "user" && (
-                    <div className="w-5 h-5 rounded-full bg-sky-100 dark:bg-sky-950/40 flex items-center justify-center text-[11px] shrink-0 select-none shadow-sm border border-sky-200 dark:border-sky-900/40">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-sky-200 bg-sky-100 text-[11px] shadow-sm select-none dark:border-sky-900/40 dark:bg-sky-950/40">
                       🐹
                     </div>
                   )}
 
                   <div
                     className={cn(
-                      "text-xs rounded-xl px-3 py-2 shadow-sm leading-relaxed min-w-0 wrap-break-word",
+                      "min-w-0 rounded-xl px-3 py-2 text-xs leading-relaxed wrap-break-word shadow-sm",
                       msg.role === "user"
-                        ? "bg-slate-900 dark:bg-[#21262d] text-white rounded-br-none"
-                        : "bg-white dark:bg-[#1c2128] text-slate-800 dark:text-[#c9d1d9] border border-slate-200/80 dark:border-[#30363d] rounded-bl-none",
+                        ? "rounded-br-none bg-slate-900 text-white dark:bg-[#21262d]"
+                        : "rounded-bl-none border border-slate-200/80 bg-white text-slate-800 dark:border-[#30363d] dark:bg-[#1c2128] dark:text-[#c9d1d9]",
                     )}
                   >
                     {msg.role === "user" ? (
-                      <p className="whitespace-pre-wrap wrap-break-word font-sans font-normal">
+                      <p className="font-sans font-normal wrap-break-word whitespace-pre-wrap">
                         {msg.text}
                       </p>
                     ) : (
@@ -207,16 +208,16 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
 
             {loading && (
               <div className="flex justify-start">
-                <div className="flex gap-2 items-end max-w-[85%]">
-                  <div className="w-5 h-5 rounded-full bg-sky-100 dark:bg-sky-950/40 flex items-center justify-center text-[11px] shrink-0 select-none shadow-sm">
+                <div className="flex max-w-[85%] items-end gap-2">
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-100 text-[11px] shadow-sm select-none dark:bg-sky-950/40">
                     🐹
                   </div>
 
-                  <div className="bg-white dark:bg-[#1c2128] border border-slate-200 dark:border-[#30363d] text-slate-400 dark:text-[#8b949e] text-xs rounded-xl px-3 py-2 rounded-bl-none shadow-sm flex items-center gap-1">
+                  <div className="flex items-center gap-1 rounded-xl rounded-bl-none border border-slate-200 bg-white px-3 py-2 text-xs text-slate-400 shadow-sm dark:border-[#30363d] dark:bg-[#1c2128] dark:text-[#8b949e]">
                     {[0, 150, 300].map((delay) => (
                       <div
                         key={delay}
-                        className="w-1 h-1 bg-[#00ADD8] rounded-full animate-bounce"
+                        className="h-1 w-1 animate-bounce rounded-full bg-[#00ADD8]"
                         style={{ animationDelay: `${delay}ms` }}
                       />
                     ))}
@@ -229,25 +230,25 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
 
           <form
             onSubmit={sendMessage}
-            className="p-2 border-t border-slate-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] flex gap-2 items-center select-none"
+            className="flex items-center gap-2 border-t border-slate-100 bg-white p-2 select-none dark:border-[#30363d] dark:bg-[#161b22]"
           >
-            <div className="flex-1 relative flex items-center">
+            <div className="relative flex flex-1 items-center">
               <input
                 type="text"
                 placeholder="Ask about this package..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-[#0d1117] hover:bg-slate-100/50 dark:hover:bg-[#090c10] text-xs rounded-xl pl-3 pr-8 py-2 border border-slate-200 dark:border-[#30363d] focus:outline-none focus:ring-1 focus:ring-[#00ADD8] dark:focus:ring-sky-500 transition-all font-sans text-slate-800 dark:text-[#f0f6fc] placeholder-slate-400 dark:placeholder-[#484f58]"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pr-8 pl-3 font-sans text-xs text-slate-800 placeholder-slate-400 transition-all hover:bg-slate-100/50 focus:ring-1 focus:ring-[#00ADD8] focus:outline-none dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#f0f6fc] dark:placeholder-[#484f58] dark:hover:bg-[#090c10] dark:focus:ring-sky-500"
               />
 
               {input && (
                 <button
                   type="button"
                   onClick={() => setInput("")}
-                  className="absolute right-2 text-slate-400 dark:text-[#8b949e] hover:text-slate-600 dark:hover:text-[#f0f6fc] bg-transparent border-none p-0.5 transition-colors cursor-pointer rounded-full"
+                  className="absolute right-2 cursor-pointer rounded-full border-none bg-transparent p-0.5 text-slate-400 transition-colors hover:text-slate-600 dark:text-[#8b949e] dark:hover:text-[#f0f6fc]"
                   title="Clear"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="h-3 w-3" />
                 </button>
               )}
             </div>
@@ -256,16 +257,16 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
               type="submit"
               disabled={!input.trim() || loading}
               className={cn(
-                "p-2 rounded-xl transition-all duration-200 active:scale-95 shrink-0 flex items-center justify-center h-8 w-8 shadow-sm border",
+                "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border p-2 shadow-sm transition-all duration-200 active:scale-95",
                 !input.trim() || loading
-                  ? "bg-slate-50 dark:bg-[#21262d] text-slate-300 dark:text-[#484f58] border-slate-200/60 dark:border-[#30363d] cursor-not-allowed opacity-50"
-                  : "bg-[#007D9C] dark:bg-sky-600 hover:bg-[#005F77] dark:hover:bg-sky-700 text-white border-[#007D9C] dark:border-sky-600 cursor-pointer",
+                  ? "cursor-not-allowed border-slate-200/60 bg-slate-50 text-slate-300 opacity-50 dark:border-[#30363d] dark:bg-[#21262d] dark:text-[#484f58]"
+                  : "cursor-pointer border-[#007D9C] bg-[#007D9C] text-white hover:bg-[#005F77] dark:border-sky-600 dark:bg-sky-600 dark:hover:bg-sky-700",
               )}
               title="Send message"
             >
               <Send
                 className={cn(
-                  "w-3.5 h-3.5",
+                  "h-3.5 w-3.5",
                   !input.trim() || loading
                     ? "text-slate-300 dark:text-[#484f58]"
                     : "text-white",

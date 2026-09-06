@@ -177,12 +177,12 @@ export function VersionsReleasesTab({
 
   return (
     <div className="animate-fade-in space-y-4">
-      <h3 className="font-display font-semibold text-slate-800 dark:text-[#f0f6fc] text-base border-b border-slate-100 dark:border-[#30363d] pb-2 flex items-center gap-2">
-        <GitBranch className="w-4 h-4 text-[#007D9C] dark:text-sky-400" />
+      <h3 className="font-display flex items-center gap-2 border-b border-slate-100 pb-2 text-base font-semibold text-slate-800 dark:border-[#30363d] dark:text-[#f0f6fc]">
+        <GitBranch className="h-4 w-4 text-[#007D9C] dark:text-sky-400" />
         Versions &amp; Releases
       </h3>
 
-      <div className="flex flex-col sm:flex-row gap-4 min-h-64">
+      <div className="flex min-h-64 flex-col gap-4 sm:flex-row">
         <VersionList
           versions={versions}
           loading={versionsLoading}

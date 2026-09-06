@@ -2,12 +2,12 @@ import { cacheLife } from "next/cache";
 import { NextResponse } from "next/server";
 
 import {
-  GITHUB_BASE_URL,
   getGithubHeaders,
+  GITHUB_BASE_URL,
   parseGithubRepo,
 } from "@/lib/github/client";
-import { isValidImportPath } from "@/lib/validations";
 import type { GitHubRelease } from "@/lib/github/types";
+import { isValidImportPath } from "@/lib/validations";
 
 async function getCachedReleases(
   owner: string,

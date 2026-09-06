@@ -16,7 +16,10 @@ export function PopularPageContent() {
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(() =>
     typeof window !== "undefined"
-      ? Math.max(1, Number(new URLSearchParams(window.location.search).get("page") || 1))
+      ? Math.max(
+          1,
+          Number(new URLSearchParams(window.location.search).get("page") || 1),
+        )
       : 1,
   );
   const [fetchedPage, setFetchedPage] = useState(0);
@@ -53,14 +56,14 @@ export function PopularPageContent() {
   };
 
   return (
-    <div className="bg-slate-50/40 dark:bg-[#0d1117] py-12 flex-1 transition-colors duration-300">
+    <div className="flex-1 bg-slate-50/40 py-12 transition-colors duration-300 dark:bg-[#0d1117]">
       <div className="container-scale max-w-4xl space-y-8">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <h2 className="font-display font-medium text-3xl text-slate-900 dark:text-[#f0f6fc] tracking-tight">
+        <div className="mx-auto max-w-2xl space-y-3 text-center">
+          <h2 className="font-display text-3xl font-medium tracking-tight text-slate-900 dark:text-[#f0f6fc]">
             Featured Popular Packages
           </h2>
 
-          <p className="text-sm text-slate-500 dark:text-[#8b949e] font-light leading-relaxed">
+          <p className="text-sm leading-relaxed font-light text-slate-500 dark:text-[#8b949e]">
             Go packages with the highest import count across open GitHub
             repositories and Go Proxy telemetry this quarter.
           </p>

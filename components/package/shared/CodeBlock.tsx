@@ -120,17 +120,17 @@ export function CodeBlock({ code, language = "text" }: CodeBlockProps) {
   const normalizedLang = LANGUAGE_MAP[language.toLowerCase()] ?? language;
 
   return (
-    <div className="relative group my-4 border border-slate-200/80 dark:border-[#30363d] rounded-xl overflow-hidden shadow-sm font-mono text-[11px] sm:text-xs">
-      <div className="flex items-center justify-end px-3 py-1.5 border-b border-slate-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] select-none">
+    <div className="group relative my-4 overflow-hidden rounded-xl border border-slate-200/80 font-mono text-[11px] shadow-sm sm:text-xs dark:border-[#30363d]">
+      <div className="flex items-center justify-end border-b border-slate-100 bg-white px-3 py-1.5 select-none dark:border-[#30363d] dark:bg-[#161b22]">
         <button
           onClick={handleCopy}
-          className="p-1 rounded text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-[#f0f6fc] hover:bg-slate-100 dark:hover:bg-[#21262d] transition-colors cursor-pointer"
+          className="cursor-pointer rounded p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-[#21262d] dark:hover:text-[#f0f6fc]"
           title="Copy code"
         >
           {copied ? (
-            <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500" />
+            <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-500" />
           ) : (
-            <Copy className="w-3.5 h-3.5" />
+            <Copy className="h-3.5 w-3.5" />
           )}
         </button>
       </div>

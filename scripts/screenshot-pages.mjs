@@ -3,6 +3,7 @@
 // Usage: node scripts/screenshot-pages.mjs [--base-url http://localhost:3000]
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
 import { chromium } from "playwright";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -121,6 +122,7 @@ async function shootPage(page, entry) {
     await hideDevIndicator(page);
     await page.screenshot({
       path: `${outDir}/${name}.png`,
+      fullPage: true,
     });
     console.log(`OK   ${name} <- ${url}`);
   } catch (err) {

@@ -148,23 +148,22 @@ export function CompareSection() {
     .map((path) => compared.find((p) => p.importPath === path))
     .filter(Boolean) as GoPackage[];
 
-
   return (
-    <div className="bg-slate-50/40 dark:bg-[#0b0e14] py-8 flex-1 transition-colors duration-300">
+    <div className="flex-1 bg-slate-50/40 py-8 transition-colors duration-300 dark:bg-[#0b0e14]">
       <div className="container-scale max-w-6xl space-y-8">
-        <div className="bg-white dark:bg-[#0d1117] rounded-2xl border border-slate-200/80 dark:border-[#30363d] p-6 md:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex flex-col justify-between gap-6 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm md:flex-row md:items-center md:p-8 dark:border-[#30363d] dark:bg-[#0d1117]">
           <div className="space-y-2">
             <div className="flex items-center space-x-2 text-[#007D9C] dark:text-sky-400">
-              <span className="font-display font-medium text-xs uppercase tracking-widest bg-sky-50 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 px-3 py-1 rounded-full border border-sky-100 dark:border-sky-900/30">
+              <span className="font-display rounded-full border border-sky-100 bg-sky-50 px-3 py-1 text-xs font-medium tracking-widest text-[#007D9C] uppercase dark:border-sky-900/30 dark:bg-sky-950/30 dark:text-sky-400">
                 Decision Matrix
               </span>
             </div>
 
-            <h1 className="font-display font-bold text-2xl md:text-3xl text-slate-900 dark:text-[#f0f6fc] tracking-tight">
+            <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 md:text-3xl dark:text-[#f0f6fc]">
               Go Package Comparator
             </h1>
 
-            <p className="text-sm text-slate-500 dark:text-[#8b949e] leading-relaxed max-w-2xl font-light">
+            <p className="max-w-2xl text-sm leading-relaxed font-light text-slate-500 dark:text-[#8b949e]">
               Choose up to{" "}
               <strong className="font-semibold text-slate-700 dark:text-[#c9d1d9]">
                 three Go packages

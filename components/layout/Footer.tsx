@@ -15,32 +15,32 @@ const externalLinkClass =
 
 export function Footer() {
   return (
-    <footer className="bg-[#020617] text-slate-400 py-10 mt-auto border-t border-slate-900 select-none">
+    <footer className="mt-auto border-t border-slate-900 bg-[#020617] py-10 text-slate-400 select-none">
       <div className="container-scale">
-        <div className="flex justify-center mb-10">
+        <div className="mb-10 flex justify-center">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors text-[10px] font-black uppercase tracking-[0.2em] group cursor-pointer active:scale-95"
+            className="group flex cursor-pointer items-center gap-2 text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase transition-colors hover:text-white active:scale-95"
           >
-            <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-1 transition-transform text-[#00ADD8]" />
+            <ArrowUp className="h-3.5 w-3.5 text-[#00ADD8] transition-transform group-hover:-translate-y-1" />
 
             <span>Back to top</span>
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-10 border-b border-slate-900/50">
-          <div className="md:col-span-5 space-y-4">
+        <div className="grid grid-cols-1 gap-10 border-b border-slate-900/50 pb-10 md:grid-cols-12">
+          <div className="space-y-4 md:col-span-5">
             <div className="flex items-center space-x-2.5">
-              <div className="bg-[#00ADD8] p-1.5 rounded-lg shadow-lg shadow-sky-500/10">
-                <Terminal className="w-5 h-5 text-white" />
+              <div className="rounded-lg bg-[#00ADD8] p-1.5 shadow-lg shadow-sky-500/10">
+                <Terminal className="h-5 w-5 text-white" />
               </div>
 
-              <span className="font-display font-black text-white tracking-tighter text-xl italic leading-none">
+              <span className="font-display text-xl leading-none font-black tracking-tighter text-white italic">
                 GoPkg
               </span>
             </div>
 
-            <p className="text-xs leading-relaxed text-slate-500 max-w-sm">
+            <p className="max-w-sm text-xs leading-relaxed text-slate-500">
               The high-performance discovery engine for the Golang community.
               Track dependencies and discover packages with precision.
             </p>
@@ -49,16 +49,16 @@ export function Footer() {
               href="https://github.com/dariomatias-dev/go-pkg"
               target="_blank"
               rel="noopener"
-              className="inline-flex items-center gap-2 text-slate-500 hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest pt-1"
+              className="inline-flex items-center gap-2 pt-1 text-[10px] font-bold tracking-widest text-slate-500 uppercase transition-all hover:text-white"
             >
-              <GitBranch className="w-3.5 h-3.5" />
+              <GitBranch className="h-3.5 w-3.5" />
 
               <span>GitHub Repository</span>
             </a>
           </div>
 
-          <div className="md:col-span-3 space-y-4">
-            <h4 className="text-[10px] font-black text-white uppercase tracking-[0.2em] opacity-40">
+          <div className="space-y-4 md:col-span-3">
+            <h4 className="text-[10px] font-black tracking-[0.2em] text-white uppercase opacity-40">
               Navigation
             </h4>
 
@@ -66,7 +66,7 @@ export function Footer() {
               {NAV_LINKS.map(({ href, label, icon: Icon }) => (
                 <li key={href}>
                   <Link href={href as Route} className={navLinkClass}>
-                    <Icon className="w-3.5 h-3.5 opacity-40" />
+                    <Icon className="h-3.5 w-3.5 opacity-40" />
 
                     <span>{label}</span>
                   </Link>
@@ -75,8 +75,8 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="md:col-span-4 space-y-4">
-            <h4 className="text-[10px] font-black text-white uppercase tracking-[0.2em] opacity-40">
+          <div className="space-y-4 md:col-span-4">
+            <h4 className="text-[10px] font-black tracking-[0.2em] text-white uppercase opacity-40">
               Resources
             </h4>
 
@@ -89,7 +89,7 @@ export function Footer() {
                     rel="noopener"
                     className={externalLinkClass}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="h-3.5 w-3.5" />
 
                     <span>{label}</span>
                   </a>
@@ -99,10 +99,10 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-bold uppercase tracking-widest text-slate-600">
-          <div className="flex flex-wrap justify-center gap-6 md:gap-10 items-center">
+        <div className="flex flex-col items-center justify-between gap-6 pt-8 text-[10px] font-bold tracking-widest text-slate-600 uppercase md:flex-row">
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
             <div className="flex items-center gap-2">
-              <Code className="w-3.5 h-3.5 text-sky-500" />
+              <Code className="h-3.5 w-3.5 text-sky-500" />
 
               <span>
                 Developed by{" "}
@@ -110,7 +110,7 @@ export function Footer() {
                   href="https://github.com/dariomatias-dev"
                   target="_blank"
                   rel="noopener"
-                  className="text-slate-400 hover:text-[#00ADD8] transition-colors cursor-pointer"
+                  className="cursor-pointer text-slate-400 transition-colors hover:text-[#00ADD8]"
                 >
                   dariomatias-dev
                 </a>
@@ -118,7 +118,7 @@ export function Footer() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Server className="w-3.5 h-3.5" />
+              <Server className="h-3.5 w-3.5" />
 
               <span>Powered by Go Proxy API</span>
             </div>

@@ -6,8 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { SearchHistoryDropdown } from "@/components/common/SearchHistoryDropdown";
-import { cn } from "@/lib/utils";
 import { saveToHistory } from "@/lib/search-history";
+import { cn } from "@/lib/utils";
 
 interface HeaderSearchProps {
   mobile?: boolean;
@@ -46,7 +46,7 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
     <div
       className={cn(
         "relative",
-        mobile ? "w-full mb-4 px-1" : "flex-1 max-w-md hidden md:block",
+        mobile ? "mb-4 w-full px-1" : "hidden max-w-md flex-1 md:block",
       )}
     >
       <form
@@ -66,16 +66,16 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
             onFocus={() => setShowHistory(true)}
             onBlur={() => setTimeout(() => setShowHistory(false), 200)}
             className={cn(
-              "w-full border text-xs py-2 pl-8 pr-8 rounded-full focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all",
+              "w-full rounded-full border py-2 pr-8 pl-8 text-xs transition-all focus:ring-1 focus:ring-sky-500 focus:outline-none",
               mobile
-                ? "bg-slate-100 dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-800 dark:text-[#c9d1d9] placeholder-slate-400 dark:placeholder-[#484f58]"
-                : "bg-[#005a71] dark:bg-[#0d1117] border-sky-400/30 dark:border-[#30363d] text-white dark:text-[#f0f6fc] placeholder-sky-200/60 dark:placeholder-[#484f58]",
+                ? "border-slate-200 bg-slate-100 text-slate-800 placeholder-slate-400 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9] dark:placeholder-[#484f58]"
+                : "border-sky-400/30 bg-[#005a71] text-white placeholder-sky-200/60 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#f0f6fc] dark:placeholder-[#484f58]",
             )}
           />
 
           <Search
             className={cn(
-              "absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none",
+              "pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2",
               mobile
                 ? "text-slate-400 dark:text-[#8b949e]"
                 : "text-sky-200/70 dark:text-[#8b949e]",
@@ -87,13 +87,13 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
               type="button"
               onClick={() => setInputQuery("")}
               className={cn(
-                "absolute right-3 top-1/2 -translate-y-1/2 border-none p-0.5 transition-colors cursor-pointer",
+                "absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer border-none p-0.5 transition-colors",
                 mobile
                   ? "text-slate-400 dark:text-[#8b949e]"
                   : "text-sky-200 dark:text-[#8b949e]",
               )}
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="h-3.5 w-3.5" />
             </button>
           )}
         </div>
@@ -103,7 +103,7 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
         <SearchHistoryDropdown
           size="sm"
           onSelect={submitSearch}
-          className="absolute left-0 right-0 top-full mt-1.5 animate-in fade-in slide-in-from-top-1 duration-200 z-120 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-xl shadow-xl"
+          className="animate-in fade-in slide-in-from-top-1 absolute top-full right-0 left-0 z-120 mt-1.5 rounded-xl border border-slate-200 bg-white shadow-xl duration-200 dark:border-[#30363d] dark:bg-[#161b22]"
         />
       )}
     </div>

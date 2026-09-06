@@ -48,15 +48,15 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
   }
 
   return (
-    <div className="relative border-b border-slate-200/80 bg-white dark:border-[#30363d] dark:bg-[#0d1117] overflow-hidden font-sans">
-      <div className="absolute inset-0 bg-[radial-gradient(#00ADD8_1px,transparent_1px)] bg-size-[32px_32px] opacity-[0.03] dark:opacity-[0.015] pointer-events-none" />
+    <div className="relative overflow-hidden border-b border-slate-200/80 bg-white font-sans dark:border-[#30363d] dark:bg-[#0d1117]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#00ADD8_1px,transparent_1px)] bg-size-[32px_32px] opacity-[0.03] dark:opacity-[0.015]" />
 
       <div className="container-scale relative z-10 py-10 sm:py-14">
-        <div className="flex flex-wrap items-center gap-3 mb-6">
+        <div className="mb-6 flex flex-wrap items-center gap-3">
           {pkg.category && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="px-2.5 py-1 rounded bg-sky-50 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 text-[10px] font-black uppercase tracking-wider border border-sky-100 dark:border-sky-800/50 cursor-default">
+                <span className="cursor-default rounded border border-sky-100 bg-sky-50 px-2.5 py-1 text-[10px] font-black tracking-wider text-[#007D9C] uppercase dark:border-sky-800/50 dark:bg-sky-950/30 dark:text-sky-400">
                   {pkg.category}
                 </span>
               </TooltipTrigger>
@@ -68,7 +68,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
           {pkg.stars > 1000 && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="px-2.5 py-1 rounded bg-[#00ADD8] text-white text-[10px] font-black uppercase tracking-wider shadow-sm cursor-default">
+                <span className="cursor-default rounded bg-[#00ADD8] px-2.5 py-1 text-[10px] font-black tracking-wider text-white uppercase shadow-sm">
                   High Demand
                 </span>
               </TooltipTrigger>
@@ -80,7 +80,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
           {pkg.publishedAt && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 text-[11px] font-medium cursor-default">
+                <div className="flex cursor-default items-center gap-1.5 text-[11px] font-medium text-slate-400 dark:text-slate-500">
                   <Clock className="h-4 w-4" />
                   Updated {formatRelativeTime(pkg.publishedAt)}
                 </div>
@@ -91,16 +91,16 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
           )}
         </div>
 
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
-          <div className="flex flex-wrap items-center gap-4 min-w-0">
-            <h1 className="font-display text-4xl sm:text-5xl font-black text-slate-900 dark:text-[#f0f6fc] tracking-tight">
+        <div className="mb-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+          <div className="flex min-w-0 flex-wrap items-center gap-4">
+            <h1 className="font-display text-4xl font-black tracking-tight text-slate-900 sm:text-5xl dark:text-[#f0f6fc]">
               {pkg.name}
             </h1>
 
             {pkg.latestVersion && (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="px-2.5 py-1 rounded-md border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/5 dark:text-emerald-400 font-mono text-[11px] font-bold">
+                  <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/5 dark:text-emerald-400">
                     {pkg.latestVersion}
                   </span>
                 </TooltipTrigger>
@@ -109,14 +109,14 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
               </Tooltip>
             )}
 
-            <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto mt-2 lg:mt-0">
-              <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#161b22] px-3 py-1.5 rounded border border-slate-200 dark:border-[#30363d]">
-                <code className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
+            <div className="mt-2 flex w-full flex-wrap items-center gap-3 lg:mt-0 lg:w-auto">
+              <div className="flex items-center gap-2 rounded border border-slate-200 bg-slate-50 px-3 py-1.5 dark:border-[#30363d] dark:bg-[#161b22]">
+                <code className="text-xs font-medium text-slate-500 sm:text-sm dark:text-slate-400">
                   import &quot;{pkg.importPath}&quot;
                 </code>
               </div>
 
-              <div className="flex items-center gap-2 border-l border-slate-200 dark:border-[#30363d] pl-3">
+              <div className="flex items-center gap-2 border-l border-slate-200 pl-3 dark:border-[#30363d]">
                 {pkg.githubUrl && (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -124,7 +124,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                         href={pkg.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-xs font-bold text-[#007D9C] dark:text-sky-400 hover:underline"
+                        className="flex items-center gap-2 text-xs font-bold text-[#007D9C] hover:underline dark:text-sky-400"
                       >
                         <FaGithub className="h-4 w-4" />
                         {pkg.githubUrl.replace("https://", "")}
@@ -142,7 +142,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                       href={`https://pkg.go.dev/${pkg.importPath}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-xs font-bold text-[#007D9C] dark:text-sky-400 hover:underline"
+                      className="flex items-center gap-2 text-xs font-bold text-[#007D9C] hover:underline dark:text-sky-400"
                     >
                       pkg.go.dev
                       <ExternalLink className="h-3 w-3 opacity-50" />
@@ -155,12 +155,12 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={handleShare}
-                  className="flex h-10 px-4 items-center gap-2 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold transition-all active:scale-95 shadow-sm hover:bg-slate-50 dark:hover:bg-[#161b22] cursor-pointer"
+                  className="flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-xs font-bold shadow-sm transition-all hover:bg-slate-50 active:scale-95 dark:border-[#30363d] dark:bg-[#0d1117] dark:hover:bg-[#161b22]"
                 >
                   <Link2 className="h-3.5 w-3.5 text-[#00ADD8]" />
                   {copied ? "Copied" : "Share"}
@@ -178,7 +178,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                       `/compare?pkg=${encodeURIComponent(pkg.importPath)}`,
                     )
                   }
-                  className="flex h-10 px-4 items-center gap-2 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold transition-all active:scale-95 shadow-sm hover:bg-slate-50 dark:hover:bg-[#161b22] cursor-pointer"
+                  className="flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-xs font-bold shadow-sm transition-all hover:bg-slate-50 active:scale-95 dark:border-[#30363d] dark:bg-[#0d1117] dark:hover:bg-[#161b22]"
                 >
                   <Scale className="h-3.5 w-3.5 text-[#00ADD8]" />
                   Compare
@@ -193,10 +193,10 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                 <button
                   onClick={() => toggleFavorite(pkg)}
                   className={cn(
-                    "flex h-10 px-4 items-center gap-2 rounded-lg font-bold text-xs transition-all active:scale-95 shadow-sm border cursor-pointer",
+                    "flex h-10 cursor-pointer items-center gap-2 rounded-lg border px-4 text-xs font-bold shadow-sm transition-all active:scale-95",
                     isFavorite
-                      ? "bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-950/20 dark:border-rose-900/40 dark:text-rose-400"
-                      : "bg-white border-slate-200 text-slate-700 dark:bg-[#0d1117] dark:border-[#30363d] dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#161b22]",
+                      ? "border-rose-200 bg-rose-50 text-rose-600 dark:border-rose-900/40 dark:bg-rose-950/20 dark:text-rose-400"
+                      : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9] dark:hover:bg-[#161b22]",
                   )}
                 >
                   <Heart
@@ -214,7 +214,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
         </div>
 
         <div className="mb-8">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">
+          <p className="mb-3 block text-[10px] font-bold tracking-widest text-slate-400 uppercase">
             Install Command:
           </p>
 
@@ -223,15 +223,15 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
           </div>
         </div>
 
-        <p className="text-lg text-slate-600 dark:text-[#8b949e] font-light leading-relaxed max-w-4xl mb-10">
+        <p className="mb-10 max-w-4xl text-lg leading-relaxed font-light text-slate-600 dark:text-[#8b949e]">
           {pkg.description}
         </p>
 
         <div className="flex flex-wrap items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold text-slate-700 dark:text-[#c9d1d9] cursor-default">
-                <Star className="h-4 w-4 text-sky-400 fill-sky-400" />
+              <div className="flex cursor-default items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9]">
+                <Star className="h-4 w-4 fill-sky-400 text-sky-400" />
                 {pkg.stars.toLocaleString()} stars
               </div>
             </TooltipTrigger>
@@ -241,7 +241,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold text-slate-700 dark:text-[#c9d1d9] cursor-default">
+              <div className="flex cursor-default items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9]">
                 <GitFork className="h-4 w-4 text-[#00ADD8]" />
                 {pkg.forks?.toLocaleString() || 0} forks
               </div>
@@ -252,7 +252,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold text-slate-700 dark:text-[#c9d1d9] cursor-default">
+              <div className="flex cursor-default items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9]">
                 <Database className="h-4 w-4 text-[#00ADD8]" />
                 {pkg.dependenciesCount || 0} dependencies
               </div>
@@ -268,14 +268,14 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                   href={`${pkg.githubUrl}/blob/HEAD/LICENSE`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold text-slate-700 dark:text-[#c9d1d9] hover:border-[#00ADD8]/50 transition-colors"
+                  className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors hover:border-[#00ADD8]/50 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9]"
                 >
                   <Shield className="h-4 w-4 text-slate-400" />
                   LICENSE:{" "}
                   <span className="text-[#007D9C]">{pkg.license || "N/A"}</span>
                 </a>
               ) : (
-                <span className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold text-slate-700 dark:text-[#c9d1d9]">
+                <span className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9]">
                   <Shield className="h-4 w-4 text-slate-400" />
                   LICENSE:{" "}
                   <span className="text-[#007D9C]">{pkg.license || "N/A"}</span>
@@ -293,7 +293,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                   href={`https://github.com/${pkg.author}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-bold text-slate-700 dark:text-[#c9d1d9] hover:border-[#00ADD8]/50 transition-colors"
+                  className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors hover:border-[#00ADD8]/50 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9]"
                 >
                   <User className="h-4 w-4 text-slate-400" />
                   AUTHOR: <span className="text-[#007D9C]">@{pkg.author}</span>

@@ -1,6 +1,6 @@
 import type { PackageSearchResponse, PopularPackage } from "@/types";
 
-import { GITHUB_BASE_URL, getGithubHeaders, handleGithubError } from "./client";
+import { getGithubHeaders, GITHUB_BASE_URL, handleGithubError } from "./client";
 import { enrichWithGoProxy } from "./go-proxy";
 import { buildSearchQuery, guessCategory, normalizePackage } from "./normalize";
 import type { GitHubSearchResponse } from "./types";

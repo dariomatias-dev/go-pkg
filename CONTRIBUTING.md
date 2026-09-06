@@ -31,7 +31,7 @@ fix(popular-package): handle GitHub API rate limit errors
 docs(readme): document available npm scripts
 ```
 
-Body (optional) explains *why*, not *what* — the diff already shows what
+Body (optional) explains _why_, not _what_ — the diff already shows what
 changed.
 
 ## Branching

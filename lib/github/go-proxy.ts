@@ -1,4 +1,4 @@
-import { GO_PROXY_BASE, escapeGoModule } from "./client";
+import { escapeGoModule, GO_PROXY_BASE } from "./client";
 import type { GoProxyLatest } from "./types";
 
 export async function fetchGoMod(

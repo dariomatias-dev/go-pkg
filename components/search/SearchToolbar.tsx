@@ -31,8 +31,8 @@ export function SearchToolbar({
   onPerPageChange,
 }: SearchToolbarProps) {
   return (
-    <div className="bg-white dark:bg-[#161b22] rounded-xl py-4 px-6 border border-slate-200/70 dark:border-[#30363d] shadow-sm flex flex-wrap items-center justify-between gap-3">
-      <div className="text-sm text-slate-600 dark:text-[#8b949e] min-w-0">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/70 bg-white px-6 py-4 shadow-sm dark:border-[#30363d] dark:bg-[#161b22]">
+      <div className="min-w-0 text-sm text-slate-600 dark:text-[#8b949e]">
         {loading ? (
           <span>Searching packages in the index...</span>
         ) : (
@@ -48,19 +48,15 @@ export function SearchToolbar({
 
       <div className="flex flex-wrap items-center gap-4 select-none">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 dark:text-[#8b949e] font-medium">
+          <span className="text-xs font-medium text-slate-500 dark:text-[#8b949e]">
             Sort:
           </span>
 
-          <Select
-            value={sort}
-            options={SORT_OPTIONS}
-            onChange={onSortChange}
-          />
+          <Select value={sort} options={SORT_OPTIONS} onChange={onSortChange} />
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 dark:text-[#8b949e] font-medium">
+          <span className="text-xs font-medium text-slate-500 dark:text-[#8b949e]">
             Per page:
           </span>
 

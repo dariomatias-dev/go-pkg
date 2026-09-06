@@ -8,6 +8,7 @@ import {
   InListContext,
   MarkdownRenderer,
 } from "@/components/package/shared/MarkdownRenderer";
+
 interface ReadmeTabProps {
   readme: string;
   githubUrl?: string;
@@ -48,19 +49,19 @@ function ReadmeLink({ href, children, ...props }: LinkProps) {
     if (ytMatch?.[1]) {
       const videoId = ytMatch[1];
       return (
-        <span className="block relative w-full max-w-2xl mx-auto my-6">
-          <span className="block relative w-full aspect-video rounded-xl overflow-hidden border border-slate-200/80 dark:border-[#30363d] shadow-md">
+        <span className="relative mx-auto my-6 block w-full max-w-2xl">
+          <span className="relative block aspect-video w-full overflow-hidden rounded-xl border border-slate-200/80 shadow-md dark:border-[#30363d]">
             <iframe
               src={`https://www.youtube.com/embed/${videoId}`}
               title="YouTube video player"
-              className="absolute top-0 left-0 w-full h-full border-0"
+              className="absolute top-0 left-0 h-full w-full border-0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
           </span>
 
-          <span className="flex justify-between items-center mt-2 px-1">
-            <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
+          <span className="mt-2 flex items-center justify-between px-1">
+            <span className="font-mono text-[11px] text-slate-400 dark:text-slate-500">
               YouTube ID: {videoId}
             </span>
 
@@ -68,9 +69,9 @@ function ReadmeLink({ href, children, ...props }: LinkProps) {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-[#00ADD8] dark:text-sky-400 hover:text-[#007D9C] dark:hover:text-sky-300 font-semibold hover:underline flex items-center gap-1"
+              className="flex items-center gap-1 text-xs font-semibold text-[#00ADD8] hover:text-[#007D9C] hover:underline dark:text-sky-400 dark:hover:text-sky-300"
             >
-              Watch on YouTube <ExternalLink className="w-3 h-3" />
+              Watch on YouTube <ExternalLink className="h-3 w-3" />
             </a>
           </span>
         </span>
@@ -85,7 +86,7 @@ function ReadmeLink({ href, children, ...props }: LinkProps) {
       href={href}
       target={isAnchor ? undefined : "_blank"}
       rel={isAnchor ? undefined : "noopener noreferrer"}
-      className="text-[#00ADD8] dark:text-sky-400 font-bold underline decoration-[#00ADD8]/30 dark:decoration-sky-400/30 hover:decoration-[#007D9C] dark:hover:decoration-sky-300 decoration-2 underline-offset-4 hover:text-[#007D9C] dark:hover:text-sky-300 transition-all break-all"
+      className="font-bold break-all text-[#00ADD8] underline decoration-[#00ADD8]/30 decoration-2 underline-offset-4 transition-all hover:text-[#007D9C] hover:decoration-[#007D9C] dark:text-sky-400 dark:decoration-sky-400/30 dark:hover:text-sky-300 dark:hover:decoration-sky-300"
       {...props}
     >
       {children}
@@ -131,7 +132,7 @@ export function ReadmeTab({ readme, githubUrl }: ReadmeTabProps) {
                   alt={alt || "badge"}
                   width={120}
                   height={20}
-                  className="inline-block align-middle my-1 mr-1"
+                  className="my-1 mr-1 inline-block align-middle"
                   style={{ height: "20px", width: "auto" }}
                 />
               );
@@ -143,7 +144,7 @@ export function ReadmeTab({ readme, githubUrl }: ReadmeTabProps) {
                 alt={alt || "image"}
                 width={1200}
                 height={630}
-                className="my-6 block mx-auto max-w-full rounded-lg shadow-sm"
+                className="mx-auto my-6 block max-w-full rounded-lg shadow-sm"
                 style={{ height: "auto", width: "auto" }}
               />
             );

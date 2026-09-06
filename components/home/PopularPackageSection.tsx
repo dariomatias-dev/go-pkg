@@ -77,22 +77,22 @@ export function PopularPackageSection() {
   };
 
   return (
-    <section className="py-12 bg-slate-50/50 dark:bg-black flex-1 border-t border-slate-100 dark:border-[#30363d] transition-colors duration-300">
-      <div className="container-scale grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="border-b border-slate-200/60 dark:border-[#30363d] pb-3 flex items-center justify-between">
-            <h3 className="font-display font-medium text-lg text-slate-900 dark:text-[#f0f6fc] flex items-center gap-2 select-none">
-              <TrendingUp className="w-5 h-5 text-[#007D9C] dark:text-sky-400" />
+    <section className="flex-1 border-t border-slate-100 bg-slate-50/50 py-12 transition-colors duration-300 dark:border-[#30363d] dark:bg-black">
+      <div className="container-scale grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
+          <div className="flex items-center justify-between border-b border-slate-200/60 pb-3 dark:border-[#30363d]">
+            <h3 className="font-display flex items-center gap-2 text-lg font-medium text-slate-900 select-none dark:text-[#f0f6fc]">
+              <TrendingUp className="h-5 w-5 text-[#007D9C] dark:text-sky-400" />
               Popular Packages
             </h3>
 
             <button
               type="button"
               onClick={() => router.push("/popular")}
-              className="inline-flex items-center gap-1 text-xs font-bold text-[#007D9C] dark:text-sky-400 hover:text-[#005F77] dark:hover:text-sky-300 transition-colors cursor-pointer font-sans"
+              className="inline-flex cursor-pointer items-center gap-1 font-sans text-xs font-bold text-[#007D9C] transition-colors hover:text-[#005F77] dark:text-sky-400 dark:hover:text-sky-300"
             >
               View All
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
 
@@ -114,11 +114,11 @@ export function PopularPackageSection() {
                     type="button"
                     onClick={loadMore}
                     disabled={loadingMore}
-                    className="inline-flex items-center gap-1.5 bg-white dark:bg-[#21262d] hover:bg-slate-50 dark:hover:bg-[#30363d] border border-slate-200 dark:border-[#30363d] text-[#007D9C] dark:text-sky-400 font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer font-sans disabled:opacity-60"
+                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 py-2.5 font-sans text-xs font-bold text-[#007D9C] shadow-sm transition-all hover:bg-slate-50 active:scale-95 disabled:opacity-60 dark:border-[#30363d] dark:bg-[#21262d] dark:text-sky-400 dark:hover:bg-[#30363d]"
                   >
                     {loadingMore ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="h-4 w-4 animate-spin" />
                         <span>Loading...</span>
                       </>
                     ) : (
@@ -134,26 +134,26 @@ export function PopularPackageSection() {
         <div className="space-y-8">
           <RecentPackages />
 
-          <div className="bg-white dark:bg-[#161b22] rounded-xl p-5 border border-slate-200/60 dark:border-[#30363d] shadow-sm">
-            <h3 className="font-display font-semibold text-slate-900 dark:text-[#f0f6fc] text-sm tracking-tight border-b border-slate-100 dark:border-[#30363d] pb-3 mb-4 flex items-center justify-between">
+          <div className="rounded-xl border border-slate-200/60 bg-white p-5 shadow-sm dark:border-[#30363d] dark:bg-[#161b22]">
+            <h3 className="font-display mb-4 flex items-center justify-between border-b border-slate-100 pb-3 text-sm font-semibold tracking-tight text-slate-900 dark:border-[#30363d] dark:text-[#f0f6fc]">
               <span className="flex items-center gap-1.5">
-                <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
+                <Heart className="h-4 w-4 fill-rose-500 text-rose-500" />
                 Your Favorites ({favorites.length})
               </span>
             </h3>
 
             {favorites.length === 0 ? (
-              <div className="text-center py-6">
+              <div className="py-6 text-center">
                 <p className="text-xs text-slate-400 dark:text-[#8b949e]">
                   No saved packages.
                 </p>
 
-                <p className="text-[10px] text-slate-400/85 dark:text-[#8b949e]/60 mt-1">
+                <p className="mt-1 text-[10px] text-slate-400/85 dark:text-[#8b949e]/60">
                   Click the heart on package cards to save them.
                 </p>
               </div>
             ) : (
-              <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
+              <div className="custom-scrollbar max-h-60 space-y-2.5 overflow-y-auto pr-1">
                 {favorites.map((pkg) => (
                   <div
                     key={pkg.importPath}
@@ -162,14 +162,14 @@ export function PopularPackageSection() {
                         `/package/${encodeImportPath(pkg.importPath)}` as Route<`/package/${string}`>,
                       );
                     }}
-                    className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-[#21262d] border border-slate-100 dark:border-[#30363d] hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer group"
+                    className="group flex cursor-pointer items-center justify-between rounded-lg border border-slate-100 p-2 transition-all hover:border-slate-200 hover:bg-slate-50 dark:border-[#30363d] dark:hover:border-slate-700 dark:hover:bg-[#21262d]"
                   >
                     <div className="min-w-0 flex-1 pr-2">
-                      <p className="text-xs font-semibold text-slate-800 dark:text-[#c9d1d9] group-hover:text-[#00ADD8] dark:group-hover:text-sky-400 transition-colors truncate">
+                      <p className="truncate text-xs font-semibold text-slate-800 transition-colors group-hover:text-[#00ADD8] dark:text-[#c9d1d9] dark:group-hover:text-sky-400">
                         {pkg.importPath.split("/").pop()}
                       </p>
 
-                      <p className="text-[10px] font-mono text-slate-400 dark:text-[#8b949e] truncate">
+                      <p className="truncate font-mono text-[10px] text-slate-400 dark:text-[#8b949e]">
                         {pkg.importPath}
                       </p>
                     </div>
@@ -179,9 +179,9 @@ export function PopularPackageSection() {
                         e.stopPropagation();
                         removeFavorite(pkg.importPath);
                       }}
-                      className="text-slate-300 dark:text-[#484f58] hover:text-rose-500 dark:hover:text-rose-400 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0 cursor-pointer"
+                      className="shrink-0 cursor-pointer rounded p-1 text-slate-300 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:text-[#484f58] dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
                     >
-                      <HeartOff className="w-3.5 h-3.5" />
+                      <HeartOff className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 ))}
@@ -189,8 +189,8 @@ export function PopularPackageSection() {
             )}
           </div>
 
-          <div className="bg-white dark:bg-[#161b22] rounded-xl p-5 border border-slate-200/60 dark:border-[#30363d] shadow-sm">
-            <h3 className="font-display font-semibold text-slate-900 dark:text-[#f0f6fc] text-sm tracking-tight border-b border-slate-100 dark:border-[#30363d] pb-3 mb-4">
+          <div className="rounded-xl border border-slate-200/60 bg-white p-5 shadow-sm dark:border-[#30363d] dark:bg-[#161b22]">
+            <h3 className="font-display mb-4 border-b border-slate-100 pb-3 text-sm font-semibold tracking-tight text-slate-900 dark:border-[#30363d] dark:text-[#f0f6fc]">
               Featured Tags
             </h3>
 
@@ -200,7 +200,7 @@ export function PopularPackageSection() {
                   {Array.from({ length: 6 }).map((_, i) => (
                     <span
                       key={i}
-                      className="bg-slate-100/80 dark:bg-[#21262d] text-transparent h-6 w-14 rounded-md animate-shimmer relative overflow-hidden inline-block"
+                      className="animate-shimmer relative inline-block h-6 w-14 overflow-hidden rounded-md bg-slate-100/80 text-transparent dark:bg-[#21262d]"
                     />
                   ))}
                 </>
@@ -214,7 +214,7 @@ export function PopularPackageSection() {
                         `/search?tag=${encodeURIComponent(tag)}` as Route<`/search?tag=${string}`>,
                       )
                     }
-                    className="bg-slate-50 dark:bg-[#21262d] hover:bg-[#E0F2FE] dark:hover:bg-[#30363d] hover:text-[#007D9C] dark:hover:text-white text-slate-600 dark:text-[#c9d1d9] text-xs px-2.5 py-1 rounded transition-colors border border-slate-100 dark:border-[#30363d] cursor-pointer"
+                    className="cursor-pointer rounded border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600 transition-colors hover:bg-[#E0F2FE] hover:text-[#007D9C] dark:border-[#30363d] dark:bg-[#21262d] dark:text-[#c9d1d9] dark:hover:bg-[#30363d] dark:hover:text-white"
                   >
                     #{tag}
                   </button>

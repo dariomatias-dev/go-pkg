@@ -56,7 +56,7 @@ export function PackageDetail({ importPath, initialTab }: PackageDetailProps) {
 
   return (
     <>
-      <div className="fixed top-16 left-0 right-0 h-1.5 bg-slate-200/50 dark:bg-[#30363d]/50 z-30 shadow-sm pointer-events-none select-none">
+      <div className="pointer-events-none fixed top-16 right-0 left-0 z-30 h-1.5 bg-slate-200/50 shadow-sm select-none dark:bg-[#30363d]/50">
         <div
           ref={scrollBarRef}
           className="h-full bg-linear-to-r from-cyan-400 via-[#00ADD8] to-[#007D9C] transition-all duration-75 ease-out"
@@ -64,18 +64,18 @@ export function PackageDetail({ importPath, initialTab }: PackageDetailProps) {
         />
       </div>
 
-      <div className="flex-1 flex flex-col animate-fade-in relative transition-colors duration-300">
+      <div className="animate-fade-in relative flex flex-1 flex-col transition-colors duration-300">
         <PackageBreadcrumb importPath={pkg.importPath} />
 
         <PackageHeader pkg={pkg} />
 
         <div className="bg-[#F8FAFC] dark:bg-[#0b0e14]">
-          <div className="container-scale grid grid-cols-1 lg:grid-cols-4 gap-8 py-8 items-start">
+          <div className="container-scale grid grid-cols-1 items-start gap-8 py-8 lg:grid-cols-4">
             <div className="lg:col-span-3">
               <ErrorBoundary
                 resetKeys={[importPath]}
                 fallback={
-                  <div className="bg-white dark:bg-[#0d1117] rounded-xl shadow-sm border border-slate-200/70 dark:border-[#30363d] p-8 text-center text-sm text-slate-500 dark:text-[#8b949e]">
+                  <div className="rounded-xl border border-slate-200/70 bg-white p-8 text-center text-sm text-slate-500 shadow-sm dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#8b949e]">
                     Failed to render package content.
                   </div>
                 }
@@ -93,7 +93,7 @@ export function PackageDetail({ importPath, initialTab }: PackageDetailProps) {
               </ErrorBoundary>
             </div>
 
-            <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-20 lg:self-start">
+            <aside className="space-y-6 lg:sticky lg:top-20 lg:col-span-1 lg:self-start">
               {pkg.githubUrl && <GoReportCard importPath={importPath} />}
 
               <ErrorBoundary resetKeys={[importPath]} fallback={null}>

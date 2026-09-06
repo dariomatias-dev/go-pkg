@@ -1,7 +1,8 @@
 "use client";
 
-import type { GoPackage } from "@/types";
 import { useCallback, useSyncExternalStore } from "react";
+
+import type { GoPackage } from "@/types";
 
 const STORAGE_KEY = "gopkg_favorites";
 const listeners = new Set<() => void>();

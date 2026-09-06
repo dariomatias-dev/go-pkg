@@ -1,7 +1,7 @@
 import { cacheLife } from "next/cache";
 import { NextResponse } from "next/server";
 
-import { GO_PROXY_BASE, escapeGoModule } from "@/lib/github/client";
+import { escapeGoModule, GO_PROXY_BASE } from "@/lib/github/client";
 import { isValidImportPath } from "@/lib/validations";
 
 async function getVersions(importPath: string): Promise<string[]> {

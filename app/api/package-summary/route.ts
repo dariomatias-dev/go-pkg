@@ -101,8 +101,7 @@ export async function GET(request: Request) {
       msg.includes("429") ||
       msg.includes("RESOURCE_EXHAUSTED") ||
       msg.includes("quota");
-    const isUnavailable =
-      msg.includes("503") || msg.includes("UNAVAILABLE");
+    const isUnavailable = msg.includes("503") || msg.includes("UNAVAILABLE");
 
     if (isRateLimit) {
       return NextResponse.json(

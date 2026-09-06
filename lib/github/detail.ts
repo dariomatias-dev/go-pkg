@@ -1,10 +1,10 @@
 import type { GoPackage, PackageDetailResponse } from "@/types";
 
 import {
-  GITHUB_BASE_URL,
-  GO_PROXY_BASE,
   escapeGoModule,
   getGithubHeaders,
+  GITHUB_BASE_URL,
+  GO_PROXY_BASE,
   handleGithubError,
   parseGithubRepo,
 } from "./client";

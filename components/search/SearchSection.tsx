@@ -12,7 +12,6 @@ import type {
   CuratedCategory,
   GoPackage,
   PackageSearchResponse,
-
 } from "@/types";
 
 type SearchSort = "best" | "stars" | "updated" | "forks";
@@ -163,8 +162,8 @@ export default function SearchSection({
   const hasFilter = !!(query || category || tag || semanticSearch);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-      <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-20 lg:self-start">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+      <aside className="space-y-6 lg:sticky lg:top-20 lg:col-span-1 lg:self-start">
         <SearchSidebar
           category={category}
           tag={tag}
@@ -209,7 +208,7 @@ export default function SearchSection({
         />
       </aside>
 
-      <div className="lg:col-span-3 space-y-6">
+      <div className="space-y-6 lg:col-span-3">
         <SearchToolbar
           totalResults={totalResults}
           loading={loading}
@@ -230,8 +229,8 @@ export default function SearchSection({
         />
 
         {loading && (
-          <div className="w-full h-1 bg-cyan-100/50 dark:bg-sky-900/20 rounded-full overflow-hidden relative">
-            <div className="h-full bg-[#00ADD8] dark:bg-sky-500 w-1/3 rounded-full animate-progress-slide absolute top-0 left-0" />
+          <div className="relative h-1 w-full overflow-hidden rounded-full bg-cyan-100/50 dark:bg-sky-900/20">
+            <div className="animate-progress-slide absolute top-0 left-0 h-full w-1/3 rounded-full bg-[#00ADD8] dark:bg-sky-500" />
           </div>
         )}
 

@@ -76,32 +76,32 @@ export function Pagination({
   };
 
   return (
-    <div className="bg-white dark:bg-[#161b22] rounded-xl border border-slate-200/70 dark:border-[#30363d] p-3 sm:p-4 mt-6 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-sm select-none font-sans transition-colors duration-300">
-      <div className="text-xs sm:text-sm text-slate-500 dark:text-[#8b949e] font-medium text-center lg:text-left order-2 lg:order-1">
+    <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-xl border border-slate-200/70 bg-white p-3 font-sans shadow-sm transition-colors duration-300 select-none sm:p-4 lg:flex-row dark:border-[#30363d] dark:bg-[#161b22]">
+      <div className="order-2 text-center text-xs font-medium text-slate-500 sm:text-sm lg:order-1 lg:text-left dark:text-[#8b949e]">
         Showing{" "}
-        <span className="text-slate-800 dark:text-[#f0f6fc] font-bold">
+        <span className="font-bold text-slate-800 dark:text-[#f0f6fc]">
           {Math.min(itemCountInPage, perPage)}
         </span>{" "}
         of{" "}
-        <span className="text-[#007D9C] dark:text-sky-400 font-bold">
+        <span className="font-bold text-[#007D9C] dark:text-sky-400">
           {totalResults}
         </span>{" "}
         {label}
       </div>
 
-      <div className="flex items-center gap-1 sm:gap-1.5 order-1 lg:order-2 w-full sm:w-auto justify-center flex-wrap">
+      <div className="order-1 flex w-full flex-wrap items-center justify-center gap-1 sm:w-auto sm:gap-1.5 lg:order-2">
         <button
           type="button"
           disabled={currentPage === 1 || isLoading}
           onClick={() => go(currentPage - 1)}
-          className="p-2 sm:p-2.5 rounded-lg border border-slate-200 dark:border-[#30363d] text-slate-500 dark:text-[#8b949e] hover:text-slate-800 dark:hover:text-[#f0f6fc] hover:bg-slate-50 dark:hover:bg-[#21262d] disabled:opacity-40 transition-all text-xs font-semibold cursor-pointer flex items-center gap-1 disabled:cursor-not-allowed shrink-0"
+          className="flex shrink-0 cursor-pointer items-center gap-1 rounded-lg border border-slate-200 p-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-slate-800 disabled:cursor-not-allowed disabled:opacity-40 sm:p-2.5 dark:border-[#30363d] dark:text-[#8b949e] dark:hover:bg-[#21262d] dark:hover:text-[#f0f6fc]"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="h-4 w-4" />
 
           <span className="hidden sm:inline">Previous</span>
         </button>
 
-        <div className="flex items-center gap-0.5 sm:gap-1 flex-wrap justify-center">
+        <div className="flex flex-wrap items-center justify-center gap-0.5 sm:gap-1">
           {pages.map((p, i) =>
             p === "..." ? (
               jumpIdx === i ? (
@@ -118,7 +118,7 @@ export function Pagination({
                     if (e.key === "Escape") setJumpIdx(null);
                   }}
                   onBlur={() => setJumpIdx(null)}
-                  className="h-8 sm:h-9 w-14 px-1.5 rounded-lg border border-[#00ADD8] dark:border-sky-500 text-xs font-bold text-center bg-white dark:bg-[#0d1117] text-slate-800 dark:text-[#f0f6fc] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="h-8 w-14 [appearance:textfield] rounded-lg border border-[#00ADD8] bg-white px-1.5 text-center text-xs font-bold text-slate-800 outline-none sm:h-9 dark:border-sky-500 dark:bg-[#0d1117] dark:text-[#f0f6fc] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
               ) : (
                 <button
@@ -127,7 +127,7 @@ export function Pagination({
                   onClick={() => openJump(i)}
                   className={cn(
                     btnBase,
-                    "text-slate-400 dark:text-[#484f58] hover:text-[#007D9C] dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d] tracking-wider",
+                    "border border-transparent tracking-wider text-slate-400 hover:border-slate-200 hover:bg-slate-50 hover:text-[#007D9C] dark:text-[#484f58] dark:hover:border-[#30363d] dark:hover:bg-[#21262d] dark:hover:text-sky-400",
                   )}
                   title="Jump to page"
                 >
@@ -142,8 +142,8 @@ export function Pagination({
                 className={cn(
                   btnBase,
                   currentPage === p
-                    ? "bg-[#00ADD8] dark:bg-sky-600 text-white shadow-sm"
-                    : "text-slate-600 dark:text-[#c9d1d9] hover:bg-slate-50 dark:hover:bg-[#21262d] border border-transparent hover:border-slate-200 dark:hover:border-[#30363d]",
+                    ? "bg-[#00ADD8] text-white shadow-sm dark:bg-sky-600"
+                    : "border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 dark:text-[#c9d1d9] dark:hover:border-[#30363d] dark:hover:bg-[#21262d]",
                 )}
               >
                 {p}
@@ -156,11 +156,11 @@ export function Pagination({
           type="button"
           disabled={currentPage >= totalPages || isLoading}
           onClick={() => go(currentPage + 1)}
-          className="p-2 sm:p-2.5 rounded-lg border border-slate-200 dark:border-[#30363d] text-slate-500 dark:text-[#8b949e] hover:text-slate-800 dark:hover:text-[#f0f6fc] hover:bg-slate-50 dark:hover:bg-[#21262d] disabled:opacity-40 transition-all text-xs font-semibold cursor-pointer flex items-center gap-1 disabled:cursor-not-allowed shrink-0"
+          className="flex shrink-0 cursor-pointer items-center gap-1 rounded-lg border border-slate-200 p-2 text-xs font-semibold text-slate-500 transition-all hover:bg-slate-50 hover:text-slate-800 disabled:cursor-not-allowed disabled:opacity-40 sm:p-2.5 dark:border-[#30363d] dark:text-[#8b949e] dark:hover:bg-[#21262d] dark:hover:text-[#f0f6fc]"
         >
           <span className="hidden sm:inline">Next</span>
 
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
     </div>

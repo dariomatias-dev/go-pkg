@@ -30,26 +30,26 @@ export function ReleaseDetail({
   release,
 }: ReleaseDetailProps) {
   return (
-    <div className="flex-1 min-w-0 border border-slate-200 dark:border-[#30363d] rounded-lg bg-slate-50/50 dark:bg-[#161b22] p-4">
+    <div className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-[#30363d] dark:bg-[#161b22]">
       {loading ? (
-        <div className="flex items-center gap-2 text-slate-400 dark:text-[#8b949e] text-sm h-full justify-center">
-          <Loader2 className="w-4 h-4 animate-spin" />
+        <div className="flex h-full items-center justify-center gap-2 text-sm text-slate-400 dark:text-[#8b949e]">
+          <Loader2 className="h-4 w-4 animate-spin" />
 
           <span>Loading releases…</span>
         </div>
       ) : error ? (
-        <p className="text-sm text-rose-500 dark:text-rose-400 text-center py-8">
+        <p className="py-8 text-center text-sm text-rose-500 dark:text-rose-400">
           Failed to load releases.
         </p>
       ) : !selected ? (
-        <p className="text-sm text-slate-400 dark:text-[#8b949e] text-center py-8">
+        <p className="py-8 text-center text-sm text-slate-400 dark:text-[#8b949e]">
           Select a version
         </p>
       ) : release ? (
         <div className="space-y-3">
-          <div className="flex items-start justify-between gap-3 flex-wrap pb-3 border-b border-slate-100 dark:border-[#30363d]">
+          <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-3 dark:border-[#30363d]">
             <div className="space-y-1.5">
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="font-mono text-sm font-bold text-slate-800 dark:text-[#f0f6fc]">
                   {release.tag_name}
                 </span>
@@ -61,7 +61,7 @@ export function ReleaseDetail({
                 )}
 
                 {release.prerelease && (
-                  <span className="text-[9px] bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-tight">
+                  <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold tracking-tight text-amber-700 uppercase dark:bg-amber-500/20 dark:text-amber-400">
                     pre-release
                   </span>
                 )}
@@ -78,15 +78,15 @@ export function ReleaseDetail({
               href={release.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 text-[11px] font-medium text-[#007D9C] dark:text-sky-400 hover:text-[#005F77] dark:hover:text-sky-300 transition-colors shrink-0"
+              className="flex shrink-0 items-center gap-1 text-[11px] font-medium text-[#007D9C] transition-colors hover:text-[#005F77] dark:text-sky-400 dark:hover:text-sky-300"
             >
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink className="h-3 w-3" />
               View on GitHub
             </a>
           </div>
 
           {release.body ? (
-            <div className="overflow-auto max-h-96 custom-scrollbar">
+            <div className="custom-scrollbar max-h-96 overflow-auto">
               <MarkdownRenderer
                 content={release.body}
                 size="xs"
@@ -101,7 +101,7 @@ export function ReleaseDetail({
                         alt={alt || "image"}
                         width={1200}
                         height={630}
-                        className="my-3 block mx-auto max-w-full rounded-md shadow-sm"
+                        className="mx-auto my-3 block max-w-full rounded-md shadow-sm"
                         style={{ height: "auto", width: "auto" }}
                       />
                     );
@@ -116,10 +116,10 @@ export function ReleaseDetail({
           )}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center h-full gap-2 py-8">
-          <Tag className="w-5 h-5 text-slate-300 dark:text-[#30363d]" />
+        <div className="flex h-full flex-col items-center justify-center gap-2 py-8">
+          <Tag className="h-5 w-5 text-slate-300 dark:text-[#30363d]" />
 
-          <p className="text-xs text-slate-400 dark:text-[#8b949e] text-center">
+          <p className="text-center text-xs text-slate-400 dark:text-[#8b949e]">
             No release notes for{" "}
             <span className="font-mono font-semibold">{selected}</span>
           </p>
