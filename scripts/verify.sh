@@ -28,6 +28,9 @@ pnpm lint
 step "typecheck"
 pnpm typecheck
 
+step "test:coverage"
+pnpm test:coverage
+
 if [ "$SKIP_BUILD" = false ]; then
   step "build"
   pnpm build
