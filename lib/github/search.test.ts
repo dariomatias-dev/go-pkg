@@ -50,7 +50,7 @@ describe("searchGithubPackages", () => {
   });
 
   it("throws a descriptive error when the GitHub API responds with an error", async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(new Response(null, { status: 500 }));
+    vi.mocked(fetch).mockResolvedValue(new Response(null, { status: 500 }));
 
     await expect(searchGithubPackages("gin")).rejects.toThrow(
       /GitHub API error/,
@@ -91,7 +91,7 @@ describe("fetchPopularPackages", () => {
   });
 
   it("throws a descriptive error when the GitHub API responds with an error", async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(new Response(null, { status: 500 }));
+    vi.mocked(fetch).mockResolvedValue(new Response(null, { status: 500 }));
 
     await expect(fetchPopularPackages()).rejects.toThrow(/GitHub API error/);
   });

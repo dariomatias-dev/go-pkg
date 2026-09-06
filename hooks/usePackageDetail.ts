@@ -59,7 +59,8 @@ export function usePackageDetail(importPath: string, initialTab?: Tab) {
         const d = await res.json().catch(() => ({}));
 
         setAiSummaryError(
-          d.error || "Failed to generate the AI summary. Check the server.",
+          d.error?.message ||
+            "Failed to generate the AI summary. Check the server.",
         );
       }
     } catch {

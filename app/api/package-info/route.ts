@@ -1,8 +1,9 @@
 import { cacheLife } from "next/cache";
-import { NextResponse } from "next/server";
 
+import { ApiErrors, ok } from "@/lib/api/response";
+import { packageInfoQuerySchema, parseQuery } from "@/lib/api/schemas";
 import { getPackageDetail } from "@/lib/github";
-import { isValidImportPath } from "@/lib/validations";
+import { logger } from "@/lib/logger";
 
 async function getCachedPackageDetail(importPath: string) {
   "use cache";
@@ -13,35 +14,32 @@ async function getCachedPackageDetail(importPath: string) {
 }
 
 export async function GET(request: Request) {
+  const startedAt = Date.now();
+  const url = new URL(request.url);
+  const parsed = parseQuery(packageInfoQuerySchema, url.searchParams);
+
+  if (!parsed.success) {
+    return ApiErrors.badRequest(
+      parsed.error.issues[0]?.message ?? "Invalid request.",
+    );
+  }
+
   try {
-    const url = new URL(request.url);
-    const importPath = url.searchParams.get("importPath");
+    const data = await getCachedPackageDetail(parsed.data.importPath);
 
-    if (!importPath) {
-      return NextResponse.json(
-        { error: "Missing importPath path" },
-        { status: 400 },
-      );
-    }
-
-    if (!isValidImportPath(importPath)) {
-      return NextResponse.json(
-        { error: "Invalid importPath" },
-        { status: 400 },
-      );
-    }
-
-    const data = await getCachedPackageDetail(importPath);
-
-    return NextResponse.json(data, {
+    return ok(data, {
       headers: {
         "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=86400",
       },
     });
-  } catch {
-    return NextResponse.json(
-      { error: "Unable to load package details" },
-      { status: 500 },
-    );
+  } catch (error) {
+    logger.error("Failed to load package details", {
+      route: "package-info",
+      durationMs: Date.now() - startedAt,
+      status: 500,
+      errorName: error instanceof Error ? error.name : "unknown",
+    });
+
+    return ApiErrors.internal("Unable to load package details.");
   }
 }

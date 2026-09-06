@@ -1,6 +1,11 @@
 import type { PackageSearchResponse, PopularPackage } from "@/types";
 
-import { getGithubHeaders, GITHUB_BASE_URL, handleGithubError } from "./client";
+import {
+  getGithubHeaders,
+  GITHUB_BASE_URL,
+  handleGithubError,
+  resilientFetch,
+} from "./client";
 import { enrichWithGoProxy } from "./go-proxy";
 import { buildSearchQuery, guessCategory, normalizePackage } from "./normalize";
 import type { GitHubSearchResponse } from "./types";
@@ -20,7 +25,7 @@ export async function searchGithubPackages(
   const q = buildSearchQuery(query, category, tag);
   const sortParam = sort === "best" ? "" : `&sort=${sort}&order=${order}`;
   const url = `${GITHUB_BASE_URL}/search/repositories?q=${encodeURIComponent(q)}${sortParam}&per_page=${perPage}&page=${page}`;
-  const response = await fetch(url, { headers: getGithubHeaders() });
+  const response = await resilientFetch(url, { headers: getGithubHeaders() });
 
   if (!response.ok) {
     throw handleGithubError(response.status, "search");
@@ -45,7 +50,7 @@ export async function fetchPopularPackages(
   perPage: number = 10,
 ): Promise<{ packages: PopularPackage[]; total: number }> {
   const url = `${GITHUB_BASE_URL}/search/repositories?q=language:go&sort=stars&order=desc&page=${page}&per_page=${perPage}`;
-  const response = await fetch(url, { headers: getGithubHeaders() });
+  const response = await resilientFetch(url, { headers: getGithubHeaders() });
 
   if (!response.ok) {
     throw handleGithubError(response.status, "popular packages");

@@ -1,46 +1,47 @@
 import { cacheLife } from "next/cache";
-import { NextResponse } from "next/server";
 
-import { escapeGoModule, GO_PROXY_BASE } from "@/lib/github/client";
-import { isValidImportPath } from "@/lib/validations";
+import { ApiErrors, ok } from "@/lib/api/response";
+import { packageVersionsQuerySchema, parseQuery } from "@/lib/api/schemas";
+import {
+  escapeGoModule,
+  GO_PROXY_BASE,
+  resilientFetch,
+} from "@/lib/github/client";
+import { logger } from "@/lib/logger";
 
 async function getVersions(importPath: string): Promise<string[]> {
   "use cache";
   cacheLife({ revalidate: 3600 });
 
   const escaped = escapeGoModule(importPath);
-  const res = await fetch(`${GO_PROXY_BASE}/${escaped}/@v/list`);
+  const res = await resilientFetch(`${GO_PROXY_BASE}/${escaped}/@v/list`);
 
   if (!res.ok) return [];
   return (await res.text()).split("\n").filter(Boolean).reverse();
 }
 
 export async function GET(request: Request) {
+  const startedAt = Date.now();
   const url = new URL(request.url);
-  const importPath = url.searchParams.get("importPath");
-  const page = Math.max(1, Number(url.searchParams.get("page") ?? "1"));
-  const perPage = Math.min(
-    50,
-    Math.max(1, Number(url.searchParams.get("perPage") ?? "10")),
-  );
+  const parsed = parseQuery(packageVersionsQuerySchema, url.searchParams);
 
-  if (!importPath) {
-    return NextResponse.json({ error: "Missing importPath" }, { status: 400 });
+  if (!parsed.success) {
+    return ApiErrors.badRequest(
+      parsed.error.issues[0]?.message ?? "Invalid request.",
+    );
   }
 
-  if (!isValidImportPath(importPath)) {
-    return NextResponse.json({ error: "Invalid importPath" }, { status: 400 });
-  }
+  const { importPath, page, perPage } = parsed.data;
 
   try {
     const all = await getVersions(importPath);
     const total = all.length;
     const totalPages = Math.max(1, Math.ceil(total / perPage));
     const safePage = Math.min(page, totalPages);
-    const start = (safePage - 1) * perPage;
-    const versions = all.slice(start, start + perPage);
+    const offset = (safePage - 1) * perPage;
+    const versions = all.slice(offset, offset + perPage);
 
-    return NextResponse.json(
+    return ok(
       { versions, total, page: safePage, totalPages },
       {
         headers: {
@@ -49,10 +50,14 @@ export async function GET(request: Request) {
         },
       },
     );
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch versions" },
-      { status: 500 },
-    );
+  } catch (error) {
+    logger.error("Failed to fetch package versions", {
+      route: "package-versions",
+      durationMs: Date.now() - startedAt,
+      status: 500,
+      errorName: error instanceof Error ? error.name : "unknown",
+    });
+
+    return ApiErrors.internal("Failed to fetch versions.");
   }
 }

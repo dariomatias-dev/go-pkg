@@ -1,8 +1,10 @@
 import { cacheLife } from "next/cache";
-import { NextResponse } from "next/server";
 
+import { ApiErrors, ok } from "@/lib/api/response";
+import { parseQuery, searchQuerySchema } from "@/lib/api/schemas";
 import type { SearchOrder, SearchSort } from "@/lib/github";
 import { searchGithubPackages } from "@/lib/github";
+import { logger } from "@/lib/logger";
 
 async function getCachedSearch(
   query: string,
@@ -21,21 +23,21 @@ async function getCachedSearch(
 }
 
 export async function GET(request: Request) {
-  try {
-    const url = new URL(request.url);
-    const query = url.searchParams.get("q") ?? "";
-    const category = url.searchParams.get("category") ?? "";
-    const tag = url.searchParams.get("tag") ?? "";
-    const page = Math.max(1, Number(url.searchParams.get("page") ?? "1"));
-    const perPage = Math.min(
-      100,
-      Math.max(1, Number(url.searchParams.get("perPage") ?? "10")),
-    );
-    const sort = (url.searchParams.get("sort") ?? "stars") as SearchSort;
-    const order = (url.searchParams.get("order") ?? "desc") as SearchOrder;
+  const startedAt = Date.now();
+  const url = new URL(request.url);
+  const parsed = parseQuery(searchQuerySchema, url.searchParams);
 
+  if (!parsed.success) {
+    return ApiErrors.badRequest(
+      parsed.error.issues[0]?.message ?? "Invalid request.",
+    );
+  }
+
+  const { q, category, tag, page, perPage, sort, order } = parsed.data;
+
+  try {
     const data = await getCachedSearch(
-      query,
+      q,
       category,
       tag,
       page,
@@ -44,15 +46,19 @@ export async function GET(request: Request) {
       order,
     );
 
-    return NextResponse.json(data, {
+    return ok(data, {
       headers: {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
       },
     });
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to execute package search" },
-      { status: 500 },
-    );
+  } catch (error) {
+    logger.error("Failed to execute package search", {
+      route: "search",
+      durationMs: Date.now() - startedAt,
+      status: 500,
+      errorName: error instanceof Error ? error.name : "unknown",
+    });
+
+    return ApiErrors.internal("Failed to execute package search.");
   }
 }

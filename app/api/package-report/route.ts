@@ -1,8 +1,9 @@
 import { cacheLife } from "next/cache";
-import { NextResponse } from "next/server";
 
-import { parseGithubRepo } from "@/lib/github/client";
-import { isValidImportPath } from "@/lib/validations";
+import { ApiErrors, ok } from "@/lib/api/response";
+import { packageReportQuerySchema, parseQuery } from "@/lib/api/schemas";
+import { parseGithubRepo, resilientFetch } from "@/lib/github/client";
+import { logger } from "@/lib/logger";
 
 export interface GoReportCardResult {
   grade: string;
@@ -40,7 +41,7 @@ async function fetchReportCard(
   const reportUrl = `https://goreportcard.com/report/${repo}`;
   const badgeUrl = `https://goreportcard.com/badge/${repo}`;
 
-  const res = await fetch(badgeUrl, {
+  const res = await resilientFetch(badgeUrl, {
     headers: { "User-Agent": "GoPackageSearchApp" },
   });
 
@@ -55,24 +56,20 @@ async function fetchReportCard(
 }
 
 export async function GET(request: Request) {
+  const startedAt = Date.now();
   const url = new URL(request.url);
-  const importPath = url.searchParams.get("importPath");
+  const parsed = parseQuery(packageReportQuerySchema, url.searchParams);
 
-  if (!importPath) {
-    return NextResponse.json({ error: "Missing importPath" }, { status: 400 });
+  if (!parsed.success) {
+    return ApiErrors.badRequest(
+      parsed.error.issues[0]?.message ?? "Invalid request.",
+    );
   }
 
-  if (!isValidImportPath(importPath)) {
-    return NextResponse.json({ error: "Invalid importPath" }, { status: 400 });
-  }
-
-  const repoInfo = parseGithubRepo(importPath);
+  const repoInfo = parseGithubRepo(parsed.data.importPath);
 
   if (!repoInfo) {
-    return NextResponse.json(
-      { error: "Not a GitHub package" },
-      { status: 422 },
-    );
+    return ApiErrors.unprocessable("Not a GitHub package.");
   }
 
   try {
@@ -80,22 +77,23 @@ export async function GET(request: Request) {
     const result = await fetchReportCard(repo);
 
     if (!result) {
-      return NextResponse.json(
-        { error: "Report not available" },
-        { status: 404 },
-      );
+      return ApiErrors.notFound("Report not available.");
     }
 
-    return NextResponse.json(result, {
+    return ok(result, {
       headers: {
         "Cache-Control":
           "public, s-maxage=86400, stale-while-revalidate=604800",
       },
     });
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch report card" },
-      { status: 500 },
-    );
+  } catch (error) {
+    logger.error("Failed to fetch report card", {
+      route: "package-report",
+      durationMs: Date.now() - startedAt,
+      status: 500,
+      errorName: error instanceof Error ? error.name : "unknown",
+    });
+
+    return ApiErrors.internal("Failed to fetch report card.");
   }
 }

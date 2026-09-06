@@ -7,6 +7,7 @@ import {
   GO_PROXY_BASE,
   handleGithubError,
   parseGithubRepo,
+  resilientFetch,
 } from "./client";
 import { countGoModDependencies, fetchGoMod } from "./go-proxy";
 import type { GitHubRepo, GoProxyLatest } from "./types";
@@ -35,7 +36,7 @@ export async function getPackageDetail(
   let versions: string[] = [];
 
   try {
-    const res = await fetch(`${GO_PROXY_BASE}/${escaped}/@v/list`);
+    const res = await resilientFetch(`${GO_PROXY_BASE}/${escaped}/@v/list`);
 
     if (res.ok) {
       versions = (await res.text()).split("\n").filter(Boolean).reverse();
@@ -49,7 +50,7 @@ export async function getPackageDetail(
     pkg.versions = versions.slice(0, 50);
   } else {
     try {
-      const res = await fetch(`${GO_PROXY_BASE}/${escaped}/@latest`);
+      const res = await resilientFetch(`${GO_PROXY_BASE}/${escaped}/@latest`);
 
       if (res.ok) {
         const info = (await res.json()) as GoProxyLatest;
@@ -76,7 +77,7 @@ export async function getPackageDetail(
 
   if (repoInfo) {
     try {
-      const res = await fetch(
+      const res = await resilientFetch(
         `${GITHUB_BASE_URL}/repos/${repoInfo.owner}/${repoInfo.repo}`,
         { headers: getGithubHeaders() },
       );
@@ -114,8 +115,10 @@ export async function getPackageDetail(
     outer: for (const branch of branches) {
       for (const filename of filenames) {
         try {
-          const res = await fetch(
+          const res = await resilientFetch(
             `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/${branch}/${filename}`,
+            {},
+            { retries: 0, timeoutMs: 4000 },
           );
 
           if (res.ok) {

@@ -15,6 +15,77 @@ export function getGithubHeaders(): Record<string, string> {
   return headers;
 }
 
+const DEFAULT_TIMEOUT_MS = 8000;
+const MAX_RETRIES = 2;
+const MAX_RETRY_AFTER_MS = 10_000;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function retryAfterMs(res: Response): number | null {
+  const header = res.headers.get("Retry-After");
+
+  if (!header) return null;
+
+  const seconds = Number(header);
+
+  if (!Number.isFinite(seconds) || seconds < 0) return null;
+
+  return Math.min(seconds * 1000, MAX_RETRY_AFTER_MS);
+}
+
+/**
+ * fetch() with a request timeout and bounded retries: 5xx and network
+ * errors are retried with exponential backoff, 403/429 are retried once
+ * if the response carries a (capped) Retry-After, and every other 4xx is
+ * returned as-is on the first attempt — retrying a client error just
+ * repeats the same failure.
+ */
+export async function resilientFetch(
+  url: string,
+  init: RequestInit = {},
+  { timeoutMs = DEFAULT_TIMEOUT_MS, retries = MAX_RETRIES } = {},
+): Promise<Response> {
+  let attempt = 0;
+
+  while (true) {
+    try {
+      const res = await fetch(url, {
+        ...init,
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+
+      if (res.ok || attempt >= retries) return res;
+
+      if (res.status >= 500) {
+        await sleep(2 ** attempt * 200);
+        attempt++;
+
+        continue;
+      }
+
+      if (res.status === 403 || res.status === 429) {
+        const waitMs = retryAfterMs(res);
+
+        if (waitMs === null) return res;
+
+        await sleep(waitMs);
+        attempt++;
+
+        continue;
+      }
+
+      return res;
+    } catch (err) {
+      if (attempt >= retries) throw err;
+
+      await sleep(2 ** attempt * 200);
+      attempt++;
+    }
+  }
+}
+
 export function handleGithubError(status: number, context: string): Error {
   if ((status === 403 || status === 429) && !process.env.GITHUB_TOKEN) {
     return new Error(

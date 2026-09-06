@@ -32,7 +32,7 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    files: ["scripts/**"],
+    files: ["scripts/**", "lib/logger.ts", "lib/logger.test.ts"],
     rules: {
       "no-console": "off",
     },

@@ -17,14 +17,19 @@ describe("GET /api/package-versions", () => {
 
   it("400s when importPath is missing", async () => {
     const res = await GET(req(""));
+    const body = await res.json();
+
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/missing/i);
+    expect(body.error.code).toBe("bad_request");
+    expect(body.error.message).toMatch(/required/i);
   });
 
   it("400s when importPath fails validation", async () => {
     const res = await GET(req("importPath=" + encodeURIComponent("; rm -rf")));
+    const body = await res.json();
+
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/invalid/i);
+    expect(body.error.message).toMatch(/invalid/i);
   });
 
   it("paginates the version list from the Go proxy", async () => {
@@ -43,11 +48,15 @@ describe("GET /api/package-versions", () => {
     expect(body.totalPages).toBe(2);
   });
 
-  it("returns 500 when the upstream fetch throws", async () => {
-    vi.mocked(fetch).mockRejectedValueOnce(new Error("network error"));
+  it("returns 500 when the upstream fetch keeps failing", async () => {
+    // resilientFetch retries network errors, so every attempt needs to
+    // reject or the mock underflows.
+    vi.mocked(fetch).mockRejectedValue(new Error("network error"));
 
     const res = await GET(req("importPath=github.com/gin-gonic/gin"));
+    const body = await res.json();
 
     expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
   });
 });

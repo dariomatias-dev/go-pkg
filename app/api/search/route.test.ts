@@ -48,25 +48,28 @@ describe("GET /api/search", () => {
     expect(body.results).toHaveLength(1);
   });
 
-  it("returns 500 when the GitHub API rejects the request", async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(new Response(null, { status: 500 }));
+  it("returns 500 when the GitHub API keeps rejecting the request", async () => {
+    // resilientFetch retries 5xx responses, so every attempt needs a
+    // response or the mock underflows.
+    vi.mocked(fetch).mockResolvedValue(new Response(null, { status: 500 }));
 
     const res = await GET(req("q=gin"));
+    const body = await res.json();
 
     expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
   });
 
-  // Today an out-of-range sort/order value is cast without validation
-  // and forwarded straight to the GitHub API (see lib/github/search.ts
-  // and plan.md Etapa 5, which adds a zod schema here). This test
-  // documents that gap: it is expected to fail loudly instead of
-  // rejecting the request with a 400.
-  it("forwards an invalid sort value instead of rejecting it (pre-Etapa-5 baseline)", async () => {
+  it("falls back to the default sort/order instead of forwarding an invalid value", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(searchResponse());
 
-    const res = await GET(req("q=gin&sort=not-a-real-sort"));
+    const res = await GET(req("q=gin&sort=not-a-real-sort&order=sideways"));
 
     expect(res.status).toBe(200);
-    expect(vi.mocked(fetch).mock.calls[0][0]).toContain("sort=not-a-real-sort");
+
+    const requestedUrl = String(vi.mocked(fetch).mock.calls[0][0]);
+    expect(requestedUrl).toContain("sort=stars");
+    expect(requestedUrl).toContain("order=desc");
+    expect(requestedUrl).not.toContain("not-a-real-sort");
   });
 });

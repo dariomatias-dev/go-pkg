@@ -1,65 +1,31 @@
 import { GoogleGenAI } from "@google/genai";
-import { NextResponse } from "next/server";
 
-import { isValidImportPath } from "@/lib/validations";
-
-interface ChatMessage {
-  role: "user" | "model";
-  text: string;
-}
-
-interface AssistantRequestBody {
-  importPath?: string;
-  description?: string;
-  message: string;
-  history?: ChatMessage[];
-}
+import { checkRateLimit, getClientIp } from "@/lib/api/rate-limit";
+import { ApiErrors, ok } from "@/lib/api/response";
+import { packageAssistantBodySchema } from "@/lib/api/schemas";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
-  const {
-    message,
-    history = [],
-    importPath,
-    description,
-  } = (await request.json()) as AssistantRequestBody;
+  const startedAt = Date.now();
+  const rateLimit = checkRateLimit(`package-assistant:${getClientIp(request)}`);
 
-  if (!message) {
-    return NextResponse.json(
-      { error: 'The "message" field is required.' },
-      { status: 400 },
+  if (!rateLimit.allowed) {
+    return ApiErrors.rateLimited(
+      "AI quota reached. Please try again later.",
+      rateLimit.retryAfterSeconds,
     );
   }
 
-  if (message.length > 4000) {
-    return NextResponse.json({ error: "Message too long." }, { status: 400 });
-  }
+  const body = await request.json().catch(() => null);
+  const parsed = packageAssistantBodySchema.safeParse(body);
 
-  if (history.length > 50) {
-    return NextResponse.json({ error: "History too long." }, { status: 400 });
-  }
-
-  if (history.some((msg) => msg.text.length > 4000)) {
-    return NextResponse.json(
-      { error: "History message too long." },
-      { status: 400 },
+  if (!parsed.success) {
+    return ApiErrors.badRequest(
+      parsed.error.issues[0]?.message ?? "Invalid request body.",
     );
   }
 
-  if (importPath !== undefined) {
-    if (!isValidImportPath(importPath)) {
-      return NextResponse.json(
-        { error: "Invalid import path." },
-        { status: 400 },
-      );
-    }
-  }
-
-  if (description !== undefined && description.length > 500) {
-    return NextResponse.json(
-      { error: "Description too long." },
-      { status: 400 },
-    );
-  }
+  const { message, history, importPath, description } = parsed.data;
 
   const finalModulePath = importPath ?? "general";
 
@@ -79,7 +45,7 @@ export async function POST(request: Request) {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return NextResponse.json(
+    return ok(
       {
         text: "Gopher AI is currently unavailable. Please configure the GEMINI_API_KEY environment variable.",
       },
@@ -152,14 +118,12 @@ Guidelines:
       },
     });
 
-    return NextResponse.json({
+    return ok({
       text:
         response.text ||
         "Sorry, I could not generate a response at the moment.",
     });
   } catch (error) {
-    console.error("Assistant error:", error);
-
     const msg = error instanceof Error ? error.message : String(error);
     const isRateLimit =
       msg.includes("429") ||
@@ -167,23 +131,25 @@ Guidelines:
       msg.includes("quota");
     const isUnavailable = msg.includes("503") || msg.includes("UNAVAILABLE");
 
+    logger.error("Assistant error", {
+      route: "package-assistant",
+      durationMs: Date.now() - startedAt,
+      status: isRateLimit ? 429 : isUnavailable ? 503 : 500,
+      errorName: error instanceof Error ? error.name : "unknown",
+    });
+
     if (isRateLimit) {
-      return NextResponse.json(
-        { error: "AI quota reached. Please try again later." },
-        { status: 429 },
-      );
+      return ApiErrors.rateLimited("AI quota reached. Please try again later.");
     }
 
     if (isUnavailable) {
-      return NextResponse.json(
-        { error: "AI service temporarily unavailable. Please try again." },
-        { status: 503 },
+      return ApiErrors.serviceUnavailable(
+        "AI service temporarily unavailable. Please try again.",
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to connect to the Gopher AI assistant service." },
-      { status: 500 },
+    return ApiErrors.internal(
+      "Failed to connect to the Gopher AI assistant service.",
     );
   }
 }

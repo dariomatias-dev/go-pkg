@@ -1,8 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
 import { cacheLife } from "next/cache";
-import { NextResponse } from "next/server";
 
-import { isValidImportPath } from "@/lib/validations";
+import { checkRateLimit, getClientIp } from "@/lib/api/rate-limit";
+import { ApiErrors, ok } from "@/lib/api/response";
+import { packageSummaryQuerySchema, parseQuery } from "@/lib/api/schemas";
+import { logger } from "@/lib/logger";
 
 async function getCachedSummary(importPath: string): Promise<string> {
   "use cache";
@@ -52,39 +54,37 @@ Do not include comments inside code snippets.
 }
 
 export async function GET(request: Request) {
+  const startedAt = Date.now();
   const url = new URL(request.url);
-  const importPath = url.searchParams.get("importPath");
+  const parsed = parseQuery(packageSummaryQuerySchema, url.searchParams);
 
-  if (!importPath) {
-    return NextResponse.json(
-      { error: 'The "importPath" parameter is required.' },
-      { status: 400 },
+  if (!parsed.success) {
+    return ApiErrors.badRequest(
+      parsed.error.issues[0]?.message ?? "Invalid request.",
     );
   }
 
-  if (!isValidImportPath(importPath)) {
-    return NextResponse.json(
-      { error: "Invalid import path." },
-      { status: 400 },
+  const rateLimit = checkRateLimit(`package-summary:${getClientIp(request)}`);
+
+  if (!rateLimit.allowed) {
+    return ApiErrors.rateLimited(
+      "AI quota reached. Please try again later.",
+      rateLimit.retryAfterSeconds,
     );
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return NextResponse.json(
-      {
-        error:
-          "AI service is not configured. Please set the GEMINI_API_KEY environment variable.",
-      },
-      { status: 503 },
+    return ApiErrors.serviceUnavailable(
+      "AI service is not configured. Please set the GEMINI_API_KEY environment variable.",
     );
   }
 
   try {
-    const summary = await getCachedSummary(importPath);
+    const summary = await getCachedSummary(parsed.data.importPath);
 
-    return NextResponse.json(
+    return ok(
       { summary },
       {
         headers: {
@@ -94,8 +94,6 @@ export async function GET(request: Request) {
       },
     );
   } catch (error) {
-    console.error("Summary generation error:", error);
-
     const msg = error instanceof Error ? error.message : String(error);
     const isRateLimit =
       msg.includes("429") ||
@@ -103,23 +101,25 @@ export async function GET(request: Request) {
       msg.includes("quota");
     const isUnavailable = msg.includes("503") || msg.includes("UNAVAILABLE");
 
+    logger.error("Summary generation error", {
+      route: "package-summary",
+      durationMs: Date.now() - startedAt,
+      status: isRateLimit ? 429 : isUnavailable ? 503 : 500,
+      errorName: error instanceof Error ? error.name : "unknown",
+    });
+
     if (isRateLimit) {
-      return NextResponse.json(
-        { error: "AI quota reached. Please try again later." },
-        { status: 429 },
-      );
+      return ApiErrors.rateLimited("AI quota reached. Please try again later.");
     }
 
     if (isUnavailable) {
-      return NextResponse.json(
-        { error: "AI service temporarily unavailable. Please try again." },
-        { status: 503 },
+      return ApiErrors.serviceUnavailable(
+        "AI service temporarily unavailable. Please try again.",
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to generate AI summary. Please try again." },
-      { status: 500 },
+    return ApiErrors.internal(
+      "Failed to generate AI summary. Please try again.",
     );
   }
 }
