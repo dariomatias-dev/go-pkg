@@ -37,6 +37,24 @@ describe("checkRateLimit", () => {
     expect(checkRateLimit("ip-e", start).allowed).toBe(false);
     expect(checkRateLimit("ip-e", start + 61_000).allowed).toBe(true);
   });
+
+  it("evicts the oldest tracked IP once the store hits its cap", () => {
+    const start = Date.now();
+
+    // Saturate ip-0 so it would stay blocked if its bucket survived.
+    for (let i = 0; i < 10; i++) checkRateLimit("ip-0", start);
+    expect(checkRateLimit("ip-0", start).allowed).toBe(false);
+
+    // Fill the store to its 5000-entry cap (ip-0 already counts as
+    // one), then add one more: the oldest bucket (ip-0, inserted
+    // first) must be evicted to make room for the new key.
+    for (let i = 1; i < 5000; i++) checkRateLimit(`ip-${i}`, start);
+    checkRateLimit("ip-5000", start);
+
+    // If ip-0 had not been evicted it would still be blocked; instead
+    // it is treated as a fresh visitor.
+    expect(checkRateLimit("ip-0", start).allowed).toBe(true);
+  });
 });
 
 describe("getClientIp", () => {

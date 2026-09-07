@@ -121,6 +121,29 @@ describe("normalizePackage", () => {
     expect(pkg.license).toBe("Unknown");
   });
 
+  it("falls back to the license name when spdx_id is falsy at runtime", () => {
+    // The GitHub API can return spdx_id: null even though our type
+    // narrows it to `string`, so this exercises the `??` fallback path.
+    const pkg = normalizePackage(
+      makeRepo({
+        license: { spdx_id: null, name: "Custom License" } as unknown as {
+          spdx_id: string;
+          name: string;
+        },
+      }),
+    );
+
+    expect(pkg.license).toBe("Custom License");
+  });
+
+  it("guesses the category when none is passed explicitly", () => {
+    const pkg = normalizePackage(
+      makeRepo({ name: "gorm", description: "an orm for go" }),
+    );
+
+    expect(pkg.category).toBe("database");
+  });
+
   it("uses the explicit category over the guessed one", () => {
     const pkg = normalizePackage(makeRepo(), "database");
     expect(pkg.category).toBe("database");

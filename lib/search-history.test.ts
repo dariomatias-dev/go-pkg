@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   clearHistory,
@@ -55,5 +55,39 @@ describe("clearHistory", () => {
     clearHistory();
 
     expect(loadHistory()).toEqual([]);
+  });
+});
+
+describe("error handling", () => {
+  it("loadHistory returns an empty array when stored JSON is corrupt", () => {
+    localStorage.setItem("gopkg_search_history", "not valid json");
+
+    expect(loadHistory()).toEqual([]);
+  });
+
+  it("saveToHistory silently ignores a storage failure", () => {
+    const spy = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(() => {
+        throw new Error("QuotaExceededError");
+      });
+
+    expect(() => saveToHistory("gin")).not.toThrow();
+
+    spy.mockRestore();
+  });
+
+  it("removeFromHistory returns an empty array on a storage failure", () => {
+    saveToHistory("gin");
+
+    const spy = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(() => {
+        throw new Error("QuotaExceededError");
+      });
+
+    expect(removeFromHistory("gin")).toEqual([]);
+
+    spy.mockRestore();
   });
 });

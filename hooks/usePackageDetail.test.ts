@@ -116,4 +116,102 @@ describe("usePackageDetail", () => {
     expect(result.current.data?.pkg.name).toBe("echo");
     expect(result.current.error).toBeNull();
   });
+
+  it("fetches the AI summary immediately when the initial tab is 'summary'", async () => {
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(packageInfoResponse())
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ summary: "Initial tab summary." })),
+      );
+
+    const { result } = renderHook(() =>
+      usePackageDetail("github.com/gin-gonic/gin", "summary"),
+    );
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.activeTab).toBe("summary");
+    await waitFor(() =>
+      expect(result.current.aiSummary).toBe("Initial tab summary."),
+    );
+  });
+
+  it("fetches the AI summary when switching to the summary tab manually", async () => {
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(packageInfoResponse())
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ summary: "On-demand summary." })),
+      );
+
+    const { result } = renderHook(() =>
+      usePackageDetail("github.com/gin-gonic/gin"),
+    );
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.activeTab).toBe("readme");
+
+    result.current.handleTabChange("summary");
+
+    await waitFor(() => expect(result.current.activeTab).toBe("summary"));
+    await waitFor(() =>
+      expect(result.current.aiSummary).toBe("On-demand summary."),
+    );
+  });
+
+  it("does not refetch the AI summary if one was already loaded", async () => {
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(packageInfoResponse())
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ summary: "Cached summary." })),
+      );
+
+    const { result } = renderHook(() =>
+      usePackageDetail("github.com/gin-gonic/gin"),
+    );
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    result.current.handleTabChange("summary");
+    await waitFor(() =>
+      expect(result.current.aiSummary).toBe("Cached summary."),
+    );
+
+    const callsBefore = vi.mocked(fetch).mock.calls.length;
+
+    result.current.handleTabChange("readme");
+    result.current.handleTabChange("summary");
+
+    expect(vi.mocked(fetch).mock.calls.length).toBe(callsBefore);
+  });
+
+  it("surfaces an AI summary error and lets retryAiSummary retry", async () => {
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(packageInfoResponse())
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ error: { message: "AI is overloaded." } }),
+          { status: 500 },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ summary: "Recovered summary." })),
+      );
+
+    const { result } = renderHook(() =>
+      usePackageDetail("github.com/gin-gonic/gin"),
+    );
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    result.current.handleTabChange("summary");
+    await waitFor(() =>
+      expect(result.current.aiSummaryError).toBe("AI is overloaded."),
+    );
+
+    result.current.retryAiSummary();
+    await waitFor(() =>
+      expect(result.current.aiSummary).toBe("Recovered summary."),
+    );
+    expect(result.current.aiSummaryError).toBeNull();
+  });
 });

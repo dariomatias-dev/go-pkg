@@ -103,4 +103,41 @@ describe("getPackageDetail", () => {
     expect(result.pkg.stars).toBe(0);
     expect(result.pkg.forks).toBe(0);
   });
+
+  it("keeps default version when the version-list fetch throws a network error", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = String(input);
+
+        if (url.includes("@v/list") || url.includes("@latest")) {
+          return Promise.reject(new Error("network down"));
+        }
+
+        return Promise.resolve(new Response(null, { status: 404 }));
+      }),
+    );
+
+    const result = await getPackageDetail("github.com/gin-gonic/gin");
+
+    expect(result.pkg.latestVersion).toBe("v0.0.0");
+  });
+
+  it("keeps default repo values when the GitHub repo fetch throws a network error", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchByUrl({
+        "@v/list": () => new Response("", { status: 404 }),
+        "@latest": () => new Response("", { status: 404 }),
+        "api.github.com/repos": () => {
+          throw new Error("network down");
+        },
+      }),
+    );
+
+    const result = await getPackageDetail("github.com/gin-gonic/gin");
+
+    expect(result.pkg.stars).toBe(0);
+    expect(result.pkg.githubUrl).toBeUndefined();
+  });
 });

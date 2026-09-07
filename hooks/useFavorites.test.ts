@@ -78,4 +78,27 @@ describe("useFavorites", () => {
 
     expect(b.result.current.favorites).toHaveLength(1);
   });
+
+  it("falls back to an empty list when the stored favorites are corrupt", () => {
+    localStorage.setItem("gopkg_favorites", "not valid json");
+
+    const { result } = renderHook(() => useFavorites());
+
+    expect(result.current.favorites).toEqual([]);
+  });
+
+  it("only keeps githubUrl and dependenciesCount when present on the source package", () => {
+    const { result } = renderHook(() => useFavorites());
+
+    act(() =>
+      result.current.addFavorite(
+        makePackage({ githubUrl: undefined, dependenciesCount: 5 }),
+      ),
+    );
+
+    const stored = JSON.parse(localStorage.getItem("gopkg_favorites")!);
+
+    expect(stored[0].githubUrl).toBeUndefined();
+    expect(stored[0].dependenciesCount).toBe(5);
+  });
 });

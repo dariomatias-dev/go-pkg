@@ -67,6 +67,17 @@ describe("searchGithubPackages", () => {
     expect(result.results).toEqual([]);
     expect(result.totalResults).toBe(0);
   });
+
+  it("omits sort/order params when sort is 'best'", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse(searchResponse));
+
+    await searchGithubPackages("gin", "", "", 1, 10, "best");
+
+    const url = vi.mocked(fetch).mock.calls[0][0] as string;
+
+    expect(url).not.toContain("sort=");
+    expect(url).not.toContain("order=");
+  });
 });
 
 describe("fetchPopularPackages", () => {
@@ -94,5 +105,41 @@ describe("fetchPopularPackages", () => {
     vi.mocked(fetch).mockResolvedValue(new Response(null, { status: 500 }));
 
     await expect(fetchPopularPackages()).rejects.toThrow(/GitHub API error/);
+  });
+
+  it("falls back to defaults when optional GitHub fields are missing", async () => {
+    const sparseResponse: GitHubSearchResponse = {
+      items: [
+        {
+          full_name: "unknown/pkg",
+          name: "pkg",
+          description: null,
+          stargazers_count: null,
+          forks_count: null,
+          license: null,
+          topics: null,
+          owner: null,
+          html_url: "https://github.com/unknown/pkg",
+          updated_at: "2024-05-01T00:00:00Z",
+          pushed_at: null,
+        },
+      ],
+    } as unknown as GitHubSearchResponse;
+
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(jsonResponse(sparseResponse))
+      .mockResolvedValueOnce(new Response(null, { status: 404 }));
+
+    const result = await fetchPopularPackages(1, 10);
+
+    expect(result.total).toBe(1);
+    expect(result.packages[0]).toMatchObject({
+      description: "No description available.",
+      stars: 0,
+      forks: 0,
+      license: "",
+      author: "",
+      publishedAt: "",
+    });
   });
 });

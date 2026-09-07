@@ -128,4 +128,16 @@ describe("packageAssistantBodySchema", () => {
       packageAssistantBodySchema.safeParse({ message: "hi" }).success,
     ).toBe(true);
   });
+
+  it("rejects a non-string importPath with the generic invalid message", () => {
+    const result = packageAssistantBodySchema.safeParse({
+      message: "hi",
+      importPath: 123,
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toBe("Invalid importPath.");
+    }
+  });
 });

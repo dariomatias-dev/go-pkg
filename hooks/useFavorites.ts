@@ -17,11 +17,16 @@ function getSnapshot(): GoPackage[] {
 
     if (raw === snapshotRaw) return snapshotCache;
 
+    const parsed = raw ? (JSON.parse(raw) as GoPackage[]) : EMPTY;
+
     snapshotRaw = raw;
-    snapshotCache = raw ? (JSON.parse(raw) as GoPackage[]) : EMPTY;
+    snapshotCache = parsed;
 
     return snapshotCache;
   } catch {
+    snapshotRaw = null;
+    snapshotCache = EMPTY;
+
     return EMPTY;
   }
 }

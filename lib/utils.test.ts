@@ -55,4 +55,31 @@ describe("formatRelativeTime", () => {
   it("formats a very recent date as just now", () => {
     expect(formatRelativeTime(new Date().toISOString())).toBe("just now");
   });
+
+  it("formats a date from months ago", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2024-06-10T00:00:00Z"));
+
+    expect(formatRelativeTime("2024-03-01T00:00:00Z")).toBe("3mo ago");
+
+    vi.useRealTimers();
+  });
+
+  it("formats a date from hours ago", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2024-06-10T12:00:00Z"));
+
+    expect(formatRelativeTime("2024-06-10T05:00:00Z")).toBe("7h ago");
+
+    vi.useRealTimers();
+  });
+
+  it("formats a date from minutes ago", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2024-06-10T12:30:00Z"));
+
+    expect(formatRelativeTime("2024-06-10T12:00:00Z")).toBe("30min ago");
+
+    vi.useRealTimers();
+  });
 });
