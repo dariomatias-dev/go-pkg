@@ -1,7 +1,11 @@
-import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { MarkdownRenderer } from "./MarkdownRenderer";
+
+vi.mock("next-themes", () => ({
+  useTheme: () => ({ resolvedTheme: "light" }),
+}));
 
 describe("MarkdownRenderer XSS sanitization", () => {
   it("strips <script> tags from untrusted README HTML", () => {
@@ -42,5 +46,85 @@ describe("MarkdownRenderer XSS sanitization", () => {
     );
 
     expect(container.querySelector("strong")).toBeNull();
+  });
+});
+
+describe("MarkdownRenderer component overrides", () => {
+  it("gives headings a slugified id and an anchor link", () => {
+    const { container } = render(
+      <MarkdownRenderer content={"## Getting Started!"} />,
+    );
+
+    const heading = screen.getByRole("heading", { level: 2 });
+
+    expect(heading).toHaveAttribute("id", "getting-started");
+    expect(container.querySelector('a[href="#getting-started"]')).not.toBeNull();
+  });
+
+  it("renders a fenced code block via the code-split CodeBlock", async () => {
+    const { container } = render(
+      <MarkdownRenderer content={"```go\nfmt.Println(1)\n```"} />,
+    );
+
+    await waitFor(() =>
+      expect(container.querySelector("code")?.textContent).toBe(
+        "fmt.Println(1)",
+      ),
+    );
+    expect(screen.getByTitle("Copy code")).toBeInTheDocument();
+  });
+
+  it("renders inline code without the CodeBlock", () => {
+    const { container } = render(<MarkdownRenderer content="Use `go get`." />);
+
+    expect(container.querySelector("code")?.textContent).toBe("go get");
+    expect(container.querySelector(".animate-pulse")).toBeNull();
+  });
+
+  it("opens external links in a new tab but keeps anchor links in-page", () => {
+    render(
+      <MarkdownRenderer
+        content={"[ext](https://example.com) and [jump](#section)"}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "ext" })).toHaveAttribute(
+      "target",
+      "_blank",
+    );
+    expect(screen.getByRole("link", { name: "jump" })).not.toHaveAttribute(
+      "target",
+    );
+  });
+
+  it("renders GFM tables with header and body cells", () => {
+    render(
+      <MarkdownRenderer
+        content={"| A | B |\n| --- | --- |\n| 1 | 2 |"}
+      />,
+    );
+
+    expect(screen.getByRole("columnheader", { name: "A" })).toBeInTheDocument();
+    expect(screen.getByRole("cell", { name: "1" })).toBeInTheDocument();
+  });
+
+  it("renders a details/summary disclosure with content separated from the summary", () => {
+    const { container } = render(
+      <MarkdownRenderer
+        content={"<details><summary>More</summary>\n\nHidden text\n\n</details>"}
+        useRehypeRaw
+      />,
+    );
+
+    expect(screen.getByText("More")).toBeInTheDocument();
+    expect(container.querySelector("details > div")?.textContent).toContain(
+      "Hidden text",
+    );
+  });
+
+  it("renders emoji shortcodes via remark-emoji", () => {
+    const { container } = render(<MarkdownRenderer content=":rocket:" />);
+
+    expect(container.textContent).toContain("🚀");
   });
 });

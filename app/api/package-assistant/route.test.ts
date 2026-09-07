@@ -79,6 +79,66 @@ describe("POST /api/package-assistant", () => {
     expect(body.text).toMatch(/currently unavailable/i);
   });
 
+  it("scopes the system instruction to the given package", async () => {
+    generateContent.mockResolvedValueOnce({ text: "It's a web framework." });
+
+    const res = await POST(
+      req({
+        message: "what is this?",
+        importPath: "github.com/gin-gonic/gin",
+        description: "<b>Gin</b> web framework",
+      }),
+    );
+
+    expect(res.status).toBe(200);
+
+    const [[call]] = generateContent.mock.calls;
+
+    expect(call.config.systemInstruction).toContain(
+      "github.com/gin-gonic/gin",
+    );
+    expect(call.config.systemInstruction).toContain("&lt;b&gt;Gin&lt;/b&gt;");
+  });
+
+  it("falls back to a generic message when the model returns no text", async () => {
+    generateContent.mockResolvedValueOnce({ text: "" });
+
+    const res = await POST(req({ message: "hi" }));
+    const body = await res.json();
+
+    expect(body.text).toMatch(/could not generate a response/i);
+  });
+
+  it("maps a quota error to 429", async () => {
+    generateContent.mockRejectedValueOnce(new Error("RESOURCE_EXHAUSTED"));
+
+    const res = await POST(req({ message: "hi" }));
+    const body = await res.json();
+
+    expect(res.status).toBe(429);
+    expect(body.error.code).toBe("rate_limited");
+  });
+
+  it("maps a 503/UNAVAILABLE error to service_unavailable", async () => {
+    generateContent.mockRejectedValueOnce(new Error("503 UNAVAILABLE"));
+
+    const res = await POST(req({ message: "hi" }));
+    const body = await res.json();
+
+    expect(res.status).toBe(503);
+    expect(body.error.code).toBe("service_unavailable");
+  });
+
+  it("maps an unknown error to internal_error", async () => {
+    generateContent.mockRejectedValueOnce(new Error("boom"));
+
+    const res = await POST(req({ message: "hi" }));
+    const body = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
+  });
+
   it("rate limits after 10 requests from the same IP", async () => {
     generateContent.mockResolvedValue({ text: "ok" });
 

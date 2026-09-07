@@ -90,4 +90,128 @@ describe("Pagination", () => {
 
     expect(screen.getByRole("button", { name: /previous/i })).toBeDisabled();
   });
+
+  it("disables the next button on the last page", () => {
+    render(
+      <Pagination
+        currentPage={10}
+        totalResults={100}
+        perPage={10}
+        itemCountInPage={10}
+        label="packages"
+        onPageChange={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
+  });
+
+  it("disables both nav buttons while isLoading", () => {
+    render(
+      <Pagination
+        currentPage={2}
+        totalResults={100}
+        perPage={10}
+        itemCountInPage={10}
+        label="packages"
+        onPageChange={vi.fn()}
+        isLoading={true}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: /previous/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
+  });
+
+  it("shows the item count and total in the summary line", () => {
+    render(
+      <Pagination
+        currentPage={1}
+        totalResults={95}
+        perPage={10}
+        itemCountInPage={7}
+        label="packages"
+        onPageChange={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("7")).toBeInTheDocument();
+    expect(screen.getByText("95")).toBeInTheDocument();
+    expect(screen.getByText(/packages/)).toBeInTheDocument();
+  });
+
+  it("jumps to a typed page via the ellipsis input on Enter", async () => {
+    const user = userEvent.setup();
+    const onPageChange = vi.fn();
+
+    render(
+      <Pagination
+        currentPage={5}
+        totalResults={200}
+        perPage={10}
+        itemCountInPage={10}
+        label="packages"
+        onPageChange={onPageChange}
+      />,
+    );
+
+    await user.click(screen.getAllByText("…")[0]);
+
+    const input = screen.getByRole("spinbutton", { name: /jump to page/i });
+
+    await user.type(input, "12{Enter}");
+
+    expect(onPageChange).toHaveBeenCalledWith(12);
+  });
+
+  it("ignores an out-of-range jump and closes the input", async () => {
+    const user = userEvent.setup();
+    const onPageChange = vi.fn();
+
+    render(
+      <Pagination
+        currentPage={5}
+        totalResults={200}
+        perPage={10}
+        itemCountInPage={10}
+        label="packages"
+        onPageChange={onPageChange}
+      />,
+    );
+
+    await user.click(screen.getAllByText("…")[0]);
+
+    const input = screen.getByRole("spinbutton", { name: /jump to page/i });
+
+    await user.type(input, "999{Enter}");
+
+    expect(onPageChange).not.toHaveBeenCalled();
+    expect(
+      screen.queryByRole("spinbutton", { name: /jump to page/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("closes the jump input on Escape without navigating", async () => {
+    const user = userEvent.setup();
+    const onPageChange = vi.fn();
+
+    render(
+      <Pagination
+        currentPage={5}
+        totalResults={200}
+        perPage={10}
+        itemCountInPage={10}
+        label="packages"
+        onPageChange={onPageChange}
+      />,
+    );
+
+    await user.click(screen.getAllByText("…")[0]);
+    await user.keyboard("{Escape}");
+
+    expect(
+      screen.queryByRole("spinbutton", { name: /jump to page/i }),
+    ).not.toBeInTheDocument();
+    expect(onPageChange).not.toHaveBeenCalled();
+  });
 });
