@@ -39,7 +39,11 @@ describe("SearchSidebar", () => {
     const onClearAll = vi.fn();
 
     render(
-      <SearchSidebar {...baseProps()} hasFilter={true} onClearAll={onClearAll} />,
+      <SearchSidebar
+        {...baseProps()}
+        hasFilter={true}
+        onClearAll={onClearAll}
+      />,
     );
 
     await user.click(screen.getByRole("button", { name: /clear all/i }));
@@ -98,11 +102,15 @@ describe("SearchSidebar", () => {
     const user = userEvent.setup();
     const onTagClear = vi.fn();
 
-    render(<SearchSidebar {...baseProps()} tag="caching" onTagClear={onTagClear} />);
+    render(
+      <SearchSidebar {...baseProps()} tag="caching" onTagClear={onTagClear} />,
+    );
 
     expect(screen.getByText("#caching")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /clear selected tag/i }));
+    await user.click(
+      screen.getByRole("button", { name: /clear selected tag/i }),
+    );
 
     expect(onTagClear).toHaveBeenCalled();
   });

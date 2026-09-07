@@ -9,7 +9,11 @@ function req(params: string) {
 function releasesResponse(headers?: HeadersInit) {
   return new Response(
     JSON.stringify([
-      { tag_name: "v1.1.0", name: "v1.1.0", published_at: "2024-05-01T00:00:00Z" },
+      {
+        tag_name: "v1.1.0",
+        name: "v1.1.0",
+        published_at: "2024-05-01T00:00:00Z",
+      },
     ]),
     { headers },
   );

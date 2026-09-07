@@ -63,9 +63,9 @@ describe("SearchResults", () => {
       <SearchResults {...baseProps()} loading={true} />,
     );
 
-    expect(container.querySelectorAll(".animate-shimmer").length).toBeGreaterThan(
-      0,
-    );
+    expect(
+      container.querySelectorAll(".animate-shimmer").length,
+    ).toBeGreaterThan(0);
   });
 
   it("renders result cards and pagination when there are more results than perPage", () => {

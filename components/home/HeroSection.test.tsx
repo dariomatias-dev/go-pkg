@@ -75,9 +75,9 @@ describe("HeroSection", () => {
 
     await user.type(input, "gin");
 
-    const clearButton = Array.from(
-      container.querySelectorAll("button"),
-    ).find((btn) => btn.textContent === "");
+    const clearButton = Array.from(container.querySelectorAll("button")).find(
+      (btn) => btn.textContent === "",
+    );
 
     await user.click(clearButton!);
 

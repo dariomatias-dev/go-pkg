@@ -20,9 +20,7 @@ describe("GopherChat", () => {
     expect(
       screen.getByRole("heading", { name: /gopher ai assistant/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/how to import and use\?/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/how to import and use\?/i)).toBeInTheDocument();
   });
 
   it("collapses and expands the panel", async () => {
@@ -121,9 +119,7 @@ describe("GopherChat", () => {
     );
     await user.click(screen.getByRole("button", { name: /send message/i }));
 
-    expect(
-      await screen.findByText(/an error occurred/i),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/an error occurred/i)).toBeInTheDocument();
   });
 
   it("shows a network-failure message when the fetch rejects", async () => {

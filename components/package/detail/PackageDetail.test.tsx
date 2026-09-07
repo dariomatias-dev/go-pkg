@@ -41,7 +41,9 @@ function pkg(overrides: Partial<GoPackage> = {}): GoPackage {
   };
 }
 
-function baseHookState(overrides: Partial<ReturnType<typeof usePackageDetail>> = {}) {
+function baseHookState(
+  overrides: Partial<ReturnType<typeof usePackageDetail>> = {},
+) {
   return {
     data: { pkg: pkg(), goMod: "module github.com/gin-gonic/gin" },
     loading: false,
@@ -67,7 +69,10 @@ function renderDetail(importPath = "github.com/gin-gonic/gin") {
 describe("PackageDetail", () => {
   beforeEach(() => {
     window.scrollTo = vi.fn();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 404 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response(null, { status: 404 })),
+    );
   });
 
   afterEach(() => {
@@ -76,7 +81,9 @@ describe("PackageDetail", () => {
   });
 
   it("shows a skeleton while loading", () => {
-    usePackageDetail.mockReturnValue(baseHookState({ loading: true, data: null }));
+    usePackageDetail.mockReturnValue(
+      baseHookState({ loading: true, data: null }),
+    );
 
     const { container } = renderDetail();
 
@@ -85,7 +92,11 @@ describe("PackageDetail", () => {
 
   it("shows an error view when the package fails to resolve", () => {
     usePackageDetail.mockReturnValue(
-      baseHookState({ loading: false, data: null, error: "Package not found." }),
+      baseHookState({
+        loading: false,
+        data: null,
+        error: "Package not found.",
+      }),
     );
 
     renderDetail();
@@ -106,7 +117,9 @@ describe("PackageDetail", () => {
 
   it("shows the Go Report Card only when the package has a GitHub URL", () => {
     usePackageDetail.mockReturnValue(
-      baseHookState({ data: { pkg: pkg({ githubUrl: undefined }), goMod: "" } }),
+      baseHookState({
+        data: { pkg: pkg({ githubUrl: undefined }), goMod: "" },
+      }),
     );
 
     renderDetail();

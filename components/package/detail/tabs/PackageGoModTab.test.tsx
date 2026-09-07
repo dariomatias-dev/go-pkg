@@ -16,7 +16,9 @@ describe("PackageGoModTab", () => {
       />,
     );
 
-    expect(screen.getByText(/go\.mod file for version v1\.9\.0/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/go\.mod file for version v1\.9\.0/i),
+    ).toBeInTheDocument();
     expect(container.querySelector("code")?.textContent).toContain(
       "module github.com/gin-gonic/gin",
     );

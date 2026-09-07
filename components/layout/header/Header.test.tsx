@@ -32,7 +32,9 @@ describe("Header", () => {
     await user.click(screen.getByRole("button", { name: /menu/i }));
 
     expect(screen.getByText("Navigation")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /favorites/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /favorites/i }),
+    ).toBeInTheDocument();
   });
 
   it("closes the menu when a nav link is clicked", async () => {

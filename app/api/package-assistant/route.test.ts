@@ -94,9 +94,7 @@ describe("POST /api/package-assistant", () => {
 
     const [[call]] = generateContent.mock.calls;
 
-    expect(call.config.systemInstruction).toContain(
-      "github.com/gin-gonic/gin",
-    );
+    expect(call.config.systemInstruction).toContain("github.com/gin-gonic/gin");
     expect(call.config.systemInstruction).toContain("&lt;b&gt;Gin&lt;/b&gt;");
   });
 

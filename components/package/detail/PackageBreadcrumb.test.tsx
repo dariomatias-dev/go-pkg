@@ -15,8 +15,6 @@ describe("PackageBreadcrumb", () => {
       "href",
       "/search",
     );
-    expect(
-      screen.getByText("github.com/gin-gonic/gin"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("github.com/gin-gonic/gin")).toBeInTheDocument();
   });
 });

@@ -83,7 +83,10 @@ describe("PopularPageContent", () => {
     await screen.findByText("gin");
 
     vi.mocked(fetch).mockResolvedValue(
-      response([pkg({ importPath: "github.com/labstack/echo", name: "echo" })], 25),
+      response(
+        [pkg({ importPath: "github.com/labstack/echo", name: "echo" })],
+        25,
+      ),
     );
 
     await user.click(screen.getByRole("button", { name: /next/i }));

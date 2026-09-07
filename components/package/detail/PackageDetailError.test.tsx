@@ -39,8 +39,9 @@ describe("PackageDetailError", () => {
   it("links back to home", () => {
     render(<PackageDetailError error={null} />);
 
-    expect(
-      screen.getByRole("link", { name: /back to home/i }),
-    ).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: /back to home/i })).toHaveAttribute(
+      "href",
+      "/",
+    );
   });
 });

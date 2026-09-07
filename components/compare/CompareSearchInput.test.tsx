@@ -64,7 +64,11 @@ describe("CompareSearchInput", () => {
     const onChange = vi.fn();
 
     render(
-      <CompareSearchInput {...baseProps()} searchQuery="gin" onChange={onChange} />,
+      <CompareSearchInput
+        {...baseProps()}
+        searchQuery="gin"
+        onChange={onChange}
+      />,
     );
 
     await user.click(screen.getByRole("button"));

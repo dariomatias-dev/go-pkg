@@ -49,7 +49,9 @@ describe("CompareTable", () => {
     );
 
     expect(screen.getAllByText("Empty Slot")).toHaveLength(2);
-    expect(container.querySelectorAll('[aria-hidden="true"]').length).toBeGreaterThan(0);
+    expect(
+      container.querySelectorAll('[aria-hidden="true"]').length,
+    ).toBeGreaterThan(0);
   });
 
   it("removes a package when its trash button is clicked", async () => {

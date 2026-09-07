@@ -39,7 +39,9 @@ function searchResponse(overrides: Record<string, unknown> = {}) {
   );
 }
 
-function renderSection(props: Partial<Parameters<typeof SearchSection>[0]> = {}) {
+function renderSection(
+  props: Partial<Parameters<typeof SearchSection>[0]> = {},
+) {
   return render(
     <TooltipProvider>
       <SearchSection {...props} />
@@ -71,7 +73,9 @@ describe("SearchSection", () => {
   });
 
   it("shows the empty prompt when there is no query and no results", async () => {
-    vi.mocked(fetch).mockResolvedValue(searchResponse({ results: [], totalResults: 0 }));
+    vi.mocked(fetch).mockResolvedValue(
+      searchResponse({ results: [], totalResults: 0 }),
+    );
 
     renderSection();
 

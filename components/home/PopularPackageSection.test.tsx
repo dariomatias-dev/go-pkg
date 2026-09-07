@@ -94,7 +94,9 @@ describe("PopularPackageSection", () => {
 
     vi.mocked(fetch).mockResolvedValueOnce(
       response({
-        packages: [pkg({ importPath: "github.com/labstack/echo", name: "echo" })],
+        packages: [
+          pkg({ importPath: "github.com/labstack/echo", name: "echo" }),
+        ],
         hasMore: false,
       }),
     );
@@ -116,7 +118,9 @@ describe("PopularPackageSection", () => {
 
     renderSection();
 
-    await waitFor(() => expect(screen.getByText("Your Favorites (1)")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText("Your Favorites (1)")).toBeInTheDocument(),
+    );
 
     await user.click(
       screen.getByRole("button", { name: /remove gin from favorites/i }),

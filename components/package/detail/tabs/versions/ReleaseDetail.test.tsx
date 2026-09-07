@@ -22,7 +22,12 @@ function release(overrides: Partial<GitHubRelease> = {}): GitHubRelease {
 describe("ReleaseDetail", () => {
   it("shows a loading state", () => {
     render(
-      <ReleaseDetail loading={true} error={false} selected="v1.1.0" release={undefined} />,
+      <ReleaseDetail
+        loading={true}
+        error={false}
+        selected="v1.1.0"
+        release={undefined}
+      />,
     );
 
     expect(screen.getByText(/loading releases/i)).toBeInTheDocument();
@@ -30,7 +35,12 @@ describe("ReleaseDetail", () => {
 
   it("shows an error state", () => {
     render(
-      <ReleaseDetail loading={false} error={true} selected="v1.1.0" release={undefined} />,
+      <ReleaseDetail
+        loading={false}
+        error={true}
+        selected="v1.1.0"
+        release={undefined}
+      />,
     );
 
     expect(screen.getByText(/failed to load releases/i)).toBeInTheDocument();
@@ -38,7 +48,12 @@ describe("ReleaseDetail", () => {
 
   it("prompts to select a version when nothing is selected", () => {
     render(
-      <ReleaseDetail loading={false} error={false} selected="" release={undefined} />,
+      <ReleaseDetail
+        loading={false}
+        error={false}
+        selected=""
+        release={undefined}
+      />,
     );
 
     expect(screen.getByText(/select a version/i)).toBeInTheDocument();
@@ -54,9 +69,7 @@ describe("ReleaseDetail", () => {
       />,
     );
 
-    expect(
-      screen.getByText(/no release notes for/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/no release notes for/i)).toBeInTheDocument();
     expect(screen.getByText("v0.9.0")).toBeInTheDocument();
   });
 
@@ -71,10 +84,9 @@ describe("ReleaseDetail", () => {
     );
 
     expect(screen.getByText("v1.1.0")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /view on github/i })).toHaveAttribute(
-      "href",
-      release().html_url,
-    );
+    expect(
+      screen.getByRole("link", { name: /view on github/i }),
+    ).toHaveAttribute("href", release().html_url);
     expect(screen.getByText("Changes")).toBeInTheDocument();
   });
 
@@ -89,8 +101,6 @@ describe("ReleaseDetail", () => {
     );
 
     expect(screen.getByText(/pre-release/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/no release notes provided/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/no release notes provided/i)).toBeInTheDocument();
   });
 });

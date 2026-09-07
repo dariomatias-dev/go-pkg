@@ -99,9 +99,7 @@ describe("VersionsReleasesTab", () => {
 
     await screen.findByRole("button", { name: /v1\.0\.0/ });
 
-    expect(
-      screen.getByText(/no release notes for/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/no release notes for/i)).toBeInTheDocument();
   });
 
   it("clears the URL's version param when the selected version has no release", async () => {
@@ -120,10 +118,9 @@ describe("VersionsReleasesTab", () => {
 
     await user.click(screen.getByRole("button", { name: /v1\.0\.0/ }));
 
-    expect(replace).toHaveBeenCalledWith(
-      "/package/github.com/gin-gonic/gin",
-      { scroll: false },
-    );
+    expect(replace).toHaveBeenCalledWith("/package/github.com/gin-gonic/gin", {
+      scroll: false,
+    });
   });
 
   it("sets the URL's version param when the selected version has a release", async () => {
@@ -178,7 +175,8 @@ describe("VersionsReleasesTab", () => {
     vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) => {
       const url = String(input);
 
-      if (url.includes("package-versions")) return Promise.reject(new Error("boom"));
+      if (url.includes("package-versions"))
+        return Promise.reject(new Error("boom"));
 
       return Promise.resolve(releasesResponse());
     });
@@ -190,6 +188,8 @@ describe("VersionsReleasesTab", () => {
       />,
     );
 
-    expect(await screen.findByText(/failed to load versions/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/failed to load versions/i),
+    ).toBeInTheDocument();
   });
 });

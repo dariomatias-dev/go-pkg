@@ -92,9 +92,7 @@ describe("PackageTabs", () => {
       aiSummary: "A **great** package.",
     });
 
-    await waitFor(() =>
-      expect(screen.getByText("great")).toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.getByText("great")).toBeInTheDocument());
   });
 
   it("lazily renders the go.mod tab when active", async () => {

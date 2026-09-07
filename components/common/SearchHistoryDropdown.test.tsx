@@ -10,9 +10,7 @@ describe("SearchHistoryDropdown", () => {
   });
 
   it("renders nothing when there is no history", () => {
-    const { container } = render(
-      <SearchHistoryDropdown onSelect={vi.fn()} />,
-    );
+    const { container } = render(<SearchHistoryDropdown onSelect={vi.fn()} />);
 
     expect(container).toBeEmptyDOMElement();
   });

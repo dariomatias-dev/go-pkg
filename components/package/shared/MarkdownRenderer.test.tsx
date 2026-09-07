@@ -58,7 +58,9 @@ describe("MarkdownRenderer component overrides", () => {
     const heading = screen.getByRole("heading", { level: 2 });
 
     expect(heading).toHaveAttribute("id", "getting-started");
-    expect(container.querySelector('a[href="#getting-started"]')).not.toBeNull();
+    expect(
+      container.querySelector('a[href="#getting-started"]'),
+    ).not.toBeNull();
   });
 
   it("renders a fenced code block via the code-split CodeBlock", async () => {
@@ -99,9 +101,7 @@ describe("MarkdownRenderer component overrides", () => {
 
   it("renders GFM tables with header and body cells", () => {
     render(
-      <MarkdownRenderer
-        content={"| A | B |\n| --- | --- |\n| 1 | 2 |"}
-      />,
+      <MarkdownRenderer content={"| A | B |\n| --- | --- |\n| 1 | 2 |"} />,
     );
 
     expect(screen.getByRole("columnheader", { name: "A" })).toBeInTheDocument();
@@ -111,7 +111,9 @@ describe("MarkdownRenderer component overrides", () => {
   it("renders a details/summary disclosure with content separated from the summary", () => {
     const { container } = render(
       <MarkdownRenderer
-        content={"<details><summary>More</summary>\n\nHidden text\n\n</details>"}
+        content={
+          "<details><summary>More</summary>\n\nHidden text\n\n</details>"
+        }
         useRehypeRaw
       />,
     );

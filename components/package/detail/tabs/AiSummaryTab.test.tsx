@@ -50,7 +50,12 @@ describe("AiSummaryTab", () => {
 
   it("shows a fallback when there is no summary and no error", () => {
     render(
-      <AiSummaryTab loading={false} error={null} summary="" onRetry={vi.fn()} />,
+      <AiSummaryTab
+        loading={false}
+        error={null}
+        summary=""
+        onRetry={vi.fn()}
+      />,
     );
 
     expect(screen.getByText(/no summary available/i)).toBeInTheDocument();

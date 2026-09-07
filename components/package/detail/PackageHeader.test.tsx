@@ -91,7 +91,9 @@ describe("PackageHeader", () => {
     await user.click(screen.getByRole("button", { name: /^save$/i }));
 
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: /^saved$/i })).toBeInTheDocument(),
+      expect(
+        screen.getByRole("button", { name: /^saved$/i }),
+      ).toBeInTheDocument(),
     );
     expect(localStorage.getItem("gopkg_favorites")).toContain(
       "github.com/gin-gonic/gin",

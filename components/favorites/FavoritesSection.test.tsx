@@ -60,9 +60,7 @@ describe("FavoritesSection", () => {
 
     renderSection();
 
-    await user.click(
-      screen.getByRole("button", { name: /browse ecosystem/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /browse ecosystem/i }));
 
     expect(push).toHaveBeenCalledWith("/search");
   });
@@ -70,7 +68,10 @@ describe("FavoritesSection", () => {
   it("renders a card per saved favorite with the running total", () => {
     localStorage.setItem(
       "gopkg_favorites",
-      JSON.stringify([favorite(), favorite({ importPath: "github.com/a/b", name: "b" })]),
+      JSON.stringify([
+        favorite(),
+        favorite({ importPath: "github.com/a/b", name: "b" }),
+      ]),
     );
 
     renderSection();
