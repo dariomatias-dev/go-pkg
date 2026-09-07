@@ -4,6 +4,7 @@ import { ApiErrors, ok } from "@/lib/api/response";
 import { parseQuery, searchQuerySchema } from "@/lib/api/schemas";
 import type { SearchOrder, SearchSort } from "@/lib/github";
 import { searchGithubPackages } from "@/lib/github";
+import { GithubApiError } from "@/lib/github/client";
 import { logger } from "@/lib/logger";
 
 async function getCachedSearch(
@@ -52,12 +53,19 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
+    const isRateLimited =
+      error instanceof GithubApiError && error.isRateLimited;
+
     logger.error("Failed to execute package search", {
       route: "search",
       durationMs: Date.now() - startedAt,
-      status: 500,
+      status: isRateLimited ? 503 : 500,
       errorName: error instanceof Error ? error.name : "unknown",
     });
+
+    if (isRateLimited) {
+      return ApiErrors.serviceUnavailable((error as GithubApiError).message);
+    }
 
     return ApiErrors.internal("Failed to execute package search.");
   }

@@ -83,7 +83,11 @@ export default function SearchSection({
 
       const res = await fetch(`/api/search?${params.toString()}`, { signal });
 
-      if (!res.ok) throw new Error("Failed to fetch results.");
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+
+        throw new Error(body?.error?.message || "Failed to fetch results.");
+      }
 
       const data = (await res.json()) as PackageSearchResponse;
 

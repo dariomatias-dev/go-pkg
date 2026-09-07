@@ -4,6 +4,7 @@ import { ApiErrors, ok } from "@/lib/api/response";
 import { parseQuery, popularPackageQuerySchema } from "@/lib/api/schemas";
 import { CURATED_CATEGORIES } from "@/lib/curated-categories";
 import { fetchPopularPackages } from "@/lib/github";
+import { GithubApiError } from "@/lib/github/client";
 import { logger } from "@/lib/logger";
 
 async function getCachedPopularPackages(page: number, perPage: number) {
@@ -56,12 +57,19 @@ export async function GET(request: Request) {
       },
     );
   } catch (error) {
+    const isRateLimited =
+      error instanceof GithubApiError && error.isRateLimited;
+
     logger.error("Failed to load popular packages", {
       route: "popular-package",
       durationMs: Date.now() - startedAt,
-      status: 500,
+      status: isRateLimited ? 503 : 500,
       errorName: error instanceof Error ? error.name : "unknown",
     });
+
+    if (isRateLimited) {
+      return ApiErrors.serviceUnavailable((error as GithubApiError).message);
+    }
 
     return ApiErrors.internal("Failed to load popular packages.");
   }

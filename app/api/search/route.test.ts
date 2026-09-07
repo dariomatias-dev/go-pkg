@@ -60,6 +60,23 @@ describe("GET /api/search", () => {
     expect(body.error.code).toBe("internal_error");
   });
 
+  it("returns 503 with the specific message when GitHub rate-limits the request", async () => {
+    const originalToken = process.env.GITHUB_TOKEN;
+    delete process.env.GITHUB_TOKEN;
+
+    vi.mocked(fetch).mockResolvedValue(new Response(null, { status: 403 }));
+
+    const res = await GET(req("q=gin"));
+    const body = await res.json();
+
+    expect(res.status).toBe(503);
+    expect(body.error.code).toBe("service_unavailable");
+    expect(body.error.message).toMatch(/rate limit exceeded/i);
+
+    if (originalToken === undefined) delete process.env.GITHUB_TOKEN;
+    else process.env.GITHUB_TOKEN = originalToken;
+  });
+
   it("falls back to the default sort/order instead of forwarding an invalid value", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(searchResponse());
 

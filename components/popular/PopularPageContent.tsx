@@ -14,6 +14,7 @@ export function PopularPageContent() {
   const router = useRouter();
   const [packages, setPackages] = useState<PopularPackage[]>([]);
   const [total, setTotal] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(() =>
     typeof window !== "undefined"
       ? Math.max(
@@ -30,16 +31,32 @@ export function PopularPageContent() {
     let active = true;
 
     fetch(`/api/popular-package?page=${currentPage}&perPage=${PER_PAGE}`)
-      .then((r) => r.json())
-      .then((data: PopularPackageResponse) => {
+      .then(async (r) => {
+        const data = await r.json();
+
+        if (!r.ok) {
+          throw new Error(
+            data?.error?.message || "Failed to load popular packages.",
+          );
+        }
+
+        return data as PopularPackageResponse;
+      })
+      .then((data) => {
         if (!active) return;
 
+        setError(null);
         setPackages(data.packages ?? []);
         setTotal(data.total ?? 0);
         setFetchedPage(currentPage);
       })
-      .catch(() => {
-        if (active) setFetchedPage(currentPage);
+      .catch((err: Error) => {
+        if (!active) return;
+
+        setError(err.message);
+        setPackages([]);
+        setTotal(0);
+        setFetchedPage(currentPage);
       });
 
     return () => {
@@ -74,6 +91,12 @@ export function PopularPageContent() {
             {Array.from({ length: PER_PAGE }).map((_, i) => (
               <PackageCardSkeleton key={i} />
             ))}
+          </div>
+        ) : error ? (
+          <div className="mx-auto max-w-md rounded-xl border border-amber-200 bg-amber-50 p-6 text-center dark:border-amber-900/30 dark:bg-amber-950/10">
+            <p className="text-sm text-amber-800 dark:text-amber-300">
+              {error}
+            </p>
           </div>
         ) : (
           <div className="space-y-4">

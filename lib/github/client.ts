@@ -39,7 +39,7 @@ function retryAfterMs(res: Response): number | null {
  * fetch() with a request timeout and bounded retries: 5xx and network
  * errors are retried with exponential backoff, 403/429 are retried once
  * if the response carries a (capped) Retry-After, and every other 4xx is
- * returned as-is on the first attempt — retrying a client error just
+ * returned as-is on the first attempt - retrying a client error just
  * repeats the same failure.
  */
 export async function resilientFetch(
@@ -86,14 +86,38 @@ export async function resilientFetch(
   }
 }
 
-export function handleGithubError(status: number, context: string): Error {
+/**
+ * Thrown by handleGithubError. `isRateLimited` lets callers (route
+ * handlers, UI error states) distinguish "GitHub is throttling us" from
+ * a generic upstream failure, so the specific, actionable message
+ * reaches the response instead of being collapsed into a generic
+ * "something went wrong."
+ */
+export class GithubApiError extends Error {
+  isRateLimited: boolean;
+
+  constructor(message: string, isRateLimited: boolean) {
+    super(message);
+    this.name = "GithubApiError";
+    this.isRateLimited = isRateLimited;
+  }
+}
+
+export function handleGithubError(
+  status: number,
+  context: string,
+): GithubApiError {
   if ((status === 403 || status === 429) && !process.env.GITHUB_TOKEN) {
-    return new Error(
+    return new GithubApiError(
       `GitHub API rate limit exceeded (${context}). Set GITHUB_TOKEN in your environment to increase the limit from 60 to 5000 requests/hour.`,
+      true,
     );
   }
 
-  return new Error(`GitHub API error: ${context} failed with status ${status}`);
+  return new GithubApiError(
+    `GitHub API error: ${context} failed with status ${status}`,
+    false,
+  );
 }
 
 export function escapeGoModule(importPath: string): string {

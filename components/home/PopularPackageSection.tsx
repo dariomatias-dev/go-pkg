@@ -23,10 +23,13 @@ async function fetchPage(
   const res = await fetch(
     `/api/popular-package?page=${page}&perPage=${perPage}`,
   );
+  const data = await res.json();
 
-  if (!res.ok) throw new Error("Failed to fetch");
+  if (!res.ok) {
+    throw new Error(data?.error?.message || "Failed to load popular packages.");
+  }
 
-  return res.json() as Promise<PopularPackageResponse>;
+  return data as PopularPackageResponse;
 }
 
 export function PopularPackageSection() {
@@ -39,6 +42,7 @@ export function PopularPackageSection() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const urlPage = Math.min(
@@ -52,12 +56,13 @@ export function PopularPackageSection() {
 
     fetchPage(1, count)
       .then((data) => {
+        setError(null);
         setPackages(data.packages ?? []);
         setPopularTags(data.popularTags ?? []);
         setHasMore(data.hasMore);
         setPage(Math.ceil((data.packages?.length ?? PER_PAGE) / PER_PAGE));
       })
-      .catch(() => {})
+      .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -68,12 +73,13 @@ export function PopularPackageSection() {
 
     fetchPage(nextPage)
       .then((data) => {
+        setError(null);
         setPackages((prev) => [...prev, ...(data.packages ?? [])]);
         setHasMore(data.hasMore);
         setPage(nextPage);
         router.replace(`?page=${nextPage}`, { scroll: false });
       })
-      .catch(() => {})
+      .catch((err: Error) => setError(err.message))
       .finally(() => setLoadingMore(false));
   };
 
@@ -102,6 +108,12 @@ export function PopularPackageSection() {
               {Array.from({ length: PER_PAGE }).map((_, i) => (
                 <PackageCardSkeleton key={i} />
               ))}
+            </div>
+          ) : error && packages.length === 0 ? (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center dark:border-amber-900/30 dark:bg-amber-950/10">
+              <p className="text-sm text-amber-800 dark:text-amber-300">
+                {error}
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
