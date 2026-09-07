@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question / Discuss an idea
+    url: https://github.com/dariomatias-dev/go-pkg/discussions
+    about: For questions or open-ended discussion that isn't a bug report or a concrete feature request.
+  - name: Report a security vulnerability
+    url: https://github.com/dariomatias-dev/go-pkg/security/advisories/new
+    about: Please do not open a public issue for a security report - see docs/security.md.

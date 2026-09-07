@@ -1,0 +1,35 @@
+name: Feature Request
+description: Suggest an idea for this project.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What's the gap or pain point today? Not every feature needs a "problem," but most good ones start from one.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would you like to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you thought about, and why you didn't pick them.
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Mockups, links, related issues.
+    validations:
+      required: false
