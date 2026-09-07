@@ -1,6 +1,7 @@
 "use client";
 
 import { BookOpen, FileCode2, GitBranch, Sparkles } from "lucide-react";
+import dynamic from "next/dynamic";
 import { type ReactNode, Suspense } from "react";
 
 import {
@@ -8,12 +9,40 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/common/Tooltip";
-import { AiSummaryTab } from "@/components/package/detail/tabs/AiSummaryTab";
-import { PackageGoModTab } from "@/components/package/detail/tabs/PackageGoModTab";
 import { ReadmeTab } from "@/components/package/detail/tabs/ReadmeTab";
 import { VersionsReleasesTab } from "@/components/package/detail/tabs/versions/VersionsReleasesTab";
 import { cn } from "@/lib/utils";
 import type { GoPackage } from "@/types";
+
+// Both tabs pull in react-syntax-highlighter (AiSummaryTab via
+// MarkdownRenderer's code blocks, PackageGoModTab directly for the go.mod
+// view) or the react-markdown/rehype/remark chain — code-split them so
+// they're not in the initial bundle for every package detail page.
+const AiSummaryTab = dynamic(
+  () =>
+    import("@/components/package/detail/tabs/AiSummaryTab").then(
+      (mod) => mod.AiSummaryTab,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-48 animate-pulse rounded-xl border border-slate-200/80 bg-slate-100 dark:border-[#30363d] dark:bg-[#161b22]" />
+    ),
+  },
+);
+
+const PackageGoModTab = dynamic(
+  () =>
+    import("@/components/package/detail/tabs/PackageGoModTab").then(
+      (mod) => mod.PackageGoModTab,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-48 animate-pulse rounded-xl border border-slate-200/80 bg-slate-100 dark:border-[#30363d] dark:bg-[#161b22]" />
+    ),
+  },
+);
 
 export type Tab = "summary" | "readme" | "goMod" | "versions";
 
