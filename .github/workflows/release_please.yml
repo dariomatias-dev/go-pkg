@@ -17,7 +17,7 @@ jobs:
       # never publishes to npm - release-please here only reads
       # Conventional Commits since the last tag, keeps a PR open with the
       # version bump and CHANGELOG.md, and creates the git tag on merge.
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
