@@ -19,13 +19,13 @@ export function FavoritesSection() {
             <div className="mb-4 flex items-center gap-3">
               <div className="h-2 w-2 rounded-full bg-slate-300 dark:bg-slate-700" />
 
-              <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase dark:text-slate-600">
+              <span className="text-[10px] font-black tracking-[0.3em] text-slate-500 uppercase dark:text-slate-600">
                 Local Storage Sync
               </span>
 
               {favorites.length > 0 && (
                 <div className="animate-in fade-in inline-flex items-center rounded-full border border-[#00ADD8]/20 bg-[#00ADD8]/10 px-2 py-0.5 duration-500">
-                  <span className="text-[10px] font-black text-[#00ADD8] tabular-nums dark:text-sky-400">
+                  <span className="text-[10px] font-black text-[#006680] tabular-nums dark:text-sky-400">
                     {favorites.length} PACKAGES
                   </span>
                 </div>
@@ -34,7 +34,7 @@ export function FavoritesSection() {
 
             <h1 className="font-display text-4xl leading-[0.9] font-black tracking-tight text-slate-950 sm:text-6xl dark:text-[#f0f6fc]">
               Saved <br />
-              <span className="text-[#00ADD8]">Packages.</span>
+              <span className="text-[#006680]">Packages.</span>
             </h1>
 
             <p className="max-w-xl text-base leading-relaxed font-light text-slate-500 sm:text-lg dark:text-[#8b949e]">

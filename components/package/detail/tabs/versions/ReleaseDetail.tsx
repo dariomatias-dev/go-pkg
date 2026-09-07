@@ -78,7 +78,7 @@ export function ReleaseDetail({
               href={release.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex shrink-0 items-center gap-1 text-[11px] font-medium text-[#007D9C] transition-colors hover:text-[#005F77] dark:text-sky-400 dark:hover:text-sky-300"
+              className="flex shrink-0 items-center gap-1 text-[11px] font-medium text-[#006680] transition-colors hover:text-[#005F77] dark:text-sky-400 dark:hover:text-sky-300"
             >
               <ExternalLink className="h-3 w-3" />
               View on GitHub

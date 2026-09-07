@@ -35,7 +35,7 @@ const GRADE_STYLES: Record<
     border: "border-emerald-200 dark:border-emerald-500/20",
   },
   B: {
-    color: "text-[#007D9C] dark:text-sky-400",
+    color: "text-[#006680] dark:text-sky-400",
     bg: "bg-sky-50 dark:bg-sky-500/10",
     border: "border-sky-200 dark:border-sky-500/20",
   },
@@ -128,7 +128,7 @@ export function GoReportCard({ importPath }: { importPath: string }) {
           href={state.result.reportUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="group/link flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-bold text-[#007D9C] transition-all hover:bg-slate-100 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-sky-400 dark:hover:bg-[#1d222b]"
+          className="group/link flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-bold text-[#006680] transition-all hover:bg-slate-100 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-sky-400 dark:hover:bg-[#1d222b]"
         >
           <span>VIEW FULL REPORT</span>
           <ExternalLink className="h-3 w-3 opacity-0 transition-opacity duration-200 ease-out group-hover/link:opacity-100" />

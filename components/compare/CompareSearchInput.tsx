@@ -34,6 +34,7 @@ export function CompareSearchInput({
       <div className="group relative">
         <input
           type="text"
+          aria-label="Search to add a package to the comparison"
           disabled={maxReached}
           placeholder={
             maxReached ? "Limit reached (3/3)" : "Search to add package..."
@@ -59,8 +60,13 @@ export function CompareSearchInput({
 
       {dropdownOpen && (
         <>
+          {/* Click-away backdrop: mouse-only affordance, not meant to be
+              keyboard-reachable — the dropdown itself is fully operable
+              via the input above and Escape/blur elsewhere. aria-hidden
+              keeps it out of the accessibility tree entirely. */}
           <div
             className="fixed inset-0 z-40 cursor-default"
+            aria-hidden="true"
             onClick={onDropdownClose}
           />
 

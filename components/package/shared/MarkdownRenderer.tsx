@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
+import dynamic from "next/dynamic";
 import React, { createContext } from "react";
 import type { Components } from "react-markdown";
 import ReactMarkdown from "react-markdown";
@@ -9,7 +10,19 @@ import rehypeSanitize from "rehype-sanitize";
 import remarkEmoji from "remark-emoji";
 import remarkGfm from "remark-gfm";
 
-import { CodeBlock } from "./CodeBlock";
+// react-syntax-highlighter (Prism + its language grammars) is one of the
+// heaviest deps in this app; most rendered content has no code blocks at
+// all, so it's code-split out of the main bundle instead of loading
+// upfront for every README/AI response.
+const CodeBlock = dynamic(
+  () => import("./CodeBlock").then((mod) => mod.CodeBlock),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="my-4 h-32 animate-pulse rounded-xl border border-slate-200/80 bg-slate-100 dark:border-[#30363d] dark:bg-[#161b22]" />
+    ),
+  },
+);
 
 export const InListContext = createContext(false);
 
@@ -58,9 +71,9 @@ const STYLES = {
     li: "leading-relaxed font-sans text-sm text-slate-600 dark:text-[#c9d1d9]",
     blockquote:
       "border-l-4 border-[#00ADD8] dark:border-sky-600 bg-sky-50/15 dark:bg-sky-950/10 p-3.5 my-4 rounded-r text-slate-700 dark:text-[#c9d1d9] italic font-light",
-    a: "text-[#00ADD8] dark:text-sky-400 font-bold underline decoration-[#00ADD8]/30 dark:decoration-sky-400/30 hover:decoration-[#007D9C] dark:hover:decoration-sky-300 decoration-2 underline-offset-4 hover:text-[#007D9C] dark:hover:text-sky-300 transition-all break-all",
+    a: "text-[#006680] dark:text-sky-400 font-bold underline decoration-[#006680]/30 dark:decoration-sky-400/30 hover:decoration-[#005a71] dark:hover:decoration-sky-300 decoration-2 underline-offset-4 hover:text-[#005a71] dark:hover:text-sky-300 transition-all break-all",
     inlineCode:
-      "bg-[#007D9C]/10 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 border border-[#007D9C]/20 dark:border-sky-800/30 text-[11px] px-1.5 py-0.5 rounded font-mono font-semibold",
+      "bg-[#006680]/10 dark:bg-sky-950/30 text-[#006680] dark:text-sky-400 border border-[#006680]/20 dark:border-sky-800/30 text-[11px] px-1.5 py-0.5 rounded font-mono font-semibold",
     anchor:
       "ml-2 opacity-0 group-hover:opacity-50 text-[#00ADD8] dark:text-sky-500 no-underline hover:opacity-80 transition-opacity font-normal select-none",
   },
@@ -74,9 +87,9 @@ const STYLES = {
     li: "leading-relaxed text-xs text-slate-600 dark:text-[#c9d1d9]",
     blockquote:
       "border-l-4 border-[#00ADD8] dark:border-sky-600 bg-sky-50/15 dark:bg-sky-950/10 pl-3 py-1 my-2 rounded-r text-slate-700 dark:text-[#c9d1d9] italic text-xs",
-    a: "text-[#00ADD8] dark:text-sky-400 hover:text-[#007D9C] dark:hover:text-sky-300 underline underline-offset-2 decoration-[#00ADD8]/40 text-xs transition-colors",
+    a: "text-[#006680] dark:text-sky-400 hover:text-[#005a71] dark:hover:text-sky-300 underline underline-offset-2 decoration-[#006680]/40 text-xs transition-colors",
     inlineCode:
-      "bg-[#007D9C]/10 dark:bg-sky-950/30 text-[#007D9C] dark:text-sky-400 border border-[#007D9C]/20 dark:border-sky-800/30 text-[10px] px-1 py-0.5 rounded font-mono font-semibold",
+      "bg-[#006680]/10 dark:bg-sky-950/30 text-[#006680] dark:text-sky-400 border border-[#006680]/20 dark:border-sky-800/30 text-[10px] px-1 py-0.5 rounded font-mono font-semibold",
     anchor:
       "ml-1.5 opacity-0 group-hover:opacity-50 text-[#00ADD8] dark:text-sky-500 no-underline hover:opacity-80 transition-opacity font-normal select-none",
   },

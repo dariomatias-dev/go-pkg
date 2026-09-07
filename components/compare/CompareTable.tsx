@@ -28,7 +28,7 @@ export function CompareTable({
         <table className="w-full min-w-175 table-fixed border-collapse text-left">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/60 dark:border-[#30363d] dark:bg-[#161b22]">
-              <th className="w-44 border-r border-slate-100 bg-slate-50/30 p-6 text-xs font-black tracking-[0.15em] text-slate-400 uppercase dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#8b949e]">
+              <th className="w-44 border-r border-slate-100 bg-slate-50/30 p-6 text-xs font-black tracking-[0.15em] text-slate-500 uppercase dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#8b949e]">
                 <span>Technical Attributes</span>
               </th>
 
@@ -44,11 +44,13 @@ export function CompareTable({
                   >
                     <div className="space-y-3">
                       <div className="flex items-start justify-between">
-                        <span className="mb-1 inline-block rounded-full border border-sky-100 bg-sky-50 px-2 py-0.5 font-mono text-[10px] font-bold text-[#007D9C] uppercase dark:border-sky-900/30 dark:bg-sky-950/30 dark:text-sky-400">
+                        <span className="mb-1 inline-block rounded-full border border-sky-100 bg-sky-50 px-2 py-0.5 font-mono text-[10px] font-bold text-[#006680] uppercase dark:border-sky-900/30 dark:bg-sky-950/30 dark:text-sky-400">
                           Package {index + 1}
                         </span>
 
                         <button
+                          type="button"
+                          aria-label={`Remove ${displayName} from comparison`}
                           onClick={() => removePackage(path)}
                           className="cursor-pointer rounded-lg p-1.5 text-slate-400 transition-all hover:bg-rose-50 hover:text-rose-500 active:scale-90 dark:hover:bg-rose-950/30"
                         >
@@ -65,7 +67,7 @@ export function CompareTable({
                             <Loader2 className="h-4 w-4 shrink-0 animate-spin text-[#00ADD8]" />
                           )}
                         </div>
-                        <p className="mt-1 truncate font-mono text-[10px] text-slate-400 dark:text-slate-500">
+                        <p className="mt-1 truncate font-mono text-[10px] text-slate-500 dark:text-slate-500">
                           {path}
                         </p>
                       </div>
@@ -79,9 +81,9 @@ export function CompareTable({
                   key={`empty-head-${i}`}
                   className="border-r border-slate-100 bg-slate-50/10 p-6 text-left last:border-r-0 dark:border-[#30363d] dark:bg-[#0d1117]/50"
                 >
-                  <div className="flex flex-col gap-2 text-slate-300 dark:text-[#30363d]">
+                  <div className="flex flex-col gap-2 text-slate-500 dark:text-[#30363d]">
                     <Plus className="h-6 w-6 rounded-md border-2 border-dashed border-slate-200 stroke-[2.5] p-1 dark:border-slate-800" />
-                    <span className="text-[10px] font-black tracking-widest uppercase opacity-50">
+                    <span className="text-[10px] font-black tracking-widest uppercase">
                       Empty Slot
                     </span>
                   </div>
@@ -98,7 +100,7 @@ export function CompareTable({
               >
                 <td className="border-r border-slate-100 bg-slate-50/10 p-4 font-bold text-slate-600 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#8b949e]">
                   <div className="flex items-center gap-3">
-                    <span className="text-slate-400 transition-colors group-hover:text-[#00ADD8] dark:text-slate-500">
+                    <span className="text-slate-500 transition-colors group-hover:text-[#00ADD8] dark:text-slate-500">
                       {icon}
                     </span>
                     <span>{label}</span>
@@ -121,6 +123,8 @@ export function CompareTable({
                   ) : (
                     <td
                       key={`${label}-${path}-loading`}
+                      aria-label="Loading"
+                      aria-busy="true"
                       className="border-r border-slate-100 p-4 last:border-r-0 dark:border-[#30363d]"
                     >
                       <div className="h-3.5 w-24 animate-pulse rounded bg-slate-100 dark:bg-[#21262d]" />
@@ -131,6 +135,7 @@ export function CompareTable({
                 {Array.from({ length: emptySlots }).map((_, i) => (
                   <td
                     key={`empty-cell-${i}`}
+                    aria-hidden="true"
                     className="border-r border-slate-100 bg-slate-50/5 last:border-r-0 dark:border-[#30363d] dark:bg-transparent"
                   />
                 ))}
@@ -140,7 +145,7 @@ export function CompareTable({
             <tr className="bg-slate-50/40 dark:bg-[#161b22]/20">
               <td className="border-r border-slate-100 bg-slate-50/25 p-4 font-bold text-slate-500 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#8b949e]">
                 <div className="flex items-center gap-3">
-                  <Info className="h-4 w-4 text-slate-400" />
+                  <Info className="h-4 w-4 text-slate-500" />
                   <span>Package Actions</span>
                 </div>
               </td>
@@ -155,7 +160,7 @@ export function CompareTable({
                   >
                     <button
                       onClick={() => inspectPackage(pkg.importPath)}
-                      className="flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg bg-[#007D9C] px-3 py-2 text-center text-[11px] font-bold text-white shadow-sm transition-all hover:bg-[#005a71] dark:bg-sky-600 dark:hover:bg-sky-700"
+                      className="flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg bg-[#006680] px-3 py-2 text-center text-[11px] font-bold text-white shadow-sm transition-all hover:bg-[#005a71] dark:bg-sky-600 dark:hover:bg-sky-700"
                     >
                       <span>Details</span>
                       <ExternalLink className="h-3 w-3 opacity-60" />
@@ -164,6 +169,8 @@ export function CompareTable({
                 ) : (
                   <td
                     key={`actions-${path}-loading`}
+                    aria-label="Loading"
+                    aria-busy="true"
                     className="border-r border-slate-100 p-4 last:border-r-0 dark:border-[#30363d]"
                   >
                     <div className="h-7 w-full animate-pulse rounded-lg bg-slate-100 dark:bg-[#21262d]" />
@@ -174,6 +181,7 @@ export function CompareTable({
               {Array.from({ length: emptySlots }).map((_, i) => (
                 <td
                   key={`empty-action-${i}`}
+                  aria-hidden="true"
                   className="border-r border-slate-100 last:border-r-0 dark:border-[#30363d]"
                 />
               ))}

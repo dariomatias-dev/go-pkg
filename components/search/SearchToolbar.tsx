@@ -38,7 +38,7 @@ export function SearchToolbar({
         ) : (
           <span>
             Found{" "}
-            <span className="font-semibold text-[#00ADD8] dark:text-sky-400">
+            <span className="font-semibold text-[#006680] dark:text-sky-400">
               {totalResults}
             </span>{" "}
             matching results

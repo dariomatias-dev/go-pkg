@@ -1,17 +1,7 @@
-import { cacheLife } from "next/cache";
-
 import { ApiErrors, ok } from "@/lib/api/response";
 import { packageInfoQuerySchema, parseQuery } from "@/lib/api/schemas";
-import { getPackageDetail } from "@/lib/github";
+import { getCachedPackageDetail } from "@/lib/github/cached";
 import { logger } from "@/lib/logger";
-
-async function getCachedPackageDetail(importPath: string) {
-  "use cache";
-
-  cacheLife({ revalidate: 1800 });
-
-  return getPackageDetail(importPath);
-}
 
 export async function GET(request: Request) {
   const startedAt = Date.now();

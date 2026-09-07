@@ -68,15 +68,22 @@ export function SearchHistoryDropdown({
         {history.map((q, idx) => (
           <div
             key={idx}
-            onMouseDown={() => onSelect(q)}
             className={cn(
-              "flex cursor-pointer items-center justify-between border-b border-slate-50 transition-colors last:border-none dark:border-[#30363d]/50",
+              "relative flex items-center justify-between border-b border-slate-50 transition-colors last:border-none dark:border-[#30363d]/50",
               sm
-                ? "px-4 py-2.5 hover:bg-slate-100 dark:hover:bg-[#21262d]"
-                : "px-4 py-3 hover:bg-slate-50/70 dark:hover:bg-[#21262d]",
+                ? "hover:bg-slate-100 dark:hover:bg-[#21262d]"
+                : "hover:bg-slate-50/70 dark:hover:bg-[#21262d]",
             )}
           >
-            <div className="flex items-center space-x-3 truncate">
+            <button
+              type="button"
+              aria-label={`Search for ${q}`}
+              onMouseDown={() => onSelect(q)}
+              className={cn(
+                "flex min-w-0 flex-1 cursor-pointer items-center space-x-3 truncate text-left",
+                sm ? "px-4 py-2.5" : "px-4 py-3",
+              )}
+            >
               <Clock
                 className={cn(
                   "shrink-0 text-slate-400 dark:text-[#484f58]",
@@ -87,15 +94,17 @@ export function SearchHistoryDropdown({
               <span className="truncate font-medium text-slate-700 dark:text-[#c9d1d9]">
                 {q}
               </span>
-            </div>
+            </button>
 
             <button
+              type="button"
+              aria-label={`Remove "${q}" from search history`}
               onMouseDown={(e) => {
                 e.stopPropagation();
                 setHistory(removeFromHistory(q));
               }}
               className={cn(
-                "cursor-pointer border-none bg-transparent text-slate-400 transition-colors hover:text-rose-500 dark:text-[#484f58] dark:hover:text-rose-400",
+                "relative z-10 mr-2 shrink-0 cursor-pointer border-none bg-transparent text-slate-400 transition-colors hover:text-rose-500 dark:text-[#484f58] dark:hover:text-rose-400",
                 sm
                   ? "rounded-md p-1 text-slate-300 hover:bg-slate-200 dark:text-[#30363d] dark:hover:bg-[#30363d]"
                   : "rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-[#30363d]",

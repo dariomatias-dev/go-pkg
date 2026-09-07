@@ -92,7 +92,7 @@ export function SearchResults({
           <div className="mt-6">
             <button
               onClick={onResolveProxy}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[#00ADD8] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#007D9C] dark:bg-sky-600 dark:hover:bg-sky-700"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[#006680] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#005a71] dark:bg-sky-600 dark:hover:bg-sky-700"
             >
               <RefreshCw className="h-4 w-4" />
               Resolve via Go Proxy

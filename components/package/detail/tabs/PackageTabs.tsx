@@ -85,7 +85,7 @@ export function PackageTabs({
                 className={cn(
                   "flex h-full cursor-pointer items-center space-x-1.5 border-b-2 px-4 text-xs font-semibold whitespace-nowrap transition-all",
                   activeTab === tab.id
-                    ? "border-[#00ADD8] bg-white font-bold text-[#00ADD8] dark:border-sky-500 dark:bg-[#0d1117] dark:text-sky-400"
+                    ? "border-[#00ADD8] bg-white font-bold text-[#006680] dark:border-sky-500 dark:bg-[#0d1117] dark:text-sky-400"
                     : "border-transparent text-slate-500 hover:text-slate-800 dark:text-[#8b949e] dark:hover:text-[#f0f6fc]",
                 )}
               >

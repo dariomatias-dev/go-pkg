@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import SearchSection from "@/components/search/SearchSection";
 import { CURATED_CATEGORIES } from "@/lib/curated-categories";
 
@@ -16,6 +18,28 @@ type SearchParams = {
 type SearchPageProps = {
   searchParams?: Promise<SearchParams>;
 };
+
+export async function generateMetadata({
+  searchParams,
+}: SearchPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const query = params?.q?.trim();
+
+  const title = query ? `"${query}"` : "Search";
+  const description = query
+    ? `Search results for "${query}" — Go packages with GitHub repository insights.`
+    : "Search Go packages by name, category, or tag, with GitHub repository insights.";
+
+  return {
+    title,
+    description,
+    // A free-text query produces a near-duplicate page per query/page/sort
+    // combination, so those stay out of the index. The bare /search page
+    // and its category filters are stable, worth indexing, and listed in
+    // sitemap.ts.
+    ...(query ? { robots: { index: false, follow: true } } : {}),
+  };
+}
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;

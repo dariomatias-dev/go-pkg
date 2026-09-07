@@ -59,7 +59,7 @@ export function CategoriesSection({ loading }: CategoriesSectionProps) {
           <button
             type="button"
             onClick={() => router.push("/search")}
-            className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-[#00ADD8] transition-colors hover:text-[#007D9C] dark:text-sky-400 dark:hover:text-sky-300"
+            className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-[#006680] transition-colors hover:text-[#005a71] dark:text-sky-400 dark:hover:text-sky-300"
           >
             View all packages <ChevronRight className="h-3.5 w-3.5" />
           </button>
@@ -85,14 +85,15 @@ export function CategoriesSection({ loading }: CategoriesSectionProps) {
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {CURATED_CATEGORIES.map((cat) => (
-              <div
+              <button
                 key={cat.id}
+                type="button"
                 onClick={() =>
                   router.push(
                     `/search?category=${cat.id}` as Route<`/search?category=${string}`>,
                   )
                 }
-                className="group flex cursor-pointer items-start space-x-4 rounded-xl border border-slate-100 bg-slate-50 p-6 transition-all hover:border-sky-200 hover:bg-white hover:shadow-lg dark:border-[#30363d] dark:bg-[#161b22] dark:hover:border-sky-500/30 dark:hover:bg-[#21262d] dark:hover:shadow-2xl/20"
+                className="group flex w-full cursor-pointer items-start space-x-4 rounded-xl border border-slate-100 bg-slate-50 p-6 text-left transition-all hover:border-sky-200 hover:bg-white hover:shadow-lg dark:border-[#30363d] dark:bg-[#161b22] dark:hover:border-sky-500/30 dark:hover:bg-[#21262d] dark:hover:shadow-2xl/20"
               >
                 <div className="flex shrink-0 items-center justify-center rounded-lg bg-sky-50 p-3 transition-all group-hover:bg-[#E0F2FE] dark:bg-[#0d1117] dark:group-hover:bg-[#30363d]">
                   <CategoryIcon name={cat.iconName} />
@@ -108,7 +109,7 @@ export function CategoriesSection({ loading }: CategoriesSectionProps) {
                     {cat.description}
                   </p>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         )}

@@ -14,13 +14,13 @@ const eslintConfig = defineConfig([
       "simple-import-sort": simpleImportSort,
     },
     rules: {
-      // jsx-a11y recommended rules start as warnings: the existing
-      // violations are fixed in the accessibility pass (see plan.md,
-      // Etapa 6), which then promotes these to errors.
+      // jsx-a11y recommended rules: promoted from warn to error in
+      // Etapa 6 once the violations they caught (icon-only buttons,
+      // clickable divs, unlabeled inputs) were fixed.
       ...Object.fromEntries(
         Object.entries(jsxA11y.flatConfigs.recommended.rules).map(([rule]) => [
           rule,
-          "warn",
+          "error",
         ]),
       ),
       "simple-import-sort/imports": "error",
@@ -29,6 +29,11 @@ const eslintConfig = defineConfig([
       "import/newline-after-import": "error",
       "import/no-duplicates": "error",
       "no-console": ["error", { allow: ["warn", "error"] }],
+      // Default depth (2) is too shallow for this codebase's typical
+      // nesting (icon + text wrapped in a couple of layout divs), which
+      // flags controls that do have a visible text label a few levels
+      // down as unlabeled.
+      "jsx-a11y/control-has-associated-label": ["error", { depth: 6 }],
     },
   },
   {
@@ -45,6 +50,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "coverage/**",
+    "playwright-report/**",
+    "test-results/**",
   ]),
 ]);
 

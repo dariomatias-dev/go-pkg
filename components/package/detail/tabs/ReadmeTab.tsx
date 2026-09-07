@@ -69,7 +69,7 @@ function ReadmeLink({ href, children, ...props }: LinkProps) {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 text-xs font-semibold text-[#00ADD8] hover:text-[#007D9C] hover:underline dark:text-sky-400 dark:hover:text-sky-300"
+              className="flex items-center gap-1 text-xs font-semibold text-[#006680] hover:text-[#005a71] hover:underline dark:text-sky-400 dark:hover:text-sky-300"
             >
               Watch on YouTube <ExternalLink className="h-3 w-3" />
             </a>
@@ -86,7 +86,7 @@ function ReadmeLink({ href, children, ...props }: LinkProps) {
       href={href}
       target={isAnchor ? undefined : "_blank"}
       rel={isAnchor ? undefined : "noopener noreferrer"}
-      className="font-bold break-all text-[#00ADD8] underline decoration-[#00ADD8]/30 decoration-2 underline-offset-4 transition-all hover:text-[#007D9C] hover:decoration-[#007D9C] dark:text-sky-400 dark:decoration-sky-400/30 dark:hover:text-sky-300 dark:hover:decoration-sky-300"
+      className="font-bold break-all text-[#006680] underline decoration-[#006680]/30 decoration-2 underline-offset-4 transition-all hover:text-[#005a71] hover:decoration-[#005a71] dark:text-sky-400 dark:decoration-sky-400/30 dark:hover:text-sky-300 dark:hover:decoration-sky-300"
       {...props}
     >
       {children}

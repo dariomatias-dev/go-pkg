@@ -67,7 +67,7 @@ export function VersionList({
               className={cn(
                 "w-full cursor-pointer rounded-lg border px-3 py-2 text-left font-mono text-xs transition-all",
                 isSelected
-                  ? "border-[#00ADD8] bg-sky-50 font-bold text-[#007D9C] dark:border-sky-500 dark:bg-sky-950/20 dark:text-sky-400"
+                  ? "border-[#00ADD8] bg-sky-50 font-bold text-[#006680] dark:border-sky-500 dark:bg-sky-950/20 dark:text-sky-400"
                   : "border-slate-100 text-slate-600 hover:border-slate-200 hover:bg-slate-50 dark:border-[#30363d] dark:text-[#8b949e] dark:hover:border-[#484f58] dark:hover:bg-[#161b22]",
               )}
             >
@@ -76,7 +76,7 @@ export function VersionList({
 
                 <div className="flex shrink-0 items-center gap-1">
                   {isLatest && (
-                    <span className="rounded bg-[#00ADD8] px-1 py-0.5 text-[8px] font-bold tracking-tight text-white uppercase">
+                    <span className="rounded bg-[#006680] px-1 py-0.5 text-[8px] font-bold tracking-tight text-white uppercase">
                       latest
                     </span>
                   )}

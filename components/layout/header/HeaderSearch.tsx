@@ -60,6 +60,7 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
           <input
             ref={inputRef}
             type="text"
+            aria-label="Search Go packages"
             placeholder="Search Go packages..."
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
@@ -85,6 +86,7 @@ export function HeaderSearch({ mobile, onSearch }: HeaderSearchProps) {
           {inputQuery && (
             <button
               type="button"
+              aria-label="Clear search"
               onClick={() => setInputQuery("")}
               className={cn(
                 "absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer border-none p-0.5 transition-colors",

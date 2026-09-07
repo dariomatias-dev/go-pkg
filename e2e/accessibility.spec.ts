@@ -1,29 +1,98 @@
 import AxeBuilder from "@axe-core/playwright";
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-import { mockPopularPackages } from "./fixtures/mockApi";
+import {
+  mockPackageInfo,
+  mockPopularPackages,
+  mockSearch,
+} from "./fixtures/mockApi";
+import { ECHO, GIN } from "./fixtures/packages";
 
-// Baseline scan: the known jsx-a11y violations (Etapa 1, warn-level) are
-// fixed in Etapa 6, which turns this into a hard assertion on zero
-// serious/critical violations. For now this only reports what axe finds,
-// so the accessibility gap is visible without blocking the E2E gate.
-test.describe("Accessibility (baseline report)", () => {
-  test("home page", async ({ page }) => {
+// Hard gate since Etapa 6: the jsx-a11y violations flagged as warnings in
+// Etapa 1 (icon-only buttons, clickable divs, unlabeled inputs) are fixed,
+// so a serious/critical axe violation here is a real regression.
+async function assertNoSeriousViolations(
+  page: import("@playwright/test").Page,
+) {
+  // Several pages mount with a tw-animate-css fade/slide-in (durations up
+  // to 700ms). Scanning mid-transition samples a transient, partially
+  // transparent color and axe reports a false color-contrast violation
+  // for it instead of the page's resting state.
+  await page.waitForTimeout(800);
+
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa"])
+    .analyze();
+
+  const serious = results.violations.filter((v) =>
+    ["serious", "critical"].includes(v.impact ?? ""),
+  );
+
+  expect(
+    serious,
+    serious.map((v) => `${v.id}: ${v.help}`).join("\n"),
+  ).toHaveLength(0);
+}
+
+test.describe("Accessibility", () => {
+  test("home page has no serious/critical violations", async ({ page }) => {
     await mockPopularPackages(page);
     await page.goto("/");
+    await assertNoSeriousViolations(page);
+  });
 
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa"])
-      .analyze();
+  test("search page has no serious/critical violations", async ({ page }) => {
+    await mockSearch(page);
+    await page.goto("/search?q=gin");
+    await assertNoSeriousViolations(page);
+  });
 
-    const serious = results.violations.filter((v) =>
-      ["serious", "critical"].includes(v.impact ?? ""),
+  test("package detail page has no serious/critical violations", async ({
+    page,
+  }) => {
+    await mockPackageInfo(page);
+    await page.route("**/api/package-versions**", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          versions: [],
+          total: 0,
+          page: 1,
+          totalPages: 1,
+        }),
+      }),
     );
-
-    // eslint-disable-next-line no-console
-    console.log(
-      `axe: ${serious.length} serious/critical violation(s) on / — tracked for Etapa 6`,
-      serious.map((v) => v.id),
+    await page.route("**/api/package-releases**", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ releases: [], hasNextPage: false }),
+      }),
     );
+    await page.goto(`/package/${GIN.importPath}`);
+    await assertNoSeriousViolations(page);
+  });
+
+  test("favorites page has no serious/critical violations", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.evaluate(
+      (packages) => {
+        localStorage.setItem("gopkg_favorites", JSON.stringify(packages));
+      },
+      [GIN, ECHO],
+    );
+    await page.goto("/favorites");
+    await assertNoSeriousViolations(page);
+  });
+
+  test("compare page has no serious/critical violations", async ({ page }) => {
+    await mockPackageInfo(page);
+    await page.goto(
+      `/compare?pkg=${encodeURIComponent(GIN.importPath)}&pkg=${encodeURIComponent(ECHO.importPath)}`,
+    );
+    await assertNoSeriousViolations(page);
   });
 });

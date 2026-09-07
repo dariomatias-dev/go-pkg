@@ -59,7 +59,7 @@ export function PackageDetail({ importPath, initialTab }: PackageDetailProps) {
       <div className="pointer-events-none fixed top-16 right-0 left-0 z-30 h-1.5 bg-slate-200/50 shadow-sm select-none dark:bg-[#30363d]/50">
         <div
           ref={scrollBarRef}
-          className="h-full bg-linear-to-r from-cyan-400 via-[#00ADD8] to-[#007D9C] transition-all duration-75 ease-out"
+          className="h-full bg-linear-to-r from-cyan-400 via-[#00ADD8] to-[#006680] transition-all duration-75 ease-out"
           style={{ width: "0%" }}
         />
       </div>

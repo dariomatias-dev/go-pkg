@@ -56,7 +56,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
           {pkg.category && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-default rounded border border-sky-100 bg-sky-50 px-2.5 py-1 text-[10px] font-black tracking-wider text-[#007D9C] uppercase dark:border-sky-800/50 dark:bg-sky-950/30 dark:text-sky-400">
+                <span className="cursor-default rounded border border-sky-100 bg-sky-50 px-2.5 py-1 text-[10px] font-black tracking-wider text-[#006680] uppercase dark:border-sky-800/50 dark:bg-sky-950/30 dark:text-sky-400">
                   {pkg.category}
                 </span>
               </TooltipTrigger>
@@ -68,7 +68,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
           {pkg.stars > 1000 && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-default rounded bg-[#00ADD8] px-2.5 py-1 text-[10px] font-black tracking-wider text-white uppercase shadow-sm">
+                <span className="cursor-default rounded bg-[#006680] px-2.5 py-1 text-[10px] font-black tracking-wider text-white uppercase shadow-sm">
                   High Demand
                 </span>
               </TooltipTrigger>
@@ -124,7 +124,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                         href={pkg.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-xs font-bold text-[#007D9C] hover:underline dark:text-sky-400"
+                        className="flex items-center gap-2 text-xs font-bold text-[#006680] hover:underline dark:text-sky-400"
                       >
                         <FaGithub className="h-4 w-4" />
                         {pkg.githubUrl.replace("https://", "")}
@@ -142,7 +142,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                       href={`https://pkg.go.dev/${pkg.importPath}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-xs font-bold text-[#007D9C] hover:underline dark:text-sky-400"
+                      className="flex items-center gap-2 text-xs font-bold text-[#006680] hover:underline dark:text-sky-400"
                     >
                       pkg.go.dev
                       <ExternalLink className="h-3 w-3 opacity-50" />
@@ -272,13 +272,13 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                 >
                   <Shield className="h-4 w-4 text-slate-400" />
                   LICENSE:{" "}
-                  <span className="text-[#007D9C]">{pkg.license || "N/A"}</span>
+                  <span className="text-[#006680]">{pkg.license || "N/A"}</span>
                 </a>
               ) : (
                 <span className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9]">
                   <Shield className="h-4 w-4 text-slate-400" />
                   LICENSE:{" "}
-                  <span className="text-[#007D9C]">{pkg.license || "N/A"}</span>
+                  <span className="text-[#006680]">{pkg.license || "N/A"}</span>
                 </span>
               )}
             </TooltipTrigger>
@@ -296,7 +296,7 @@ export function PackageHeader({ pkg }: PackageHeaderProps) {
                   className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors hover:border-[#00ADD8]/50 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9]"
                 >
                   <User className="h-4 w-4 text-slate-400" />
-                  AUTHOR: <span className="text-[#007D9C]">@{pkg.author}</span>
+                  AUTHOR: <span className="text-[#006680]">@{pkg.author}</span>
                 </a>
               </TooltipTrigger>
 

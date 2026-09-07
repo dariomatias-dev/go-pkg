@@ -32,14 +32,14 @@ export const COMPARE_ROWS: CompareRow[] = [
   {
     label: "GitHub Stars",
     icon: (
-      <Star className="h-4 w-4 shrink-0 fill-[#00ADD8] stroke-[#007D9C] text-[#007D9C] dark:fill-sky-500 dark:stroke-sky-500 dark:text-sky-400" />
+      <Star className="h-4 w-4 shrink-0 fill-[#00ADD8] stroke-[#006680] text-[#006680] dark:fill-sky-500 dark:stroke-sky-500 dark:text-sky-400" />
     ),
     cellCls:
       "p-4 font-mono font-bold text-base text-slate-900 dark:text-[#f0f6fc]",
     render: (pkg) => (
       <>
         {(pkg.stars || 0).toLocaleString()}{" "}
-        <span className="font-sans text-[10px] font-medium text-slate-400 dark:text-[#8b949e]">
+        <span className="font-sans text-[10px] font-medium text-slate-500 dark:text-[#8b949e]">
           stars
         </span>
       </>
@@ -112,11 +112,11 @@ export const COMPARE_ROWS: CompareRow[] = [
   {
     label: "Imported By",
     cellCls:
-      "p-4 font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50/20 dark:bg-emerald-950/10",
+      "p-4 font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50/20 dark:bg-emerald-950/10",
     render: (pkg) => (
       <>
         {pkg.importsCount ? pkg.importsCount.toLocaleString() : "N/A"}{" "}
-        <span className="font-sans text-[9px] font-light text-slate-400 dark:text-[#8b949e]">
+        <span className="font-sans text-[9px] font-light text-slate-500 dark:text-[#8b949e]">
           repos
         </span>
       </>
@@ -139,7 +139,7 @@ export const COMPARE_ROWS: CompareRow[] = [
     icon: (
       <Calendar className="h-4 w-4 shrink-0 text-slate-400 dark:text-slate-500" />
     ),
-    cellCls: "p-4 font-mono text-slate-400 dark:text-[#8b949e]",
+    cellCls: "p-4 font-mono text-slate-500 dark:text-[#8b949e]",
     render: (pkg) => pkg.publishedAt,
   },
 ];

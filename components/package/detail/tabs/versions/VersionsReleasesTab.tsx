@@ -178,7 +178,7 @@ export function VersionsReleasesTab({
   return (
     <div className="animate-fade-in space-y-4">
       <h3 className="font-display flex items-center gap-2 border-b border-slate-100 pb-2 text-base font-semibold text-slate-800 dark:border-[#30363d] dark:text-[#f0f6fc]">
-        <GitBranch className="h-4 w-4 text-[#007D9C] dark:text-sky-400" />
+        <GitBranch className="h-4 w-4 text-[#006680] dark:text-sky-400" />
         Versions &amp; Releases
       </h3>
 

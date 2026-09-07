@@ -68,12 +68,12 @@ export function Select<T extends string = string>({
                   "relative flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors outline-none select-none",
                   "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-[#c9d1d9] dark:hover:bg-[#21262d] dark:hover:text-[#f0f6fc]",
                   "focus:bg-slate-50 focus:text-slate-900 dark:focus:bg-[#21262d] dark:focus:text-[#f0f6fc]",
-                  "data-[state=checked]:bg-sky-50/60 data-[state=checked]:font-semibold data-[state=checked]:text-[#007D9C] dark:data-[state=checked]:bg-sky-950/20 dark:data-[state=checked]:text-sky-400",
+                  "data-[state=checked]:bg-sky-50/60 data-[state=checked]:font-semibold data-[state=checked]:text-[#006680] dark:data-[state=checked]:bg-sky-950/20 dark:data-[state=checked]:text-sky-400",
                 )}
               >
                 <span>{option.label}</span>
                 <DropdownMenuPrimitive.ItemIndicator>
-                  <Check className="h-3 w-3 shrink-0 text-[#007D9C] dark:text-sky-400" />
+                  <Check className="h-3 w-3 shrink-0 text-[#006680] dark:text-sky-400" />
                 </DropdownMenuPrimitive.ItemIndicator>
               </DropdownMenuPrimitive.RadioItem>
             ))}

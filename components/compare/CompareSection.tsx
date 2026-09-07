@@ -153,8 +153,8 @@ export function CompareSection() {
       <div className="container-scale max-w-6xl space-y-8">
         <div className="flex flex-col justify-between gap-6 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm md:flex-row md:items-center md:p-8 dark:border-[#30363d] dark:bg-[#0d1117]">
           <div className="space-y-2">
-            <div className="flex items-center space-x-2 text-[#007D9C] dark:text-sky-400">
-              <span className="font-display rounded-full border border-sky-100 bg-sky-50 px-3 py-1 text-xs font-medium tracking-widest text-[#007D9C] uppercase dark:border-sky-900/30 dark:bg-sky-950/30 dark:text-sky-400">
+            <div className="flex items-center space-x-2 text-[#006680] dark:text-sky-400">
+              <span className="font-display rounded-full border border-sky-100 bg-sky-50 px-3 py-1 text-xs font-medium tracking-widest text-[#006680] uppercase dark:border-sky-900/30 dark:bg-sky-950/30 dark:text-sky-400">
                 Decision Matrix
               </span>
             </div>

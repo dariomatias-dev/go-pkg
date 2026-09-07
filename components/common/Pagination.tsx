@@ -83,7 +83,7 @@ export function Pagination({
           {Math.min(itemCountInPage, perPage)}
         </span>{" "}
         of{" "}
-        <span className="font-bold text-[#007D9C] dark:text-sky-400">
+        <span className="font-bold text-[#006680] dark:text-sky-400">
           {totalResults}
         </span>{" "}
         {label}
@@ -107,7 +107,9 @@ export function Pagination({
               jumpIdx === i ? (
                 <input
                   key={`ellipsis-${i}`}
+                  // eslint-disable-next-line jsx-a11y/no-autofocus -- opened by an explicit click on "jump to page"; the point is to focus it immediately
                   autoFocus
+                  aria-label="Jump to page"
                   type="number"
                   min={1}
                   max={totalPages}
@@ -127,7 +129,7 @@ export function Pagination({
                   onClick={() => openJump(i)}
                   className={cn(
                     btnBase,
-                    "border border-transparent tracking-wider text-slate-400 hover:border-slate-200 hover:bg-slate-50 hover:text-[#007D9C] dark:text-[#484f58] dark:hover:border-[#30363d] dark:hover:bg-[#21262d] dark:hover:text-sky-400",
+                    "border border-transparent tracking-wider text-slate-400 hover:border-slate-200 hover:bg-slate-50 hover:text-[#006680] dark:text-[#484f58] dark:hover:border-[#30363d] dark:hover:bg-[#21262d] dark:hover:text-sky-400",
                   )}
                   title="Jump to page"
                 >
@@ -142,7 +144,7 @@ export function Pagination({
                 className={cn(
                   btnBase,
                   currentPage === p
-                    ? "bg-[#00ADD8] text-white shadow-sm dark:bg-sky-600"
+                    ? "bg-[#006680] text-white shadow-sm dark:bg-sky-600"
                     : "border border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 dark:text-[#c9d1d9] dark:hover:border-[#30363d] dark:hover:bg-[#21262d]",
                 )}
               >

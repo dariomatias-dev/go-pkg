@@ -32,7 +32,7 @@ export function GoInstallBlock({ importPath }: GoInstallBlockProps) {
       <div className="flex min-w-0 items-center gap-1.5 pr-2">
         <Terminal className="h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-[#484f58]" />
 
-        <span className="font-bold text-[#007D9C] select-none dark:text-sky-400">
+        <span className="font-bold text-[#006680] select-none dark:text-sky-400">
           $
         </span>
 
@@ -44,6 +44,8 @@ export function GoInstallBlock({ importPath }: GoInstallBlockProps) {
       <Tooltip>
         <TooltipTrigger asChild>
           <button
+            type="button"
+            aria-label={copied ? "Copied" : "Copy install command"}
             onClick={handleCopy}
             className="shrink-0 cursor-pointer rounded-md border border-transparent p-1.5 text-slate-400 transition-all hover:border-slate-200 hover:bg-white hover:text-[#00ADD8] active:scale-90 dark:text-[#484f58] dark:hover:border-[#30363d] dark:hover:bg-[#21262d] dark:hover:text-sky-400"
           >

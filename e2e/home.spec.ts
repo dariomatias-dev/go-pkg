@@ -21,7 +21,7 @@ test.describe("Home page", () => {
     await mockPopularPackages(page);
     await page.goto("/");
 
-    await page.getByText(GIN.description).first().click();
+    await page.getByRole("link", { name: GIN.name }).first().click();
 
     await expect(page).toHaveURL(/\/package\/github\.com/);
   });

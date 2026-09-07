@@ -113,8 +113,10 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
 
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 dark:border-[#30363d] dark:bg-[#0d1117]">
-      <div
-        className="flex cursor-pointer items-center justify-between border-b border-slate-100 bg-slate-50 px-4 py-3.5 transition-colors select-none hover:bg-slate-100/50 dark:border-[#30363d] dark:bg-[#161b22] dark:hover:bg-[#1c2128]"
+      <button
+        type="button"
+        aria-expanded={open}
+        className="flex w-full cursor-pointer items-center justify-between border-b border-slate-100 bg-slate-50 px-4 py-3.5 text-left transition-colors select-none hover:bg-slate-100/50 dark:border-[#30363d] dark:bg-[#161b22] dark:hover:bg-[#1c2128]"
         onClick={() => setOpen(!open)}
       >
         <div className="flex items-center space-x-2.5">
@@ -132,27 +134,27 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
               Gopher AI Assistant
             </h4>
 
-            <span className="mt-0.5 text-[10px] font-semibold text-[#007D9C] dark:text-sky-400">
+            <span className="mt-0.5 text-[10px] font-semibold text-[#006680] dark:text-sky-400">
               Smart Go Support
             </span>
           </div>
         </div>
 
-        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200/50 bg-slate-100 text-slate-500 shadow-sm transition-all hover:bg-white hover:text-[#007D9C] dark:border-[#30363d] dark:bg-[#21262d] dark:text-[#8b949e] dark:hover:bg-[#30363d] dark:hover:text-[#f0f6fc]">
+        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200/50 bg-slate-100 text-slate-500 shadow-sm transition-all hover:bg-white hover:text-[#006680] dark:border-[#30363d] dark:bg-[#21262d] dark:text-[#8b949e] dark:hover:bg-[#30363d] dark:hover:text-[#f0f6fc]">
           {open ? (
             <ChevronUp className="h-3.5 w-3.5" />
           ) : (
             <ChevronDown className="h-3.5 w-3.5" />
           )}
         </div>
-      </div>
+      </button>
 
       {open && (
         <div className="flex h-100 flex-col bg-slate-50/30 dark:bg-[#0d1117]">
           <div className="custom-scrollbar flex-1 space-y-3.5 overflow-x-hidden overflow-y-auto p-4 antialiased">
             {messages.length <= 1 && (
               <div className="space-y-3 px-2 py-4 text-center">
-                <p className="mx-auto max-w-50 text-[11px] leading-relaxed text-slate-400 dark:text-[#8b949e]">
+                <p className="mx-auto max-w-50 text-[11px] leading-relaxed text-slate-500 dark:text-[#8b949e]">
                   Ask a question or pick a quick topic below:
                 </p>
 
@@ -162,7 +164,7 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
                       key={q}
                       type="button"
                       onClick={() => setInput(q)}
-                      className="cursor-pointer truncate rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-left text-[11px] font-medium text-[#007D9C] transition-colors hover:bg-sky-50 hover:text-[#005F77] dark:border-[#30363d] dark:bg-[#161b22] dark:text-sky-400 dark:hover:bg-[#21262d] dark:hover:text-sky-300"
+                      className="cursor-pointer truncate rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-left text-[11px] font-medium text-[#006680] transition-colors hover:bg-sky-50 hover:text-[#005F77] dark:border-[#30363d] dark:bg-[#161b22] dark:text-sky-400 dark:hover:bg-[#21262d] dark:hover:text-sky-300"
                     >
                       💡 {q}
                     </button>
@@ -235,6 +237,7 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
             <div className="relative flex flex-1 items-center">
               <input
                 type="text"
+                aria-label="Ask about this package"
                 placeholder="Ask about this package..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -260,7 +263,7 @@ export function GopherChat({ importPath, description }: GopherChatProps) {
                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border p-2 shadow-sm transition-all duration-200 active:scale-95",
                 !input.trim() || loading
                   ? "cursor-not-allowed border-slate-200/60 bg-slate-50 text-slate-300 opacity-50 dark:border-[#30363d] dark:bg-[#21262d] dark:text-[#484f58]"
-                  : "cursor-pointer border-[#007D9C] bg-[#007D9C] text-white hover:bg-[#005F77] dark:border-sky-600 dark:bg-sky-600 dark:hover:bg-sky-700",
+                  : "cursor-pointer border-[#006680] bg-[#006680] text-white hover:bg-[#005F77] dark:border-sky-600 dark:bg-sky-600 dark:hover:bg-sky-700",
               )}
               title="Send message"
             >

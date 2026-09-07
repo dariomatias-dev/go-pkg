@@ -8,9 +8,7 @@ test.describe("Favorites", () => {
     await mockPopularPackages(page);
     await page.goto("/");
 
-    const card = page.locator("div.cursor-pointer", {
-      hasText: GIN.description,
-    });
+    const card = page.getByTestId(`package-card-${GIN.importPath}`);
     await card.locator("button:has(svg.lucide-heart)").click();
 
     await page.goto("/favorites");

@@ -10,6 +10,7 @@ import { Header } from "@/components/layout/header/Header";
 import { ScrollToTop } from "@/components/providers/ScrollToTop";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({
@@ -18,10 +19,28 @@ const inter = Inter({
   display: "optional",
 });
 
+const DESCRIPTION =
+  "Search and explore Go packages with GitHub repository insights.";
+
 export const metadata: Metadata = {
-  title: "GoPkg",
-  description:
-    "Search and explore Go packages with GitHub repository insights.",
+  metadataBase: SITE_URL,
+  title: {
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
+  },
+  description: DESCRIPTION,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: DESCRIPTION,
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -32,6 +51,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
     >
       <body className="selection:bg-go-blue flex min-h-screen flex-col bg-[#F8FAFC] text-slate-900 transition-colors duration-300 selection:text-white dark:bg-[#0b0e14] dark:text-[#f0f6fc] dark:selection:bg-sky-500">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-200 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-slate-900 focus:shadow-lg dark:focus:bg-[#161b22] dark:focus:text-[#f0f6fc]"
+        >
+          Skip to content
+        </a>
+
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -51,7 +77,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </Suspense>
 
           <TooltipProvider>
-            <main className="flex flex-1 flex-col">{children}</main>
+            <main id="main-content" className="flex flex-1 flex-col">
+              {children}
+            </main>
           </TooltipProvider>
 
           <Footer />

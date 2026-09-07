@@ -113,6 +113,7 @@ export function Header() {
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label="Change theme"
                       className="relative h-9 w-9 cursor-pointer rounded-full border border-sky-400/20 text-white transition-all hover:bg-white focus-visible:ring-0 dark:border-[#30363d] dark:text-[#8b949e] dark:hover:bg-[#30363d]"
                     >
                       <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />

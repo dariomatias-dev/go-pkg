@@ -11,7 +11,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 const navLinkClass =
   "group flex items-center gap-2.5 text-slate-400 hover:text-[#00ADD8] transition-all duration-200 text-xs font-medium cursor-pointer";
 const externalLinkClass =
-  "group flex items-center gap-2 text-slate-500 hover:text-white transition-all duration-200 text-xs font-medium cursor-pointer";
+  "group flex items-center gap-2 text-slate-400 hover:text-white transition-all duration-200 text-xs font-medium cursor-pointer";
 
 export function Footer() {
   return (
@@ -20,7 +20,7 @@ export function Footer() {
         <div className="mb-10 flex justify-center">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="group flex cursor-pointer items-center gap-2 text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase transition-colors hover:text-white active:scale-95"
+            className="group flex cursor-pointer items-center gap-2 text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase transition-colors hover:text-white active:scale-95"
           >
             <ArrowUp className="h-3.5 w-3.5 text-[#00ADD8] transition-transform group-hover:-translate-y-1" />
 
@@ -40,7 +40,7 @@ export function Footer() {
               </span>
             </div>
 
-            <p className="max-w-sm text-xs leading-relaxed text-slate-500">
+            <p className="max-w-sm text-xs leading-relaxed text-slate-400">
               The high-performance discovery engine for the Golang community.
               Track dependencies and discover packages with precision.
             </p>
@@ -49,7 +49,7 @@ export function Footer() {
               href="https://github.com/dariomatias-dev/go-pkg"
               target="_blank"
               rel="noopener"
-              className="inline-flex items-center gap-2 pt-1 text-[10px] font-bold tracking-widest text-slate-500 uppercase transition-all hover:text-white"
+              className="inline-flex items-center gap-2 pt-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase transition-all hover:text-white"
             >
               <GitBranch className="h-3.5 w-3.5" />
 
@@ -58,7 +58,7 @@ export function Footer() {
           </div>
 
           <div className="space-y-4 md:col-span-3">
-            <h4 className="text-[10px] font-black tracking-[0.2em] text-white uppercase opacity-40">
+            <h4 className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
               Navigation
             </h4>
 
@@ -76,7 +76,7 @@ export function Footer() {
           </div>
 
           <div className="space-y-4 md:col-span-4">
-            <h4 className="text-[10px] font-black tracking-[0.2em] text-white uppercase opacity-40">
+            <h4 className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">
               Resources
             </h4>
 
@@ -99,7 +99,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-6 pt-8 text-[10px] font-bold tracking-widest text-slate-600 uppercase md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-6 pt-8 text-[10px] font-bold tracking-widest text-slate-400 uppercase md:flex-row">
           <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
             <div className="flex items-center gap-2">
               <Code className="h-3.5 w-3.5 text-sky-500" />

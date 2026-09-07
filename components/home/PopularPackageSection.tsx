@@ -2,6 +2,7 @@
 
 import { ArrowRight, Heart, HeartOff, Loader2, TrendingUp } from "lucide-react";
 import type { Route } from "next";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -82,14 +83,14 @@ export function PopularPackageSection() {
         <div className="space-y-6 lg:col-span-2">
           <div className="flex items-center justify-between border-b border-slate-200/60 pb-3 dark:border-[#30363d]">
             <h3 className="font-display flex items-center gap-2 text-lg font-medium text-slate-900 select-none dark:text-[#f0f6fc]">
-              <TrendingUp className="h-5 w-5 text-[#007D9C] dark:text-sky-400" />
+              <TrendingUp className="h-5 w-5 text-[#006680] dark:text-sky-400" />
               Popular Packages
             </h3>
 
             <button
               type="button"
               onClick={() => router.push("/popular")}
-              className="inline-flex cursor-pointer items-center gap-1 font-sans text-xs font-bold text-[#007D9C] transition-colors hover:text-[#005F77] dark:text-sky-400 dark:hover:text-sky-300"
+              className="inline-flex cursor-pointer items-center gap-1 font-sans text-xs font-bold text-[#006680] transition-colors hover:text-[#005F77] dark:text-sky-400 dark:hover:text-sky-300"
             >
               View All
               <ArrowRight className="h-3.5 w-3.5" />
@@ -114,7 +115,7 @@ export function PopularPackageSection() {
                     type="button"
                     onClick={loadMore}
                     disabled={loadingMore}
-                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 py-2.5 font-sans text-xs font-bold text-[#007D9C] shadow-sm transition-all hover:bg-slate-50 active:scale-95 disabled:opacity-60 dark:border-[#30363d] dark:bg-[#21262d] dark:text-sky-400 dark:hover:bg-[#30363d]"
+                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 py-2.5 font-sans text-xs font-bold text-[#006680] shadow-sm transition-all hover:bg-slate-50 active:scale-95 disabled:opacity-60 dark:border-[#30363d] dark:bg-[#21262d] dark:text-sky-400 dark:hover:bg-[#30363d]"
                   >
                     {loadingMore ? (
                       <>
@@ -144,11 +145,11 @@ export function PopularPackageSection() {
 
             {favorites.length === 0 ? (
               <div className="py-6 text-center">
-                <p className="text-xs text-slate-400 dark:text-[#8b949e]">
+                <p className="text-xs text-slate-500 dark:text-[#8b949e]">
                   No saved packages.
                 </p>
 
-                <p className="mt-1 text-[10px] text-slate-400/85 dark:text-[#8b949e]/60">
+                <p className="mt-1 text-[10px] text-slate-500 dark:text-[#8b949e]/60">
                   Click the heart on package cards to save them.
                 </p>
               </div>
@@ -157,29 +158,28 @@ export function PopularPackageSection() {
                 {favorites.map((pkg) => (
                   <div
                     key={pkg.importPath}
-                    onClick={() => {
-                      router.push(
-                        `/package/${encodeImportPath(pkg.importPath)}` as Route<`/package/${string}`>,
-                      );
-                    }}
-                    className="group flex cursor-pointer items-center justify-between rounded-lg border border-slate-100 p-2 transition-all hover:border-slate-200 hover:bg-slate-50 dark:border-[#30363d] dark:hover:border-slate-700 dark:hover:bg-[#21262d]"
+                    className="group relative flex items-center justify-between rounded-lg border border-slate-100 p-2 transition-all hover:border-slate-200 hover:bg-slate-50 dark:border-[#30363d] dark:hover:border-slate-700 dark:hover:bg-[#21262d]"
                   >
-                    <div className="min-w-0 flex-1 pr-2">
+                    <Link
+                      href={
+                        `/package/${encodeImportPath(pkg.importPath)}` as Route<`/package/${string}`>
+                      }
+                      className="min-w-0 flex-1 pr-2 after:absolute after:inset-0 after:content-['']"
+                    >
                       <p className="truncate text-xs font-semibold text-slate-800 transition-colors group-hover:text-[#00ADD8] dark:text-[#c9d1d9] dark:group-hover:text-sky-400">
                         {pkg.importPath.split("/").pop()}
                       </p>
 
-                      <p className="truncate font-mono text-[10px] text-slate-400 dark:text-[#8b949e]">
+                      <p className="truncate font-mono text-[10px] text-slate-500 dark:text-[#8b949e]">
                         {pkg.importPath}
                       </p>
-                    </div>
+                    </Link>
 
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeFavorite(pkg.importPath);
-                      }}
-                      className="shrink-0 cursor-pointer rounded p-1 text-slate-300 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:text-[#484f58] dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
+                      type="button"
+                      aria-label={`Remove ${pkg.importPath.split("/").pop()} from favorites`}
+                      onClick={() => removeFavorite(pkg.importPath)}
+                      className="relative z-10 shrink-0 cursor-pointer rounded p-1 text-slate-300 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:text-[#484f58] dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
                     >
                       <HeartOff className="h-3.5 w-3.5" />
                     </button>
@@ -214,7 +214,7 @@ export function PopularPackageSection() {
                         `/search?tag=${encodeURIComponent(tag)}` as Route<`/search?tag=${string}`>,
                       )
                     }
-                    className="cursor-pointer rounded border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600 transition-colors hover:bg-[#E0F2FE] hover:text-[#007D9C] dark:border-[#30363d] dark:bg-[#21262d] dark:text-[#c9d1d9] dark:hover:bg-[#30363d] dark:hover:text-white"
+                    className="cursor-pointer rounded border border-slate-100 bg-slate-50 px-2.5 py-1 text-xs text-slate-600 transition-colors hover:bg-[#E0F2FE] hover:text-[#006680] dark:border-[#30363d] dark:bg-[#21262d] dark:text-[#c9d1d9] dark:hover:bg-[#30363d] dark:hover:text-white"
                   >
                     #{tag}
                   </button>

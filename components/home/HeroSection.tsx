@@ -30,7 +30,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative border-b border-sky-600/30 bg-linear-to-b from-[#007D9C] to-[#00ADD8] px-6 py-16 text-white transition-colors duration-500 dark:border-[#30363d] dark:from-[#0d1117] dark:to-[#010409]">
+    <section className="relative border-b border-sky-600/30 bg-linear-to-b from-[#006680] to-[#00ADD8] px-6 py-16 text-white transition-colors duration-500 dark:border-[#30363d] dark:from-[#0d1117] dark:to-[#010409]">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] bg-size-[24px_24px] opacity-10 dark:opacity-[0.03]" />
       </div>
@@ -54,6 +54,7 @@ export function HeroSection() {
 
             <input
               type="text"
+              aria-label="Search by package path"
               placeholder="Search by package path (e.g. github.com/gin-gonic/gin, cobra)..."
               className="w-full bg-transparent py-3 pr-8 pl-8 font-sans text-sm text-slate-800 placeholder-slate-400 focus:ring-0 focus:outline-none sm:text-base dark:text-[#c9d1d9] dark:placeholder-[#484f58]"
               value={query}
@@ -79,7 +80,7 @@ export function HeroSection() {
           <button
             type="button"
             onClick={() => submit(query)}
-            className="flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#00ADD8] px-6 py-3 text-sm font-medium text-white shadow-md transition-all hover:bg-[#007D9C] active:scale-95 sm:text-base dark:bg-sky-600 dark:hover:bg-sky-700"
+            className="flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#006680] px-6 py-3 text-sm font-medium text-white shadow-md transition-all hover:bg-[#005a71] active:scale-95 sm:text-base dark:bg-sky-600 dark:hover:bg-sky-700"
           >
             <span>Search</span>
 

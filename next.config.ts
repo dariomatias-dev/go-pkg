@@ -1,4 +1,9 @@
+import bundleAnalyzer from "@next/bundle-analyzer";
 import type { NextConfig } from "next";
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 // A nonce-based CSP (Next's own recommended default) would force every
 // route into dynamic rendering: "Partial Prerendering is incompatible
@@ -30,6 +35,12 @@ const CSP = [
 const nextConfig: NextConfig = {
   cacheComponents: true,
   images: {
+    // Deliberate, not leftover: README content embeds <Image> from
+    // whatever host the README author used (shields.io, imgur, arbitrary
+    // CDNs — see resolveImageUrl in ReadmeTab.tsx), which optimization
+    // can't handle without either an open remotePattern (an SSRF/abuse
+    // vector — Next's optimizer would fetch and re-encode any URL a
+    // README points it at) or breaking images from unlisted hosts.
     unoptimized: true,
   },
   async headers() {
@@ -54,4 +65,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

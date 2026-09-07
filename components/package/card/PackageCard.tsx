@@ -12,7 +12,7 @@ import {
   User,
 } from "lucide-react";
 import type { Route } from "next";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { FaGithub } from "react-icons/fa6";
 
 import {
@@ -43,7 +43,6 @@ function toGoPackage(pkg: CardPkg): GoPackage {
 }
 
 export function PackageCard({ pkg, index }: PackageCardProps) {
-  const router = useRouter();
   const { isFavorite, toggleFavorite } = useFavorites();
   const saved = isFavorite(pkg.importPath);
 
@@ -58,16 +57,13 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
         : pkg.similarityScore * 100
       : undefined;
 
-  const navigateToPkg = () => {
-    router.push(
-      `/package/${encodeImportPath(pkg.importPath)}` as Route<`/package/${string}`>,
-    );
-  };
+  const href =
+    `/package/${encodeImportPath(pkg.importPath)}` as Route<`/package/${string}`>;
 
   return (
     <div
-      onClick={navigateToPkg}
-      className="group relative flex cursor-pointer flex-col gap-5 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 transition-all duration-500 hover:border-[#00ADD8]/40 hover:shadow-2xl hover:shadow-sky-500/10 sm:p-6 dark:border-[#30363d] dark:bg-[#0d1117] dark:hover:border-sky-500/30 dark:hover:shadow-black/60"
+      data-testid={`package-card-${pkg.importPath}`}
+      className="group relative flex flex-col gap-5 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 transition-all duration-500 hover:border-[#00ADD8]/40 hover:shadow-2xl hover:shadow-sky-500/10 sm:p-6 dark:border-[#30363d] dark:bg-[#0d1117] dark:hover:border-sky-500/30 dark:hover:shadow-black/60"
     >
       {scoreValue !== undefined && scoreValue > 0 && (
         <div className="absolute top-0 right-0 left-0 h-1 bg-slate-100 dark:bg-[#21262d]">
@@ -91,13 +87,18 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
               )}
 
               <h3 className="font-display truncate text-lg font-bold tracking-tight text-slate-900 transition-colors group-hover:text-[#00ADD8] sm:text-xl dark:text-[#f0f6fc] dark:group-hover:text-sky-400">
-                {pkg.name}
+                <Link
+                  href={href}
+                  className="after:absolute after:inset-0 after:content-['']"
+                >
+                  {pkg.name}
+                </Link>
               </h3>
 
               {pkg.latestVersion && (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="cursor-default rounded-md border border-emerald-100 bg-emerald-50/50 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-600 dark:border-emerald-500/20 dark:bg-emerald-500/5 dark:text-emerald-400">
+                    <span className="cursor-default rounded-md border border-emerald-100 bg-emerald-50/50 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/5 dark:text-emerald-400">
                       {pkg.latestVersion}
                     </span>
                   </TooltipTrigger>
@@ -107,7 +108,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <code className="w-fit max-w-full truncate rounded-md border border-slate-100/50 bg-slate-50/30 px-2 py-1 text-xs font-medium text-[#007D9C] dark:border-[#30363d]/20 dark:bg-[#161b22]/30 dark:text-sky-400/70">
+              <code className="w-fit max-w-full truncate rounded-md border border-slate-100/50 bg-slate-50/30 px-2 py-1 text-xs font-medium text-[#006680] dark:border-[#30363d]/20 dark:bg-[#161b22]/30 dark:text-sky-400/70">
                 {pkg.importPath}
               </code>
 
@@ -117,7 +118,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="inline-flex cursor-pointer items-center gap-1.5 text-[11px] font-bold text-slate-400 transition-colors hover:text-black dark:text-slate-500 dark:hover:text-white"
+                  className="relative z-10 inline-flex cursor-pointer items-center gap-1.5 text-[11px] font-bold text-slate-500 transition-colors hover:text-black dark:text-slate-500 dark:hover:text-white"
                 >
                   <FaGithub className="h-3.5 w-3.5" />
                   <span>GitHub</span>
@@ -130,12 +131,16 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <button
+                type="button"
+                aria-label={
+                  saved ? "Remove from favorites" : "Save to favorites"
+                }
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleFavorite(toGoPackage(pkg));
                 }}
                 className={cn(
-                  "flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-all duration-300 active:scale-90",
+                  "relative z-10 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-all duration-300 active:scale-90",
                   saved
                     ? "bg-rose-50 text-rose-500 shadow-sm dark:bg-rose-950/20 dark:text-rose-400"
                     : "bg-slate-50/50 text-slate-400 hover:bg-rose-50 hover:text-rose-500 dark:bg-[#161b22]/50 dark:text-[#484f58] dark:hover:bg-rose-950/20 dark:hover:text-rose-400",
@@ -154,7 +159,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
           {pkg.category && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-default rounded-full border border-sky-100 bg-sky-50 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-[#007D9C] uppercase dark:border-sky-800/50 dark:bg-sky-950/30 dark:text-sky-400">
+                <span className="cursor-default rounded-full border border-sky-100 bg-sky-50 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-[#006680] uppercase dark:border-sky-800/50 dark:bg-sky-950/30 dark:text-sky-400">
                   {pkg.category}
                 </span>
               </TooltipTrigger>
@@ -173,7 +178,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-slate-200/60 bg-slate-50/80 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-slate-500 uppercase transition-colors hover:border-[#00ADD8]/40 hover:text-[#00ADD8] dark:border-[#30363d] dark:bg-[#21262d]/80 dark:text-slate-400 dark:hover:text-sky-400"
+                  className="relative z-10 inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-slate-200/60 bg-slate-50/80 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-slate-500 uppercase transition-colors hover:border-[#00ADD8]/40 hover:text-[#00ADD8] dark:border-[#30363d] dark:bg-[#21262d]/80 dark:text-slate-400 dark:hover:text-sky-400"
                 >
                   <Shield className="h-3 w-3" />
                   {pkg.license}
@@ -195,7 +200,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
         <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex cursor-default items-center gap-1.5 text-xs font-bold text-[#00ADD8] dark:text-sky-400">
+              <div className="flex cursor-default items-center gap-1.5 text-xs font-bold text-[#006680] dark:text-sky-400">
                 <Star className="h-4 w-4 fill-[#00ADD8] stroke-[#00ADD8]" />
                 <span>{pkg.stars.toLocaleString()}</span>
               </div>
@@ -235,7 +240,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="hidden cursor-pointer items-center gap-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-[#00ADD8] sm:flex dark:text-[#8b949e] dark:hover:text-sky-400"
+                  className="relative z-10 hidden cursor-pointer items-center gap-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-[#00ADD8] sm:flex dark:text-[#8b949e] dark:hover:text-sky-400"
                 >
                   <User className="h-4 w-4" />
                   <span className="max-w-30 truncate">@{pkg.author}</span>
@@ -250,7 +255,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
           {relativeTime && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex cursor-default items-center gap-1.5 text-[11px] font-medium text-slate-400 dark:text-slate-500">
+                <div className="flex cursor-default items-center gap-1.5 text-[11px] font-medium text-slate-500 dark:text-slate-500">
                   <Clock className="h-3.5 w-3.5" />
                   <span>{relativeTime}</span>
                 </div>
