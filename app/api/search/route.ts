@@ -1,5 +1,10 @@
 import { cacheLife } from "next/cache";
 
+import {
+  checkRateLimit,
+  getClientIp,
+  READ_ROUTE_MAX_REQUESTS,
+} from "@/lib/api/rate-limit";
 import { ApiErrors, ok } from "@/lib/api/response";
 import { parseQuery, searchQuerySchema } from "@/lib/api/schemas";
 import type { SearchOrder, SearchSort } from "@/lib/github";
@@ -25,6 +30,19 @@ async function getCachedSearch(
 
 export async function GET(request: Request) {
   const startedAt = Date.now();
+  const rateLimit = checkRateLimit(
+    `search:${getClientIp(request)}`,
+    Date.now(),
+    READ_ROUTE_MAX_REQUESTS,
+  );
+
+  if (!rateLimit.allowed) {
+    return ApiErrors.rateLimited(
+      "Too many requests. Please try again later.",
+      rateLimit.retryAfterSeconds,
+    );
+  }
+
   const url = new URL(request.url);
   const parsed = parseQuery(searchQuerySchema, url.searchParams);
 

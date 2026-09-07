@@ -1,5 +1,10 @@
 import { cacheLife } from "next/cache";
 
+import {
+  checkRateLimit,
+  getClientIp,
+  READ_ROUTE_MAX_REQUESTS,
+} from "@/lib/api/rate-limit";
 import { ApiErrors, ok } from "@/lib/api/response";
 import { parseQuery, popularPackageQuerySchema } from "@/lib/api/schemas";
 import { CURATED_CATEGORIES } from "@/lib/curated-categories";
@@ -22,6 +27,19 @@ async function getCachedPopularPackages(page: number, perPage: number) {
 
 export async function GET(request: Request) {
   const startedAt = Date.now();
+  const rateLimit = checkRateLimit(
+    `popular-package:${getClientIp(request)}`,
+    Date.now(),
+    READ_ROUTE_MAX_REQUESTS,
+  );
+
+  if (!rateLimit.allowed) {
+    return ApiErrors.rateLimited(
+      "Too many requests. Please try again later.",
+      rateLimit.retryAfterSeconds,
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const parsed = parseQuery(popularPackageQuerySchema, searchParams);
 

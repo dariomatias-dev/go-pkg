@@ -11,6 +11,9 @@ const WINDOW_MS = 60_000;
 const MAX_REQUESTS = 10;
 const MAX_TRACKED_IPS = 5000;
 
+/** Looser per-IP cap for non-AI routes, just enough to stop abusive clients. */
+export const READ_ROUTE_MAX_REQUESTS = 60;
+
 interface Bucket {
   count: number;
   windowStart: number;
@@ -32,6 +35,7 @@ export interface RateLimitResult {
 export function checkRateLimit(
   key: string,
   now: number = Date.now(),
+  maxRequests: number = MAX_REQUESTS,
 ): RateLimitResult {
   const bucket = buckets.get(key);
 
@@ -43,7 +47,7 @@ export function checkRateLimit(
     return { allowed: true, retryAfterSeconds: 0 };
   }
 
-  if (bucket.count >= MAX_REQUESTS) {
+  if (bucket.count >= maxRequests) {
     const retryAfterSeconds = Math.ceil(
       (bucket.windowStart + WINDOW_MS - now) / 1000,
     );
