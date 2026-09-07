@@ -1,0 +1,23 @@
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # This project is private (see package.json's "private": true) and
+      # never publishes to npm - release-please here only reads
+      # Conventional Commits since the last tag, keeps a PR open with the
+      # version bump and CHANGELOG.md, and creates the git tag on merge.
+      - uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
