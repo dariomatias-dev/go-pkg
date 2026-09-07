@@ -5,6 +5,8 @@ import { packageReleasesQuerySchema, parseQuery } from "@/lib/api/schemas";
 import {
   getGithubHeaders,
   GITHUB_BASE_URL,
+  GithubApiError,
+  handleGithubError,
   parseGithubRepo,
   resilientFetch,
 } from "@/lib/github/client";
@@ -26,7 +28,11 @@ async function getCachedReleases(
     { headers: getGithubHeaders() },
   );
 
-  if (!res.ok) return { releases: [], hasNextPage: false };
+  if (!res.ok) {
+    if (res.status === 404) return { releases: [], hasNextPage: false };
+
+    throw handleGithubError(res.status, "releases");
+  }
 
   const releases = (await res.json()) as GitHubRelease[];
   const linkHeader = res.headers.get("Link") ?? "";
@@ -67,12 +73,19 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
+    const isRateLimited =
+      error instanceof GithubApiError && error.isRateLimited;
+
     logger.error("Failed to fetch releases", {
       route: "package-releases",
       durationMs: Date.now() - startedAt,
-      status: 500,
+      status: isRateLimited ? 503 : 500,
       errorName: error instanceof Error ? error.name : "unknown",
     });
+
+    if (isRateLimited) {
+      return ApiErrors.serviceUnavailable((error as GithubApiError).message);
+    }
 
     return ApiErrors.internal("Failed to fetch releases.");
   }
