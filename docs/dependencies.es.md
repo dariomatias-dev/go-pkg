@@ -10,7 +10,7 @@ fijadas a una versión exacta (sin `^`) a propósito. Cada una responde:
 qué es, por qué está fijada, qué se rompe si se quita la fijación, y qué
 la quita.
 
-## `next` - `16.2.6`
+## `next` - `16.2.11`
 
 **Qué es:** el framework en sí.
 
@@ -46,7 +46,7 @@ objetivo, subir `next` y `eslint-config-next` juntos, correr
 `./scripts/verify.sh`, y actualizar esta entrada con el nuevo
 razonamiento.
 
-## `eslint-config-next` - `16.2.6`
+## `eslint-config-next` - `16.2.11`
 
 **Qué es:** las reglas de ESLint publicadas por el equipo de Next.js
 para proyectos App Router.
@@ -67,13 +67,13 @@ inconsistente, no es una falla dura, pero vale la pena evitarlo.
 **Qué es:** el runtime de UI.
 
 **Por qué está fijada:** los Cache Components y el Partial Prerendering
-de Next 16.2.6 dependen de internals específicos de React (los que
+de Next 16.2.11 dependen de internals específicos de React (los que
 permiten que una página tenga un shell estático con una región
 transmitida dinámicamente). El propio Next fija un rango estrecho y
 compatible de React exactamente por eso, y este proyecto refleja esa
 fijación en vez de dejar que Renovate mueva React de forma
 independiente de Next, lo que podría combinar una versión de React
-contra la que Next 16.2.6 no fue construido.
+contra la que Next 16.2.11 no fue construido.
 
 **Qué se rompe si se destraba:** posiblemente nada en un bump de
 parche, pero no hay garantía - los internals de React usados por Cache

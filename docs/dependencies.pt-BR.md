@@ -10,7 +10,7 @@ versão exata (sem `^`) de propósito. Cada uma responde: o que é, por que
 está fixada, o que quebra se a fixação for removida, e o que remove a
 fixação.
 
-## `next` - `16.2.6`
+## `next` - `16.2.11`
 
 **O quê:** o próprio framework.
 
@@ -43,7 +43,7 @@ não publicada no site público) de cada versão minor entre a fixação
 atual e o alvo, subir `next` e `eslint-config-next` juntos, rodar
 `./scripts/verify.sh`, e atualizar esta entrada com o novo raciocínio.
 
-## `eslint-config-next` - `16.2.6`
+## `eslint-config-next` - `16.2.11`
 
 **O quê:** as regras de ESLint publicadas pelo time do Next.js pra
 projetos App Router.
@@ -65,12 +65,12 @@ nunca de forma independente.
 **O quê:** o runtime de UI.
 
 **Por que está fixada:** os Cache Components e o Partial Prerendering do
-Next 16.2.6 dependem de internals específicos do React (os que
+Next 16.2.11 dependem de internals específicos do React (os que
 permitem uma página ter um shell estático com uma região transmitida
 dinamicamente). O próprio Next fixa uma faixa estreita e compatível de
 React exatamente por isso, e este projeto espelha essa fixação em vez
 de deixar o Renovate mover o React de forma independente do Next, o
-que poderia combinar uma versão de React contra a qual o Next 16.2.6
+que poderia combinar uma versão de React contra a qual o Next 16.2.11
 não foi construído.
 
 **O que quebra se destravar:** possivelmente nada num bump de patch,

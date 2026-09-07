@@ -20,12 +20,8 @@ test.describe("Search", () => {
   });
 
   test("filtering by category updates the results", async ({ page }) => {
-    let lastUrl = "";
-
-    await page.route("**/api/search**", (route) => {
-      lastUrl = route.request().url();
-
-      return route.fulfill({
+    await page.route("**/api/search**", (route) =>
+      route.fulfill({
         status: 200,
         contentType: "application/json",
         body: JSON.stringify({
@@ -35,12 +31,20 @@ test.describe("Search", () => {
           perPage: 10,
           hasMore: false,
         }),
-      });
-    });
+      }),
+    );
+
+    // Wait for the actual request carrying category=web instead of
+    // racing a captured variable against toBeVisible() below - hydration
+    // timing differs enough across environments that the debounced fetch
+    // isn't guaranteed to have landed by the time results render.
+    const requestPromise = page.waitForRequest((req) =>
+      req.url().includes("category=web"),
+    );
 
     await page.goto("/search?q=web&category=web");
 
+    await requestPromise;
     await expect(page.getByText(GIN.name).first()).toBeVisible();
-    expect(lastUrl).toContain("category=web");
   });
 });

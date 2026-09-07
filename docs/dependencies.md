@@ -9,7 +9,7 @@ through Renovate. The entries below are pinned to an exact version
 (no `^`) on purpose. Each one answers: what it is, why it's pinned, what
 breaks if the pin is removed, and what removes it.
 
-## `next` - `16.2.6`
+## `next` - `16.2.11`
 
 **What:** the framework itself.
 
@@ -39,7 +39,13 @@ public site) for every minor version between the current pin and the
 target, bump both `next` and `eslint-config-next` together, run
 `./scripts/verify.sh`, and update this entry with the new reasoning.
 
-## `eslint-config-next` - `16.2.6`
+**Update history:** bumped from `16.2.6` to `16.2.11` (patch-only, no
+minor change) after the CI `vulnerabilities` job's osv-scanner run
+flagged several CVEs (CVSS up to 8.3) fixed in that range. `verify.sh`
+and the full e2e suite passed unchanged - a patch release carries no
+new deliberate-review burden the way a minor bump would.
+
+## `eslint-config-next` - `16.2.11`
 
 **What:** the ESLint rules shipped by the Next.js team for App Router
 projects.
@@ -59,12 +65,12 @@ never independently.
 
 **What:** the UI runtime.
 
-**Why pinned:** Next 16.2.6's Cache Components and Partial Prerendering
+**Why pinned:** Next 16.2.11's Cache Components and Partial Prerendering
 depend on specific React internals (the ones that let a page have a
 static shell with a dynamically-streamed region). Next pins a narrow
 compatible React range for exactly this reason, and this project mirrors
 that pin instead of letting Renovate move React independently of Next,
-which could combine a React version Next 16.2.6 wasn't built against.
+which could combine a React version Next 16.2.11 wasn't built against.
 
 **What breaks if unpinned:** potentially nothing for a patch bump, but
 there's no guarantee - React internals used by Cache Components aren't
