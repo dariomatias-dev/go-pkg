@@ -19,7 +19,7 @@
 <br>
 
 <p align="center">
-  <strong>Idioma:</strong> <a href="README.md">English</a> | <a href="README.pt-BR.md">Português (BR)</a> | Español
+<a href="README.md">English</a> · <strong>Español</strong> · <a href="README.pt-BR.md">Português (BR)</a>
 </p>
 
 <h1 align="center">GoPkg</h1>

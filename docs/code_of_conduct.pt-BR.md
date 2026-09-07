@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>Idioma:</strong> <a href="code_of_conduct.md">English</a> | Português (BR) | <a href="code_of_conduct.es.md">Español</a>
+<a href="code_of_conduct.md">English</a> · <a href="code_of_conduct.es.md">Español</a> · <strong>Português (BR)</strong>
 </p>
 
 # Código de Conduta do Contributor Covenant

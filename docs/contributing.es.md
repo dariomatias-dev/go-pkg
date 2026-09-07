@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>Idioma:</strong> <a href="contributing.md">English</a> | <a href="contributing.pt-BR.md">Português (BR)</a> | Español
+<a href="contributing.md">English</a> · <strong>Español</strong> · <a href="contributing.pt-BR.md">Português (BR)</a>
 </p>
 
 # Contribuir

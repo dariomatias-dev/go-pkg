@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>Idioma:</strong> <a href="security.md">English</a> | Português (BR) | <a href="security.es.md">Español</a>
+<a href="security.md">English</a> · <a href="security.es.md">Español</a> · <strong>Português (BR)</strong>
 </p>
 
 # Política de Segurança

@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>Idioma:</strong> <a href="dependencies.md">English</a> | <a href="dependencies.pt-BR.md">Português (BR)</a> | Español
+<a href="dependencies.md">English</a> · <strong>Español</strong> · <a href="dependencies.pt-BR.md">Português (BR)</a>
 </p>
 
 # Dependencias fijadas

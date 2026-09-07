@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>Language:</strong> English | <a href="dependencies.pt-BR.md">Português (BR)</a> | <a href="dependencies.es.md">Español</a>
+<strong>English</strong> · <a href="dependencies.es.md">Español</a> · <a href="dependencies.pt-BR.md">Português (BR)</a>
 </p>
 
 # Dependency pins

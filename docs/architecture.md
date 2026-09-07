@@ -1,5 +1,5 @@
 <p align="center">
-  <strong>Language:</strong> English | <a href="architecture.pt-BR.md">Português (BR)</a> | <a href="architecture.es.md">Español</a>
+<strong>English</strong> · <a href="architecture.es.md">Español</a> · <a href="architecture.pt-BR.md">Português (BR)</a>
 </p>
 
 # Architecture
