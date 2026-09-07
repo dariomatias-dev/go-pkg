@@ -79,6 +79,7 @@ export function HeroSection() {
 
           <button
             type="button"
+            data-testid="hero-search-button"
             onClick={() => submit(query)}
             className="flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#00ADD8] px-6 py-3 text-sm font-medium text-white shadow-md transition-all hover:bg-[#007D9C] active:scale-95 sm:text-base dark:bg-sky-600 dark:hover:bg-sky-700"
           >
