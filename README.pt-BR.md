@@ -7,6 +7,16 @@
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini">
 </div>
 <br>
+<div align="center">
+  <a href="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml">
+    <img src="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml/badge.svg" alt="CI: build passando">
+  </a>
+  <img src="https://img.shields.io/badge/cobertura-%E2%89%A560%25_obrigat%C3%B3ria-brightgreen" alt="Cobertura de testes: mínimo de 60% obrigatório no CI">
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue" alt="Licença: MIT">
+  </a>
+</div>
+<br>
 
 <p align="center">
   <strong>Idioma:</strong> <a href="README.md">English</a> | Português (BR) | <a href="README.es.md">Español</a>
@@ -32,6 +42,8 @@
 - [Capturas de Tela](#capturas-de-tela)
 - [Como Começar](#como-começar)
 - [Scripts](#scripts)
+- [Testes](#testes)
+- [Documentação](#documentação)
 - [Contribuindo](#contribuindo)
 - [Licença](#licença)
 - [Autor](#autor)
@@ -84,8 +96,8 @@ Siga os passos abaixo para executar o projeto localmente.
 
 ### Pré-requisitos
 
-- Node.js 20+
-- pnpm
+- Node.js 22+ (veja `.nvmrc`)
+- pnpm 10 (veja `packageManager` no `package.json`)
 
 ### Instalação
 
@@ -115,10 +127,11 @@ Copie o arquivo de exemplo e preencha os valores:
 cp .env.example .env
 ```
 
-| Variável         | Obrigatória | Descrição                                                                                                                                                                                                                                           |
-| ---------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GEMINI_API_KEY` | Sim         | Chave da API do Google Gemini para o Gopher AI e resumos de pacotes. Obtenha uma em [aistudio.google.com](https://aistudio.google.com).                                                                                                             |
-| `GITHUB_TOKEN`   | Não         | Token de acesso pessoal do GitHub. Eleva o limite de requisições da API de 60 para 5.000 por hora. Gere um em [github.com/settings/tokens](https://github.com/settings/tokens): nenhuma permissão especial é necessária para repositórios públicos. |
+| Variável               | Obrigatória | Descrição                                                                                                                                                                                                                                           |
+| ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GEMINI_API_KEY`       | Sim         | Chave da API do Google Gemini para o Gopher AI e resumos de pacotes. Obtenha uma em [aistudio.google.com](https://aistudio.google.com).                                                                                                             |
+| `GITHUB_TOKEN`         | Não         | Token de acesso pessoal do GitHub. Eleva o limite de requisições da API de 60 para 5.000 por hora. Gere um em [github.com/settings/tokens](https://github.com/settings/tokens): nenhuma permissão especial é necessária para repositórios públicos. |
+| `NEXT_PUBLIC_SITE_URL` | Não         | URL canônica de produção, usada em `metadataBase`, `sitemap.xml` e nas URLs de imagem Open Graph/Twitter. Usa `http://localhost:3000` como padrão em dev.                                                                                           |
 
 ### Executando o Projeto
 
@@ -132,19 +145,48 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador para visualizar
 
 ## Scripts
 
-| Script       | Comando           | Descrição                                                                                                                                                 |
-| ------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dev`        | `pnpm dev`        | Inicia o servidor de desenvolvimento com hot reload.                                                                                                      |
-| `build`      | `pnpm build`      | Cria uma build de produção otimizada.                                                                                                                     |
-| `start`      | `pnpm start`      | Executa a build de produção. Requer `pnpm build` antes.                                                                                                   |
-| `lint`       | `pnpm lint`       | Executa o ESLint em todo o projeto.                                                                                                                       |
-| `screenshot` | `pnpm screenshot` | Abre um navegador headless contra o servidor de desenvolvimento em execução e captura um print de cada página em `public/screenshots/`, usados no README. |
+| Script          | Comando              | Descrição                                                                                                                                                 |
+| --------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dev`           | `pnpm dev`           | Inicia o servidor de desenvolvimento com hot reload.                                                                                                      |
+| `build`         | `pnpm build`         | Cria uma build de produção otimizada.                                                                                                                     |
+| `start`         | `pnpm start`         | Executa a build de produção. Requer `pnpm build` antes.                                                                                                   |
+| `lint`          | `pnpm lint`          | Executa o ESLint em todo o projeto.                                                                                                                       |
+| `format`        | `pnpm format`        | Formata o código com o Prettier.                                                                                                                          |
+| `format:check`  | `pnpm format:check`  | Confere a formatação sem escrever alterações.                                                                                                             |
+| `typecheck`     | `pnpm typecheck`     | Roda `tsc --noEmit`.                                                                                                                                      |
+| `test`          | `pnpm test`          | Roda a suíte de testes unitários/componente (Vitest).                                                                                                     |
+| `test:coverage` | `pnpm test:coverage` | Roda a suíte com cobertura; falha abaixo do limite configurado.                                                                                           |
+| `e2e`           | `pnpm e2e`           | Roda a suíte de testes end-to-end (Playwright) contra uma build de produção.                                                                              |
+| `verify`        | `pnpm verify`        | O gate local que espelha o CI: format, lint, typecheck, test:coverage, build, nessa ordem. Veja [docs/contributing.pt-BR.md](docs/contributing.pt-BR.md). |
+| `analyze`       | `pnpm analyze`       | Builda com o bundle analyzer habilitado.                                                                                                                  |
+| `screenshot`    | `pnpm screenshot`    | Abre um navegador headless contra o servidor de desenvolvimento em execução e captura um print de cada página em `public/screenshots/`, usados no README. |
+
+## Testes
+
+```bash
+pnpm verify   # o mesmo gate que o CI roda: format, lint, typecheck, test:coverage, build
+pnpm e2e      # smoke flows do Playwright (precisa de uma build de produção)
+```
+
+Veja [docs/contributing.pt-BR.md](docs/contributing.pt-BR.md) pro que cada job do CI confere e se ele bloqueia merge.
+
+## Documentação
+
+Além deste README, o diretório [`docs/`](docs/) cobre:
+
+- [Arquitetura](docs/architecture.pt-BR.md) - árvore de diretórios, a regra de camadas, a fronteira Server/Client Component, estratégia de cache, e a limitação conhecida do rate limiter.
+- [Dependências](docs/dependencies.pt-BR.md) - por que `next`, `eslint-config-next`, `react` e `react-dom` estão fixados em versões exatas.
+- [Contribuindo](docs/contributing.pt-BR.md) - setup completo, o checklist pré-PR, o que o CI confere, e como reproduzi-lo localmente com `act`.
+- [Política de Segurança](docs/security.pt-BR.md) - versões suportadas, escopo, e como reportar uma vulnerabilidade de forma privada.
+- [Código de Conduta](docs/code_of_conduct.pt-BR.md) - Contributor Covenant 2.1.
+
+Cada um também está disponível em [English](docs/architecture.md) e [Español](docs/architecture.es.md).
 
 ## Contribuindo
 
 Contribuições tornam a comunidade de código aberto um lugar excelente para aprender e criar. Toda contribuição é bem-vinda.
 
-Antes de abrir um pull request, consulte o [CONTRIBUTING.md](CONTRIBUTING.md) para o setup local, a convenção de mensagens de commit (Conventional Commits) e as regras de branching deste projeto.
+Antes de abrir um pull request, consulte [docs/contributing.pt-BR.md](docs/contributing.pt-BR.md) para o setup local, o checklist pré-PR, a convenção de mensagens de commit (Conventional Commits) e as regras de branching deste projeto.
 
 ## Licença
 

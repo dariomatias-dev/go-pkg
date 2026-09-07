@@ -7,6 +7,16 @@
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini">
 </div>
 <br>
+<div align="center">
+  <a href="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml">
+    <img src="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml/badge.svg" alt="CI: build passing">
+  </a>
+  <img src="https://img.shields.io/badge/coverage-%E2%89%A560%25_enforced-brightgreen" alt="Test coverage: at least 60% enforced in CI">
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT">
+  </a>
+</div>
+<br>
 
 <p align="center">
   <strong>Language:</strong> English | <a href="README.pt-BR.md">Português (BR)</a> | <a href="README.es.md">Español</a>
@@ -32,6 +42,8 @@
 - [Screenshots](#screenshots)
 - [Getting Started](#getting-started)
 - [Scripts](#scripts)
+- [Tests](#tests)
+- [Documentation](#documentation)
 - [Contributing](#contributing)
 - [License](#license)
 - [Author](#author)
@@ -84,8 +96,8 @@ To get a local copy up and running, follow these steps.
 
 ### Prerequisites
 
-- Node.js 20+
-- pnpm
+- Node.js 22+ (see `.nvmrc`)
+- pnpm 10 (see `packageManager` in `package.json`)
 
 ### Installation
 
@@ -115,10 +127,11 @@ Copy the example file and fill in the values:
 cp .env.example .env
 ```
 
-| Variable         | Required | Description                                                                                                                                                                                                  |
-| ---------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `GEMINI_API_KEY` | Yes      | Google Gemini API key for Gopher AI and package summaries. Get one at [aistudio.google.com](https://aistudio.google.com).                                                                                    |
-| `GITHUB_TOKEN`   | No       | GitHub personal access token. Raises the API rate limit from 60 to 5,000 requests/hour. Generate one at [github.com/settings/tokens](https://github.com/settings/tokens): no scopes needed for public repos. |
+| Variable               | Required | Description                                                                                                                                                                                                  |
+| ---------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GEMINI_API_KEY`       | Yes      | Google Gemini API key for Gopher AI and package summaries. Get one at [aistudio.google.com](https://aistudio.google.com).                                                                                    |
+| `GITHUB_TOKEN`         | No       | GitHub personal access token. Raises the API rate limit from 60 to 5,000 requests/hour. Generate one at [github.com/settings/tokens](https://github.com/settings/tokens): no scopes needed for public repos. |
+| `NEXT_PUBLIC_SITE_URL` | No       | Canonical production URL, used for `metadataBase`, `sitemap.xml`, and Open Graph/Twitter image URLs. Falls back to `http://localhost:3000` in dev.                                                           |
 
 ### Running the Project
 
@@ -132,19 +145,48 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 
 ## Scripts
 
-| Script       | Command           | Description                                                                                                                                           |
-| ------------ | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dev`        | `pnpm dev`        | Starts the development server with hot reload.                                                                                                        |
-| `build`      | `pnpm build`      | Creates an optimized production build.                                                                                                                |
-| `start`      | `pnpm start`      | Runs the production build. Requires `pnpm build` first.                                                                                               |
-| `lint`       | `pnpm lint`       | Runs ESLint across the project.                                                                                                                       |
-| `screenshot` | `pnpm screenshot` | Launches a headless browser against a running dev server and captures a screenshot of every app page into `public/screenshots/`, used for the README. |
+| Script          | Command              | Description                                                                                                                                           |
+| --------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dev`           | `pnpm dev`           | Starts the development server with hot reload.                                                                                                        |
+| `build`         | `pnpm build`         | Creates an optimized production build.                                                                                                                |
+| `start`         | `pnpm start`         | Runs the production build. Requires `pnpm build` first.                                                                                               |
+| `lint`          | `pnpm lint`          | Runs ESLint across the project.                                                                                                                       |
+| `format`        | `pnpm format`        | Formats the codebase with Prettier.                                                                                                                   |
+| `format:check`  | `pnpm format:check`  | Checks formatting without writing changes.                                                                                                            |
+| `typecheck`     | `pnpm typecheck`     | Runs `tsc --noEmit`.                                                                                                                                  |
+| `test`          | `pnpm test`          | Runs the Vitest unit/component suite.                                                                                                                 |
+| `test:coverage` | `pnpm test:coverage` | Runs the test suite with coverage; fails below the configured threshold.                                                                              |
+| `e2e`           | `pnpm e2e`           | Runs the Playwright end-to-end smoke suite against a production build.                                                                                |
+| `verify`        | `pnpm verify`        | The local CI gate: format, lint, typecheck, test:coverage, build, in that order. See [docs/contributing.md](docs/contributing.md).                    |
+| `analyze`       | `pnpm analyze`       | Builds with the bundle analyzer enabled.                                                                                                              |
+| `screenshot`    | `pnpm screenshot`    | Launches a headless browser against a running dev server and captures a screenshot of every app page into `public/screenshots/`, used for the README. |
+
+## Tests
+
+```bash
+pnpm verify   # the same gate CI runs: format, lint, typecheck, test:coverage, build
+pnpm e2e      # Playwright smoke flows (needs a production build)
+```
+
+See [docs/contributing.md](docs/contributing.md) for what each CI job checks and whether it blocks a merge.
+
+## Documentation
+
+Beyond this README, the [`docs/`](docs/) directory covers:
+
+- [Architecture](docs/architecture.md) - directory layout, the layering rule, the Server/Client Component boundary, caching strategy, and the rate limiter's known limitation.
+- [Dependencies](docs/dependencies.md) - why `next`, `eslint-config-next`, `react`, and `react-dom` are pinned to exact versions.
+- [Contributing](docs/contributing.md) - full setup, the pre-PR checklist, what CI checks, and how to reproduce it locally with `act`.
+- [Security Policy](docs/security.md) - supported versions, scope, and how to report a vulnerability privately.
+- [Code of Conduct](docs/code_of_conduct.md) - Contributor Covenant 2.1.
+
+Each is also available in [Português (BR)](docs/architecture.pt-BR.md) and [Español](docs/architecture.es.md).
 
 ## Contributing
 
 Contributions make the open-source community an amazing place to learn and create. Any contributions you make are greatly appreciated.
 
-Before opening a pull request, see [CONTRIBUTING.md](CONTRIBUTING.md) for the local setup, commit message convention (Conventional Commits), and branching rules this project follows.
+Before opening a pull request, see [docs/contributing.md](docs/contributing.md) for the local setup, the pre-PR checklist, commit message convention (Conventional Commits), and branching rules this project follows.
 
 ## License
 

@@ -23,6 +23,9 @@
     "screenshot": "node scripts/screenshot-pages.mjs"
   },
   "dependencies": {
+    "//next": "pinned exact - see docs/dependencies.md",
+    "//react": "pinned exact together with next - see docs/dependencies.md",
+    "//react-dom": "pinned exact together with next - see docs/dependencies.md",
     "@google/genai": "^2.6.0",
     "@types/react-syntax-highlighter": "^15.5.13",
     "class-variance-authority": "^0.7.1",
@@ -47,6 +50,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "//eslint-config-next": "pinned exact together with next - see docs/dependencies.md",
     "@axe-core/playwright": "^4.13.0",
     "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^16.3.4",

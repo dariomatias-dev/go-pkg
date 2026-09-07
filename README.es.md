@@ -7,6 +7,16 @@
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini">
 </div>
 <br>
+<div align="center">
+  <a href="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml">
+    <img src="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml/badge.svg" alt="CI: build superado">
+  </a>
+  <img src="https://img.shields.io/badge/cobertura-%E2%89%A560%25_obligatoria-brightgreen" alt="Cobertura de pruebas: mínimo 60% obligatorio en CI">
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/licencia-MIT-blue" alt="Licencia: MIT">
+  </a>
+</div>
+<br>
 
 <p align="center">
   <strong>Idioma:</strong> <a href="README.md">English</a> | <a href="README.pt-BR.md">Português (BR)</a> | Español
@@ -32,6 +42,8 @@
 - [Capturas de Pantalla](#capturas-de-pantalla)
 - [Cómo Empezar](#c%C3%B3mo-empezar)
 - [Scripts](#scripts)
+- [Pruebas](#pruebas)
+- [Documentación](#documentación)
 - [Contribuir](#contribuir)
 - [Licencia](#licencia)
 - [Autor](#autor)
@@ -84,8 +96,8 @@ Sigue estos pasos para ejecutar el proyecto localmente.
 
 ### Requisitos Previos
 
-- Node.js 20+
-- pnpm
+- Node.js 22+ (ver `.nvmrc`)
+- pnpm 10 (ver `packageManager` en `package.json`)
 
 ### Instalación
 
@@ -115,10 +127,11 @@ Copia el archivo de ejemplo y completa los valores:
 cp .env.example .env
 ```
 
-| Variable         | Requerida | Descripción                                                                                                                                                                                                                                         |
-| ---------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GEMINI_API_KEY` | Sí        | Clave de la API de Google Gemini para Gopher AI y los resúmenes de paquetes. Obtén una en [aistudio.google.com](https://aistudio.google.com).                                                                                                       |
-| `GITHUB_TOKEN`   | No        | Token de acceso personal de GitHub. Eleva el límite de peticiones de la API de 60 a 5,000 por hora. Genera uno en [github.com/settings/tokens](https://github.com/settings/tokens): no se necesitan permisos especiales para repositorios públicos. |
+| Variable               | Requerida | Descripción                                                                                                                                                                                                                                         |
+| ---------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GEMINI_API_KEY`       | Sí        | Clave de la API de Google Gemini para Gopher AI y los resúmenes de paquetes. Obtén una en [aistudio.google.com](https://aistudio.google.com).                                                                                                       |
+| `GITHUB_TOKEN`         | No        | Token de acceso personal de GitHub. Eleva el límite de peticiones de la API de 60 a 5,000 por hora. Genera uno en [github.com/settings/tokens](https://github.com/settings/tokens): no se necesitan permisos especiales para repositorios públicos. |
+| `NEXT_PUBLIC_SITE_URL` | No        | URL canónica de producción, usada en `metadataBase`, `sitemap.xml` y en las URLs de imagen Open Graph/Twitter. Usa `http://localhost:3000` por defecto en dev.                                                                                      |
 
 ### Ejecutando el Proyecto
 
@@ -132,19 +145,48 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
 
 ## Scripts
 
-| Script       | Comando           | Descripción                                                                                                                                                  |
-| ------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `dev`        | `pnpm dev`        | Inicia el servidor de desarrollo con hot reload.                                                                                                             |
-| `build`      | `pnpm build`      | Crea una build de producción optimizada.                                                                                                                     |
-| `start`      | `pnpm start`      | Ejecuta la build de producción. Requiere `pnpm build` antes.                                                                                                 |
-| `lint`       | `pnpm lint`       | Ejecuta ESLint en todo el proyecto.                                                                                                                          |
-| `screenshot` | `pnpm screenshot` | Abre un navegador headless contra el servidor de desarrollo en ejecución y captura una captura de cada página en `public/screenshots/`, usadas en el README. |
+| Script          | Comando              | Descripción                                                                                                                                                  |
+| --------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `dev`           | `pnpm dev`           | Inicia el servidor de desarrollo con hot reload.                                                                                                             |
+| `build`         | `pnpm build`         | Crea una build de producción optimizada.                                                                                                                     |
+| `start`         | `pnpm start`         | Ejecuta la build de producción. Requiere `pnpm build` antes.                                                                                                 |
+| `lint`          | `pnpm lint`          | Ejecuta ESLint en todo el proyecto.                                                                                                                          |
+| `format`        | `pnpm format`        | Formatea el código con Prettier.                                                                                                                             |
+| `format:check`  | `pnpm format:check`  | Verifica el formato sin escribir cambios.                                                                                                                    |
+| `typecheck`     | `pnpm typecheck`     | Corre `tsc --noEmit`.                                                                                                                                        |
+| `test`          | `pnpm test`          | Corre la suite de pruebas unitarias/de componentes (Vitest).                                                                                                 |
+| `test:coverage` | `pnpm test:coverage` | Corre la suite con cobertura; falla por debajo del umbral configurado.                                                                                       |
+| `e2e`           | `pnpm e2e`           | Corre la suite de pruebas end-to-end (Playwright) contra una build de producción.                                                                            |
+| `verify`        | `pnpm verify`        | El gate local que refleja el CI: format, lint, typecheck, test:coverage, build, en ese orden. Ver [docs/contributing.es.md](docs/contributing.es.md).        |
+| `analyze`       | `pnpm analyze`       | Compila con el bundle analyzer habilitado.                                                                                                                   |
+| `screenshot`    | `pnpm screenshot`    | Abre un navegador headless contra el servidor de desarrollo en ejecución y captura una captura de cada página en `public/screenshots/`, usadas en el README. |
+
+## Pruebas
+
+```bash
+pnpm verify   # el mismo gate que corre el CI: format, lint, typecheck, test:coverage, build
+pnpm e2e      # smoke flows de Playwright (necesita una build de producción)
+```
+
+Ver [docs/contributing.es.md](docs/contributing.es.md) para lo que revisa cada job del CI y si bloquea el merge.
+
+## Documentación
+
+Además de este README, el directorio [`docs/`](docs/) cubre:
+
+- [Arquitectura](docs/architecture.es.md) - árbol de directorios, la regla de capas, la frontera Server/Client Component, la estrategia de caché, y la limitación conocida del rate limiter.
+- [Dependencias](docs/dependencies.es.md) - por qué `next`, `eslint-config-next`, `react` y `react-dom` están fijados a versiones exactas.
+- [Contribuir](docs/contributing.es.md) - configuración completa, el checklist previo al PR, qué revisa el CI, y cómo reproducirlo localmente con `act`.
+- [Política de Seguridad](docs/security.es.md) - versiones soportadas, alcance, y cómo reportar una vulnerabilidad de forma privada.
+- [Código de Conducta](docs/code_of_conduct.es.md) - Contributor Covenant 2.1.
+
+Cada uno también está disponible en [English](docs/architecture.md) y [Português (BR)](docs/architecture.pt-BR.md).
 
 ## Contribuir
 
 Las contribuciones hacen que la comunidad de código abierto sea un lugar excelente para aprender y crear. Toda contribución es bienvenida.
 
-Antes de abrir un pull request, consulte [CONTRIBUTING.md](CONTRIBUTING.md) para la configuración local, la convención de mensajes de commit (Conventional Commits) y las reglas de branching de este proyecto.
+Antes de abrir un pull request, consulta [docs/contributing.es.md](docs/contributing.es.md) para la configuración local, el checklist previo al PR, la convención de mensajes de commit (Conventional Commits) y las reglas de branching de este proyecto.
 
 ## Licencia
 
