@@ -171,6 +171,90 @@ describe("VersionsReleasesTab", () => {
     );
   });
 
+  it("shows an error state when the releases fetch fails", async () => {
+    vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+
+      if (url.includes("package-releases"))
+        return Promise.reject(new Error("boom"));
+
+      return Promise.resolve(versionsResponse());
+    });
+
+    render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    expect(
+      await screen.findByText(/failed to load releases/i),
+    ).toBeInTheDocument();
+  });
+
+  it("fetches the next page of versions when paginating", async () => {
+    mockFetch(versionsResponse({ totalPages: 2 }));
+
+    const user = userEvent.setup();
+
+    render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    await screen.findByText("v1.0.0");
+    vi.mocked(fetch).mockClear();
+
+    mockFetch(
+      versionsResponse({ versions: ["v0.9.0"], page: 2, totalPages: 2 }),
+    );
+
+    const nextButton = document.querySelector(
+      "button:has(svg.lucide-chevron-right)",
+    ) as HTMLElement;
+
+    await user.click(nextButton);
+
+    expect(await screen.findByText("v0.9.0")).toBeInTheDocument();
+
+    const [url] = vi.mocked(fetch).mock.calls[0];
+
+    expect(String(url)).toContain("page=2");
+  });
+
+  it("does not update the URL when selecting a version before releases finish loading", async () => {
+    let resolveReleases!: (r: Response) => void;
+
+    vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+
+      if (url.includes("package-versions"))
+        return Promise.resolve(versionsResponse());
+
+      return new Promise((resolve) => {
+        resolveReleases = resolve;
+      });
+    });
+
+    const user = userEvent.setup();
+
+    render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    await user.click(await screen.findByRole("button", { name: /v1\.0\.0/ }));
+
+    expect(replace).not.toHaveBeenCalled();
+
+    resolveReleases(releasesResponse());
+  });
+
   it("shows an error state when the versions fetch fails", async () => {
     vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) => {
       const url = String(input);

@@ -45,6 +45,32 @@ describe("ReadmeTab", () => {
     expect(screen.getByText(/watch on youtube/i)).toBeInTheDocument();
   });
 
+  it("keeps a root-relative image path as-is when there is no GitHub repo", () => {
+    render(<ReadmeTab readme="![logo](/assets/logo.png)" />);
+
+    expect(screen.getByAltText("logo")).toHaveAttribute(
+      "src",
+      expect.stringContaining("assets%2Flogo.png"),
+    );
+  });
+
+  it("renders nothing for an image with no src", () => {
+    const { container } = render(<ReadmeTab readme="![broken]()" />);
+
+    expect(container.querySelector("img")).toBeNull();
+  });
+
+  it("renders a shields.io badge at a smaller, inline size", () => {
+    render(
+      <ReadmeTab readme="![build](https://img.shields.io/badge/build-passing-green)" />,
+    );
+
+    const img = screen.getByAltText("build");
+
+    expect(img).toHaveAttribute("width", "120");
+    expect(img).toHaveAttribute("height", "20");
+  });
+
   it("resolves relative image paths against the GitHub repo", () => {
     render(
       <ReadmeTab

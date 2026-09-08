@@ -76,4 +76,14 @@ describe("GET /api/package-report", () => {
     expect(res.status).toBe(500);
     expect(body.error.code).toBe("internal_error");
   });
+
+  it("returns 500 when a non-Error value is thrown", async () => {
+    vi.mocked(fetch).mockRejectedValue("boom");
+
+    const res = await GET(req("importPath=github.com/gin-gonic/gin"));
+    const body = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
+  });
 });

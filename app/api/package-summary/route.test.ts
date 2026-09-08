@@ -66,6 +66,26 @@ describe("GET /api/package-summary", () => {
     expect(body.error.code).toBe("rate_limited");
   });
 
+  it("maps a 503/UNAVAILABLE error to service_unavailable", async () => {
+    generateContent.mockRejectedValueOnce(new Error("503 UNAVAILABLE"));
+
+    const res = await GET(req("importPath=github.com/gin-gonic/gin"));
+    const body = await res.json();
+
+    expect(res.status).toBe(503);
+    expect(body.error.code).toBe("service_unavailable");
+  });
+
+  it("maps an unknown error to internal_error", async () => {
+    generateContent.mockRejectedValueOnce("boom");
+
+    const res = await GET(req("importPath=github.com/gin-gonic/gin"));
+    const body = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
+  });
+
   it("rate limits after 10 requests from the same IP", async () => {
     generateContent.mockResolvedValue({ text: "ok" });
 

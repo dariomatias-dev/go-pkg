@@ -88,4 +88,14 @@ describe("GET /api/package-releases", () => {
     if (originalToken === undefined) delete process.env.GITHUB_TOKEN;
     else process.env.GITHUB_TOKEN = originalToken;
   });
+
+  it("returns 500 when a non-Error value is thrown", async () => {
+    vi.mocked(fetch).mockRejectedValue("boom");
+
+    const res = await GET(req("importPath=github.com/gin-gonic/gin"));
+    const body = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
+  });
 });

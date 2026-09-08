@@ -34,6 +34,18 @@ describe("POST /api/package-assistant", () => {
     else process.env.GEMINI_API_KEY = originalKey;
   });
 
+  it("400s when the body is not valid JSON", async () => {
+    const res = await POST(
+      new Request("http://localhost/api/package-assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "not json",
+      }),
+    );
+
+    expect(res.status).toBe(400);
+  });
+
   it("400s when message is missing", async () => {
     const res = await POST(req({}));
     const body = await res.json();
@@ -98,6 +110,39 @@ describe("POST /api/package-assistant", () => {
     expect(call.config.systemInstruction).toContain("&lt;b&gt;Gin&lt;/b&gt;");
   });
 
+  it("falls back to a generic description when none is given for a package", async () => {
+    generateContent.mockResolvedValueOnce({ text: "ok" });
+
+    await POST(
+      req({
+        message: "what is this?",
+        importPath: "github.com/gin-gonic/gin",
+      }),
+    );
+
+    const [[call]] = generateContent.mock.calls;
+
+    expect(call.config.systemInstruction).toContain("A Go ecosystem package.");
+  });
+
+  it("forwards the conversation history to the model", async () => {
+    generateContent.mockResolvedValueOnce({ text: "ok" });
+
+    await POST(
+      req({
+        message: "and then?",
+        history: [{ role: "user", text: "hi" }],
+      }),
+    );
+
+    const [[call]] = generateContent.mock.calls;
+
+    expect(call.contents[0]).toEqual({
+      role: "user",
+      parts: [{ text: "hi" }],
+    });
+  });
+
   it("falls back to a generic message when the model returns no text", async () => {
     generateContent.mockResolvedValueOnce({ text: "" });
 
@@ -127,8 +172,18 @@ describe("POST /api/package-assistant", () => {
     expect(body.error.code).toBe("service_unavailable");
   });
 
-  it("maps an unknown error to internal_error", async () => {
+  it("maps an unknown Error to internal_error", async () => {
     generateContent.mockRejectedValueOnce(new Error("boom"));
+
+    const res = await POST(req({ message: "hi" }));
+    const body = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
+  });
+
+  it("maps a non-Error throw to internal_error", async () => {
+    generateContent.mockRejectedValueOnce("boom");
 
     const res = await POST(req({ message: "hi" }));
     const body = await res.json();

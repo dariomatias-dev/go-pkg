@@ -62,6 +62,23 @@ describe("GoReportCard", () => {
     );
   });
 
+  it("falls back to the F style and a generic tooltip for an unrecognized grade", async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          grade: "X",
+          reportUrl: "https://goreportcard.com/report/github.com/gin-gonic/gin",
+        }),
+      ),
+    );
+
+    renderCard("github.com/gin-gonic/gin");
+
+    const grade = await screen.findByText("X");
+
+    expect(grade.className).toContain("text-rose-600");
+  });
+
   it("renders nothing when the fetch itself fails", async () => {
     vi.mocked(fetch).mockRejectedValue(new Error("network error"));
 

@@ -63,6 +63,24 @@ describe("GET /api/health", () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
+  it("reports a dependency down with an 'unknown error' detail for a non-Error throw", async () => {
+    process.env.GEMINI_API_KEY = "test-key";
+    vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) =>
+      String(input).includes("api.github.com")
+        ? Promise.reject("boom")
+        : Promise.resolve(new Response("ok")),
+    );
+
+    const res = await GET();
+    const body = await res.json();
+
+    expect(res.status).toBe(503);
+    expect(body.checks.github).toMatchObject({
+      status: "down",
+      detail: "unknown error",
+    });
+  });
+
   it("never caches the response", async () => {
     process.env.GEMINI_API_KEY = "test-key";
     vi.mocked(fetch).mockResolvedValue(new Response("ok"));

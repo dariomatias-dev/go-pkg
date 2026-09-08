@@ -48,10 +48,43 @@ describe("GET /api/package-versions", () => {
     expect(body.totalPages).toBe(2);
   });
 
+  it("returns an empty list when the Go proxy has no versions (404)", async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response(null, { status: 404 }));
+
+    const res = await GET(req("importPath=github.com/gin-gonic/gin"));
+    const body = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(body).toMatchObject({ versions: [], total: 0, totalPages: 1 });
+  });
+
+  it("clamps the requested page down to the last available page", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(new Response("v1.0.0\nv1.1.0\n"));
+
+    const res = await GET(
+      req("importPath=github.com/gin-gonic/gin&page=99&perPage=1"),
+    );
+    const body = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(body.page).toBe(2);
+    expect(body.totalPages).toBe(2);
+  });
+
   it("returns 500 when the upstream fetch keeps failing", async () => {
     // resilientFetch retries network errors, so every attempt needs to
     // reject or the mock underflows.
     vi.mocked(fetch).mockRejectedValue(new Error("network error"));
+
+    const res = await GET(req("importPath=github.com/gin-gonic/gin"));
+    const body = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
+  });
+
+  it("returns 500 when a non-Error value is thrown", async () => {
+    vi.mocked(fetch).mockRejectedValue("boom");
 
     const res = await GET(req("importPath=github.com/gin-gonic/gin"));
     const body = await res.json();

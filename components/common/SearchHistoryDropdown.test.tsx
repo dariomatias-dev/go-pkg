@@ -58,6 +58,27 @@ describe("SearchHistoryDropdown", () => {
     expect(screen.getByText("echo")).toBeInTheDocument();
   });
 
+  it("renders the lg size variant with its own styling", () => {
+    localStorage.setItem("gopkg_search_history", JSON.stringify(["gin"]));
+
+    render(<SearchHistoryDropdown onSelect={vi.fn()} size="lg" />);
+
+    expect(screen.getByText("gin")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /clear all/i })).toHaveClass(
+      "hover:underline",
+    );
+  });
+
+  it("applies a custom className to the container", () => {
+    localStorage.setItem("gopkg_search_history", JSON.stringify(["gin"]));
+
+    const { container } = render(
+      <SearchHistoryDropdown onSelect={vi.fn()} className="my-custom-class" />,
+    );
+
+    expect(container.firstElementChild).toHaveClass("my-custom-class");
+  });
+
   it("clears all history", async () => {
     localStorage.setItem(
       "gopkg_search_history",

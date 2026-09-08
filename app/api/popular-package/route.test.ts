@@ -89,6 +89,16 @@ describe("GET /api/popular-package", () => {
     expect(body.error.code).toBe("internal_error");
   });
 
+  it("returns 500 when a non-Error value is thrown", async () => {
+    vi.mocked(fetch).mockRejectedValue("boom");
+
+    const res = await GET(req("page=1&perPage=10"));
+    const body = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
+  });
+
   it("rate limits after too many requests from the same IP", async () => {
     vi.mocked(fetch).mockResolvedValue(searchResponse());
 

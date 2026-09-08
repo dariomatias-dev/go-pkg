@@ -77,6 +77,16 @@ describe("GET /api/search", () => {
     else process.env.GITHUB_TOKEN = originalToken;
   });
 
+  it("returns 500 when a non-Error value is thrown", async () => {
+    vi.mocked(fetch).mockRejectedValue("boom");
+
+    const res = await GET(req("q=gin"));
+    const body = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(body.error.code).toBe("internal_error");
+  });
+
   it("falls back to the default sort/order instead of forwarding an invalid value", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(searchResponse());
 
