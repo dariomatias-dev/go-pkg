@@ -21,8 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # The PR title is what lands on main under squash merge, so it - not
-      # the individual commits - is what release-please reads. The regex
+      # The repository is squash-only with squash_merge_commit_title set to
+      # PR_TITLE, so the PR title is the only subject that reaches main -
+      # it, not the branch commits, is what release-please reads. The regex
       # lives in .githooks/lib/conventional-pattern.sh so this job and the
       # local commit-msg hook can never drift apart.
       - name: Validate PR title

@@ -48,6 +48,12 @@ Checklist:
 
 ## Convenção de commit
 
+PRs são mesclados por squash, e o commit de squash usa o título do PR
+literalmente - então é o título do PR, não o histórico do branch, que o
+release-please lê pra decidir o bump de versão e escrever o CHANGELOG. Os
+commits do branch continuam seguindo a convenção (o hook `commit-msg` os
+confere), mas o título do PR é o que o CI bloqueia.
+
 Este projeto segue [Conventional Commits](https://www.conventionalcommits.org):
 
 ```

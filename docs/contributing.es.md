@@ -48,6 +48,12 @@ Checklist:
 
 ## Convención de commits
 
+Los PRs se mergean por squash, y el commit de squash toma el título del PR
+tal cual - así que es el título del PR, no el historial de la rama, lo que
+release-please lee para elegir el bump de versión y escribir el CHANGELOG.
+Los commits de la rama siguen la convención igual (el hook `commit-msg` los
+revisa), pero el título del PR es lo que CI bloquea.
+
 Este proyecto sigue [Conventional Commits](https://www.conventionalcommits.org):
 
 ```

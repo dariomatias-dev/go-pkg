@@ -46,6 +46,12 @@ Checklist:
 
 ## Commit convention
 
+PRs are merged by squash, and the squash commit takes the PR title
+verbatim - so the PR title, not the branch history, is what release-please
+reads to pick the version bump and write the CHANGELOG. Individual commits
+on a branch still follow the convention (the `commit-msg` hook checks
+them), but the PR title is the one CI blocks on.
+
 This project follows [Conventional Commits](https://www.conventionalcommits.org):
 
 ```
