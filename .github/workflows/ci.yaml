@@ -31,7 +31,7 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           source .githooks/lib/conventional-pattern.sh
-          conventional_check_subject "$PR_TITLE" "PR title"
+          conventional_check_subject "$PR_TITLE" "PR title" revert
 
   verify:
     runs-on: ubuntu-latest
