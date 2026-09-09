@@ -14,6 +14,24 @@ permissions:
   contents: read
 
 jobs:
+  commit-lint:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      # The PR title is what lands on main under squash merge, so it - not
+      # the individual commits - is what release-please reads. The regex
+      # lives in .githooks/lib/conventional-pattern.sh so this job and the
+      # local commit-msg hook can never drift apart.
+      - name: Validate PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          source .githooks/lib/conventional-pattern.sh
+          conventional_check_subject "$PR_TITLE" "PR title"
+
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 15
