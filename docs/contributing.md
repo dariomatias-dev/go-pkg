@@ -11,12 +11,13 @@ git clone https://github.com/dariomatias-dev/go-pkg.git
 cd go-pkg
 pnpm install
 cp .env.example .env   # fill in GEMINI_API_KEY at minimum
-git config core.hooksPath .githooks
 ```
 
-The `core.hooksPath` line activates a `commit-msg` hook that rejects
-commits not following the [commit convention](#commit-convention) below.
-Node and pnpm versions are pinned via `.nvmrc`, `engines`, and
+`pnpm install` runs a `prepare` script that points `core.hooksPath` at
+`.githooks`, activating a `commit-msg` hook that rejects commits not
+following the [commit convention](#commit-convention) below. That hook is
+a local convenience; the `commit-lint` job in CI is what actually gates
+the convention. Node and pnpm versions are pinned via `.nvmrc`, `engines`, and
 `packageManager` in `package.json` - use them (`nvm use`) rather than
 whatever happens to be on `PATH`.
 
@@ -39,9 +40,9 @@ Checklist:
       `app/api/**/*.test.ts`.
 - [ ] A UI change that affects a user-facing flow has an E2E smoke test
       (`pnpm e2e`) or an update to an existing one.
-- [ ] Commit subject follows the [convention](#commit-convention) below
-  - the `commit-msg` hook enforces this locally, but check before
-    pushing if hooks aren't set up.
+- [ ] Commit subject and PR title follow the
+      [convention](#commit-convention) below - the `commit-msg` hook
+      checks commits locally, and CI checks the PR title.
 
 ## Commit convention
 

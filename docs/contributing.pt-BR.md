@@ -11,11 +11,13 @@ git clone https://github.com/dariomatias-dev/go-pkg.git
 cd go-pkg
 pnpm install
 cp .env.example .env   # preencha ao menos GEMINI_API_KEY
-git config core.hooksPath .githooks
 ```
 
-A linha `core.hooksPath` ativa um hook `commit-msg` que rejeita commits
-fora da [convenção de commit](#convenção-de-commit) abaixo. As versões
+O `pnpm install` roda um script `prepare` que aponta o `core.hooksPath`
+para `.githooks`, ativando um hook `commit-msg` que rejeita commits fora
+da [convenção de commit](#convenção-de-commit) abaixo. Esse hook é uma
+conveniência local; quem de fato garante a convenção é o job
+`commit-lint` no CI. As versões
 de Node e pnpm estão fixadas via `.nvmrc`, `engines` e `packageManager`
 no `package.json` - use elas (`nvm use`) em vez do que estiver no
 `PATH` por acaso.
@@ -40,9 +42,9 @@ Checklist:
       novo em `app/api/**/*.test.ts`.
 - [ ] Mudança de UI que afeta um fluxo visível ao usuário tem um smoke
       test E2E (`pnpm e2e`) ou atualização de um existente.
-- [ ] O assunto do commit segue a [convenção](#convenção-de-commit)
-      abaixo - o hook `commit-msg` garante isso localmente, mas confira
-      antes de dar push se os hooks não estiverem configurados.
+- [ ] O assunto do commit e o título do PR seguem a
+      [convenção](#convenção-de-commit) abaixo - o hook `commit-msg`
+      confere os commits localmente, e o CI confere o título do PR.
 
 ## Convenção de commit
 
