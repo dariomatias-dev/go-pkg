@@ -14,17 +14,25 @@ cp .env.example .env   # completa al menos GEMINI_API_KEY
 ```
 
 `pnpm install` ejecuta un script `prepare` que apunta `core.hooksPath` a
-`.githooks`, activando un hook `commit-msg` que rechaza commits que no
-siguen la [convención de commits](#convención-de-commits) de abajo. Ese
-hook es una comodidad local; el que realmente exige la convención es el
-job `commit-lint` en CI. Las versiones de Node y pnpm están fijadas vía `.nvmrc`,
+`.githooks`, lo que activa dos hooks:
+
+- `commit-msg` rechaza commits que no siguen la
+  [convención de commits](#convención-de-commits) de abajo.
+- `pre-push` corre el gate local (sin el build) antes de un push que
+  actualice `main`, ya que CI solo reporta ese push después del hecho.
+
+Ambos son comodidades locales y ambos aceptan `git push --no-verify` /
+`git commit --no-verify` como escape; los que realmente protegen la rama
+son los jobs `commit-lint` y `verify` en CI. Las versiones de Node y pnpm están fijadas vía `.nvmrc`,
 `engines` y `packageManager` en `package.json` - úsalas (`nvm use`) en
 vez de lo que sea que esté en el `PATH` por casualidad.
 
 ## Antes de abrir un PR
 
 Corre el gate local - refleja el CI paso a paso, así que una corrida
-verde aquí significa que el CI no tiene un motivo nuevo para fallar:
+verde aquí significa que el CI no tiene un motivo nuevo para fallar. El
+hook `pre-push` lo corre por ti en un push a `main`, pero en una rama la
+responsabilidad es tuya:
 
 ```bash
 ./scripts/verify.sh              # format, lint, typecheck, test:coverage, build

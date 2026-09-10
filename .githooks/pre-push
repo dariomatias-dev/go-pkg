@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Runs the local gate before a push that updates main.
+#
+# main is where release-please reads commits from, and CI only reports on a
+# push after the fact - by then a broken commit is already there. This hook
+# closes that window. Pushes to any other ref are left alone, so a work in
+# progress branch stays cheap to push.
+#
+# Bypass with `git push --no-verify` when pushing deliberately unfinished
+# work. The build step is skipped here because CI covers it and it is the
+# most expensive step for what it catches.
+
+set -euo pipefail
+
+hook_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# git feeds one line per ref being pushed:
+#   <local ref> <local sha> <remote ref> <remote sha>
+while read -r _local_ref local_sha remote_ref _remote_sha; do
+  # An all-zero local sha means the ref is being deleted - nothing to verify.
+  if [[ "$local_sha" =~ ^0+$ ]]; then
+    continue
+  fi
+
+  if [[ "$remote_ref" == "refs/heads/main" ]]; then
+    echo "pre-push: verifying before updating main (skip with --no-verify)"
+    exec "$hook_dir/../scripts/verify.sh" --skip-build
+  fi
+done
+
+exit 0
