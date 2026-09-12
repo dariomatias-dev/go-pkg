@@ -13,15 +13,17 @@ pnpm install
 cp .env.example .env   # completa al menos GEMINI_API_KEY
 ```
 
-`pnpm install` ejecuta un script `prepare` que apunta `core.hooksPath` a
-`.githooks`, lo que activa dos hooks:
+`pnpm install` ejecuta el script `prepare` de Husky, que activa tres
+hooks en `.husky/`:
 
-- `commit-msg` rechaza commits que no siguen la
+- `pre-commit` corre `lint-staged` (`.lintstagedrc.json`), corrigiendo y
+  formateando solo los archivos que hiciste stage.
+- `commit-msg` corre `commitlint` contra la
   [convención de commits](#convención-de-commits) de abajo.
 - `pre-push` corre el gate local (sin el build) antes de un push que
   actualice `main`, ya que CI solo reporta ese push después del hecho.
 
-Ambos son comodidades locales y ambos aceptan `git push --no-verify` /
+Los tres son comodidades locales y todos aceptan `git push --no-verify` /
 `git commit --no-verify` como escape; los que realmente protegen la rama
 son los jobs `commit-lint` y `verify` en CI. Las versiones de Node y pnpm están fijadas vía `.nvmrc`,
 `engines` y `packageManager` en `package.json` - úsalas (`nvm use`) en
@@ -35,8 +37,8 @@ hook `pre-push` lo corre por ti en un push a `main`, pero en una rama la
 responsabilidad es tuya:
 
 ```bash
-./scripts/verify.sh              # format, lint, typecheck, test:coverage, build
-./scripts/verify.sh --skip-build # bucle más rápido mientras iteras
+./scripts/verify.sh        # format, lint, typecheck, test:coverage, build
+./scripts/verify.sh --fast # bucle más rápido mientras iteras (sin build)
 ```
 
 Checklist:

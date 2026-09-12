@@ -13,15 +13,17 @@ pnpm install
 cp .env.example .env   # fill in GEMINI_API_KEY at minimum
 ```
 
-`pnpm install` runs a `prepare` script that points `core.hooksPath` at
-`.githooks`, which activates two hooks:
+`pnpm install` runs Husky's `prepare` script, which activates three hooks
+under `.husky/`:
 
-- `commit-msg` rejects commits not following the
-  [commit convention](#commit-convention) below.
+- `pre-commit` runs `lint-staged` (`.lintstagedrc.json`), fixing and
+  formatting only the files you staged.
+- `commit-msg` runs `commitlint` against the [commit
+  convention](#commit-convention) below.
 - `pre-push` runs the local gate (minus the build) before a push that
   updates `main`, since CI only reports on that push after the fact.
 
-Both are local conveniences and both take `git push --no-verify` /
+All three are local conveniences and all take `git push --no-verify` /
 `git commit --no-verify` as a bypass; the `commit-lint` and `verify` jobs
 in CI are what actually gate the branch. Node and pnpm versions are pinned via `.nvmrc`, `engines`, and
 `packageManager` in `package.json` - use them (`nvm use`) rather than
@@ -34,8 +36,8 @@ means CI has no new reason to fail. The `pre-push` hook runs it for you
 on a push to `main`, but on a branch it is on you:
 
 ```bash
-./scripts/verify.sh              # format, lint, typecheck, test:coverage, build
-./scripts/verify.sh --skip-build # faster loop while iterating
+./scripts/verify.sh        # format, lint, typecheck, test:coverage, build
+./scripts/verify.sh --fast # faster loop while iterating (skips build)
 ```
 
 Checklist:
