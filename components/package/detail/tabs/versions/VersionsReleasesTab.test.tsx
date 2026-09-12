@@ -255,6 +255,215 @@ describe("VersionsReleasesTab", () => {
     resolveReleases(releasesResponse());
   });
 
+  it("selects nothing when there is no version param and no latest version", async () => {
+    mockFetch();
+
+    render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion={undefined}
+      />,
+    );
+
+    await screen.findByText("v1.0.0");
+
+    expect(screen.getByText(/select a version/i)).toBeInTheDocument();
+  });
+
+  it("re-selects the version when the URL's search params change identity", async () => {
+    mockFetch();
+
+    const { rerender } = render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    await screen.findByText("Release notes");
+
+    searchParams = new URLSearchParams("version=v1.0.0");
+
+    rerender(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    expect(
+      await screen.findByText(/no release notes for/i),
+    ).toBeInTheDocument();
+  });
+
+  it("falls back to the latest version when a search-param change drops the version param", async () => {
+    searchParams = new URLSearchParams("version=v1.0.0");
+    mockFetch();
+
+    const { rerender } = render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    await screen.findByText(/no release notes for/i);
+
+    searchParams = new URLSearchParams();
+
+    rerender(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    expect(await screen.findByText("Release notes")).toBeInTheDocument();
+  });
+
+  it("clears the selection when a search-param change leaves neither a version param nor a latest version", async () => {
+    searchParams = new URLSearchParams("version=v1.0.0");
+    mockFetch();
+
+    const { rerender } = render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion={undefined}
+      />,
+    );
+
+    await screen.findByText(/no release notes for/i);
+
+    searchParams = new URLSearchParams();
+
+    rerender(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion={undefined}
+      />,
+    );
+
+    expect(await screen.findByText(/select a version/i)).toBeInTheDocument();
+  });
+
+  it("defaults missing fields from a releases response instead of crashing", async () => {
+    vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+
+      if (url.includes("package-versions"))
+        return Promise.resolve(versionsResponse());
+
+      return Promise.resolve(new Response(JSON.stringify({})));
+    });
+
+    render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    expect(
+      await screen.findByText(/no release notes for/i),
+    ).toBeInTheDocument();
+  });
+
+  it("defaults missing fields from a versions response instead of crashing", async () => {
+    vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+
+      if (url.includes("package-versions"))
+        return Promise.resolve(new Response(JSON.stringify({})));
+
+      return Promise.resolve(releasesResponse());
+    });
+
+    render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    expect(await screen.findByText(/versions & releases/i)).toBeInTheDocument();
+  });
+
+  it("does not update state after the releases request resolves once the component has unmounted", async () => {
+    let resolveReleases!: (r: Response) => void;
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+
+      if (url.includes("package-versions"))
+        return Promise.resolve(versionsResponse());
+
+      return new Promise((resolve) => {
+        resolveReleases = resolve;
+      });
+    });
+
+    const { unmount } = render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    await screen.findByText("v1.0.0");
+
+    unmount();
+    resolveReleases(releasesResponse());
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(
+      errorSpy.mock.calls.some(([msg]) =>
+        String(msg).includes("unmounted component"),
+      ),
+    ).toBe(false);
+
+    errorSpy.mockRestore();
+  });
+
+  it("does not update state after a failed releases request once the component has unmounted", async () => {
+    let rejectReleases!: (err: unknown) => void;
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+
+      if (url.includes("package-versions"))
+        return Promise.resolve(versionsResponse());
+
+      return new Promise((_resolve, reject) => {
+        rejectReleases = reject;
+      });
+    });
+
+    const { unmount } = render(
+      <VersionsReleasesTab
+        importPath="github.com/gin-gonic/gin"
+        latestVersion="v1.1.0"
+      />,
+    );
+
+    await screen.findByText("v1.0.0");
+
+    unmount();
+    rejectReleases(new Error("boom"));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(
+      errorSpy.mock.calls.some(([msg]) =>
+        String(msg).includes("unmounted component"),
+      ),
+    ).toBe(false);
+
+    errorSpy.mockRestore();
+  });
+
   it("shows an error state when the versions fetch fails", async () => {
     vi.mocked(fetch).mockImplementation((input: RequestInfo | URL) => {
       const url = String(input);

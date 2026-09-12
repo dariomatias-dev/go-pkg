@@ -99,6 +99,85 @@ describe("PopularPageContent", () => {
     });
   });
 
+  it("shows a generic error message when the failed response body has no error message", async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify({}), { status: 500 }),
+    );
+
+    renderContent();
+
+    expect(
+      await screen.findByText("Failed to load popular packages."),
+    ).toBeInTheDocument();
+  });
+
+  it("defaults missing packages and total fields instead of crashing", async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify({})));
+
+    renderContent();
+
+    expect(
+      await screen.findByText(/featured popular packages/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /next/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("does not update state after the request resolves once unmounted", async () => {
+    let resolveFetch!: (r: Response) => void;
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    vi.mocked(fetch).mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveFetch = resolve;
+        }),
+    );
+
+    const { unmount } = renderContent();
+
+    unmount();
+    resolveFetch(response([pkg()], 25));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(
+      errorSpy.mock.calls.some(([msg]) =>
+        String(msg).includes("unmounted component"),
+      ),
+    ).toBe(false);
+
+    errorSpy.mockRestore();
+  });
+
+  it("does not update state after a failed request once unmounted", async () => {
+    let rejectFetch!: (err: unknown) => void;
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    vi.mocked(fetch).mockImplementation(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectFetch = reject;
+        }),
+    );
+
+    const { unmount } = renderContent();
+
+    unmount();
+    rejectFetch(new Error("boom"));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(
+      errorSpy.mock.calls.some(([msg]) =>
+        String(msg).includes("unmounted component"),
+      ),
+    ).toBe(false);
+
+    errorSpy.mockRestore();
+  });
+
   it("reads the initial page from the URL's ?page= param", async () => {
     window.history.replaceState({}, "", "/popular?page=3");
     vi.mocked(fetch).mockResolvedValue(response([pkg()], 40));

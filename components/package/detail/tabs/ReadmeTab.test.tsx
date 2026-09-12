@@ -86,4 +86,67 @@ describe("ReadmeTab", () => {
       ),
     );
   });
+
+  it("resolves a relative image path with no leading ./ the same way", () => {
+    render(
+      <ReadmeTab
+        readme="![logo](assets/logo.png)"
+        githubUrl="https://github.com/gin-gonic/gin"
+      />,
+    );
+
+    expect(screen.getByAltText("logo")).toHaveAttribute(
+      "src",
+      expect.stringContaining(
+        "raw.githubusercontent.com%2Fgin-gonic%2Fgin%2Fmaster%2Fassets%2Flogo.png",
+      ),
+    );
+  });
+
+  it("recognizes an .svg image as a badge even without the word badge or shield", () => {
+    render(<ReadmeTab readme="![ci](https://example.com/status.svg)" />);
+
+    const img = screen.getByAltText("ci");
+
+    expect(img).toHaveAttribute("width", "120");
+    expect(img).toHaveAttribute("height", "20");
+  });
+
+  it("drops a raw <img> tag that has no src attribute at all", () => {
+    const { container } = render(<ReadmeTab readme='<img alt="broken">' />);
+
+    expect(container.querySelector("img")).toBeNull();
+  });
+
+  it("drops a link with an empty href", () => {
+    const { container } = render(<ReadmeTab readme="[text]()" />);
+
+    expect(container.querySelector("a")).toBeNull();
+  });
+
+  it("falls back to a default alt text for a badge with none", () => {
+    render(
+      <ReadmeTab readme="![](https://img.shields.io/badge/build-passing-green)" />,
+    );
+
+    expect(screen.getByAltText("badge")).toBeInTheDocument();
+  });
+
+  it("falls back to a default alt text for a regular image with none", () => {
+    render(<ReadmeTab readme="![](/assets/logo.png)" />);
+
+    expect(screen.getByAltText("image")).toBeInTheDocument();
+  });
+
+  it("does not turn a YouTube link inside a list item into an embedded player", () => {
+    render(
+      <ReadmeTab readme="- [demo](https://www.youtube.com/watch?v=dQw4w9WgXcQ)" />,
+    );
+
+    expect(screen.queryByTitle("YouTube video player")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "demo" })).toHaveAttribute(
+      "target",
+      "_blank",
+    );
+  });
 });
