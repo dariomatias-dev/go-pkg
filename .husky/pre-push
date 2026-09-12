@@ -1,0 +1,9 @@
+Z=0000000000000000000000000000000000000000
+while read -r _local_ref local_sha remote_ref _remote_sha; do
+  [ "$local_sha" = "$Z" ] && continue
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    echo "pre-push: verifying before updating main (skip with --no-verify)"
+    exec pnpm run verify --fast
+  fi
+done
+exit 0
