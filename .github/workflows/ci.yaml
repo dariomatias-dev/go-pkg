@@ -21,17 +21,28 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       # The repository is squash-only with squash_merge_commit_title set to
       # PR_TITLE, so the PR title is the only subject that reaches main -
-      # it, not the branch commits, is what release-please reads. The regex
-      # lives in .githooks/lib/conventional-pattern.sh so this job and the
-      # local commit-msg hook can never drift apart.
+      # it, not the branch commits, is what release-please reads.
+      # commitlint.ci.config.mjs turns off the default ignore for
+      # "Merge ..."-shaped subjects: that ignore exists for commits git
+      # writes itself, but nothing writes a PR title except a person, so it
+      # would otherwise let a hand-typed "Merge ..." title bypass the
+      # convention entirely.
       - name: Validate PR title
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          source .githooks/lib/conventional-pattern.sh
-          conventional_check_subject "$PR_TITLE" "PR title" revert
+        run: echo "$PR_TITLE" | pnpm exec commitlint --config commitlint.ci.config.mjs
 
   verify:
     runs-on: ubuntu-latest
