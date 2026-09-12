@@ -3,10 +3,10 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
-SKIP_BUILD=false
+FAST=false
 for arg in "$@"; do
   case "$arg" in
-    --skip-build) SKIP_BUILD=true ;;
+    --fast) FAST=true ;;
     *)
       echo "Unknown argument: $arg" >&2
       exit 1
@@ -31,12 +31,12 @@ pnpm typecheck
 step "test:coverage"
 pnpm test:coverage
 
-if [ "$SKIP_BUILD" = false ]; then
+if [ "$FAST" = false ]; then
   step "build"
   pnpm build
 else
   echo
-  echo "==> build (skipped: --skip-build)"
+  echo "==> build (skipped: --fast)"
 fi
 
 echo
