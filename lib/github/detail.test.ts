@@ -140,4 +140,102 @@ describe("getPackageDetail", () => {
     expect(result.pkg.stars).toBe(0);
     expect(result.pkg.githubUrl).toBeUndefined();
   });
+
+  it("keeps default version and publish date when @latest omits Version and Time", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchByUrl({
+        "@v/list": () => new Response("", { status: 404 }),
+        "@latest": () => new Response(JSON.stringify({})),
+      }),
+    );
+
+    const result = await getPackageDetail("example.com/owner/repo");
+
+    expect(result.pkg.latestVersion).toBe("v0.0.0");
+    expect(result.pkg.publishedAt).toBe("Unknown");
+  });
+
+  it("skips the go.mod lookup when @latest resolves to an empty version", async () => {
+    const fetchMock = mockFetchByUrl({
+      "@v/list": () => new Response("", { status: 404 }),
+      "@latest": () => new Response(JSON.stringify({ Version: "" })),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await getPackageDetail("example.com/owner/repo");
+
+    expect(result.pkg.latestVersion).toBe("");
+    expect(result.pkg.dependenciesCount).toBe(0);
+    expect(fetchMock.mock.calls.some(([u]) => String(u).includes(".mod"))).toBe(
+      false,
+    );
+  });
+
+  it("falls back to go-community and a placeholder README for a path with no GitHub-resolvable repo", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchByUrl({
+        "@v/list": () => new Response("", { status: 404 }),
+        "@latest": () => new Response("", { status: 404 }),
+      }),
+    );
+
+    const result = await getPackageDetail("onlyname");
+
+    expect(result.pkg.author).toBe("go-community");
+    expect(result.pkg.githubUrl).toBeUndefined();
+    expect(result.pkg.readme).toContain("No README was found automatically");
+  });
+
+  it("uses the import path itself as the package name when it ends in a slash", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchByUrl({
+        "@v/list": () => new Response("", { status: 404 }),
+        "@latest": () => new Response("", { status: 404 }),
+      }),
+    );
+
+    const result = await getPackageDetail("github.com/owner/");
+
+    expect(result.pkg.name).toBe("github.com/owner/");
+  });
+
+  it("falls back to the license name when spdx_id is absent, and keeps other defaults when their fields are missing", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchByUrl({
+        "@v/list": () => new Response("", { status: 404 }),
+        "@latest": () => new Response("", { status: 404 }),
+        "api.github.com/repos": () =>
+          new Response(
+            JSON.stringify({ license: { name: "Apache License 2.0" } }),
+          ),
+      }),
+    );
+
+    const result = await getPackageDetail("github.com/gin-gonic/gin");
+
+    expect(result.pkg.license).toBe("Apache License 2.0");
+    expect(result.pkg.stars).toBe(0);
+    expect(result.pkg.forks).toBe(0);
+    expect(result.pkg.description).toBe("Go package discovered on demand.");
+    expect(result.pkg.publishedAt).toBe("Unknown");
+  });
+
+  it("keeps the default license label when the GitHub repo has no license at all", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchByUrl({
+        "@v/list": () => new Response("", { status: 404 }),
+        "@latest": () => new Response("", { status: 404 }),
+        "api.github.com/repos": () => new Response(JSON.stringify({})),
+      }),
+    );
+
+    const result = await getPackageDetail("github.com/gin-gonic/gin");
+
+    expect(result.pkg.license).toBe("View on GitHub");
+  });
 });

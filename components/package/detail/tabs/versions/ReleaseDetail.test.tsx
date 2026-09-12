@@ -90,6 +90,36 @@ describe("ReleaseDetail", () => {
     expect(screen.getByText("Changes")).toBeInTheDocument();
   });
 
+  it("renders an image in the release body via next/image", () => {
+    const { container } = render(
+      <ReleaseDetail
+        loading={false}
+        error={false}
+        selected="v1.1.0"
+        release={release({
+          body: '<img src="https://example.com/shot.png" alt="Screenshot">',
+        })}
+      />,
+    );
+
+    const img = container.querySelector("img");
+    expect(img).not.toBeNull();
+    expect(img).toHaveAttribute("alt", "Screenshot");
+  });
+
+  it("drops an image tag with no src instead of rendering a broken image", () => {
+    const { container } = render(
+      <ReleaseDetail
+        loading={false}
+        error={false}
+        selected="v1.1.0"
+        release={release({ body: '<img alt="Screenshot">' })}
+      />,
+    );
+
+    expect(container.querySelector("img")).toBeNull();
+  });
+
   it("marks pre-releases and shows a no-notes fallback for an empty body", () => {
     render(
       <ReleaseDetail

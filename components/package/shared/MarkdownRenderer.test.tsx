@@ -63,6 +63,50 @@ describe("MarkdownRenderer component overrides", () => {
     ).not.toBeNull();
   });
 
+  it("slugifies an h1 heading the same way as other heading levels", () => {
+    render(<MarkdownRenderer content={"# Top Level"} />);
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Top Level" }),
+    ).toHaveAttribute("id", "top-level");
+  });
+
+  it("slugifies a heading with inline formatting by its text content", () => {
+    render(<MarkdownRenderer content={"## Getting **Started** Fast"} />);
+
+    expect(screen.getByRole("heading", { level: 2 })).toHaveAttribute(
+      "id",
+      "getting-started-fast",
+    );
+  });
+
+  it("slugifies an h3 heading the same way as other heading levels", () => {
+    render(<MarkdownRenderer content={"### Sub Section"} />);
+
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Sub Section" }),
+    ).toHaveAttribute("id", "sub-section");
+  });
+
+  it("renders unordered and ordered lists", () => {
+    render(
+      <MarkdownRenderer content={"- one\n- two\n\n1. first\n2. second"} />,
+    );
+
+    expect(screen.getAllByRole("list")).toHaveLength(2);
+    expect(screen.getAllByRole("listitem")).toHaveLength(4);
+  });
+
+  it("renders a blockquote", () => {
+    const { container } = render(
+      <MarkdownRenderer content={"> a quoted line"} />,
+    );
+
+    expect(container.querySelector("blockquote")?.textContent).toContain(
+      "a quoted line",
+    );
+  });
+
   it("renders a fenced code block via the code-split CodeBlock", async () => {
     const { container } = render(
       <MarkdownRenderer content={"```go\nfmt.Println(1)\n```"} />,
@@ -81,6 +125,19 @@ describe("MarkdownRenderer component overrides", () => {
 
     expect(container.querySelector("code")?.textContent).toBe("go get");
     expect(container.querySelector(".animate-pulse")).toBeNull();
+  });
+
+  it("treats a fenced block with no language tag as a code block when it spans multiple lines", async () => {
+    const { container } = render(
+      <MarkdownRenderer content={"```\nline one\nline two\n```"} />,
+    );
+
+    await waitFor(() =>
+      expect(container.querySelector("code")?.textContent).toBe(
+        "line one\nline two",
+      ),
+    );
+    expect(screen.getByTitle("Copy code")).toBeInTheDocument();
   });
 
   it("opens external links in a new tab but keeps anchor links in-page", () => {
