@@ -86,9 +86,9 @@ React contra el que fue construido y probado.
 
 ## Configuración de Renovate
 
-Una vez que Renovate esté configurado (`renovate.json`), debe
-deshabilitar las actualizaciones para estos cuatro paquetes
-explícitamente, con la `description` de cada regla apuntando de vuelta
-a este archivo. Hasta entonces, un PR de Renovate que proponga subir
-uno de ellos individualmente es una señal de que este documento está
+Renovate (`renovate.json`) deshabilita las actualizaciones para estos
+cuatro paquetes explícitamente, con la `description` de cada regla
+apuntando de vuelta a este archivo. Un PR de Renovate que proponga
+subir uno de ellos individualmente es una señal de que este documento
+está
 desactualizado - concilia los dos en vez de aceptar el PR a ciegas.

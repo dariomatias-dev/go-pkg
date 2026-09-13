@@ -82,8 +82,8 @@ built and tested against.
 
 ## Renovate configuration
 
-Once Renovate is configured (`renovate.json`), it must disable updates
-for these four packages explicitly, each rule's `description` pointing
-back to this file. Until then, a Renovate PR proposing to bump one of
-them individually is a signal that this document is out of date -
+Renovate (`renovate.json`) disables updates for these four packages
+explicitly, each rule's `description` pointing back to this file. A
+Renovate PR proposing to bump one of them individually is a signal
+that this document is out of date -
 reconcile the two rather than merging the PR blind.

@@ -84,9 +84,9 @@ React contra a qual ele foi construído e testado.
 
 ## Configuração do Renovate
 
-Uma vez que o Renovate estiver configurado (`renovate.json`), ele deve
-desabilitar atualizações pra esses quatro pacotes explicitamente, cada
-regra com sua `description` apontando de volta pra este arquivo. Até
-lá, um PR do Renovate propondo subir um deles individualmente é um
+O Renovate (`renovate.json`) desabilita atualizações pra esses quatro
+pacotes explicitamente, cada regra com sua `description` apontando de
+volta pra este arquivo. Um PR do Renovate propondo subir um deles
+individualmente é um
 sinal de que este documento está desatualizado - reconcilie os dois em
 vez de aceitar o PR às cegas.
