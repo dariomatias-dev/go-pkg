@@ -11,7 +11,7 @@
   <a href="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml">
     <img src="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml/badge.svg" alt="CI: build superado">
   </a>
-  <img src="https://img.shields.io/badge/cobertura-%E2%89%A560%25_obligatoria-brightgreen" alt="Cobertura de pruebas: mínimo 60% obligatorio en CI">
+  <img src="https://img.shields.io/badge/cobertura-%E2%89%A580%25_obligatoria-brightgreen" alt="Cobertura de pruebas: mínimo 80% obligatorio en CI">
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/licencia-MIT-blue" alt="Licencia: MIT">
   </a>
