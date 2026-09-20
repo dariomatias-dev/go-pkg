@@ -1,0 +1,29 @@
+# Codecov configuration.
+#
+# Reporting only: the coverage thresholds in vitest.config.mts (lines,
+# statements, functions, branches) are what actually fail the build.
+# Codecov here just reports and annotates PRs with the same numbers.
+
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  precision: 1
+  round: down
+  range: "80...100"
+  status:
+    project:
+      default:
+        target: 90%
+        threshold: 0.5%
+    patch:
+      default:
+        target: auto
+        threshold: 0.5%
+
+comment:
+  layout: "condensed_header, diff, files"
+  require_changes: true
+
+github_checks:
+  annotations: true
