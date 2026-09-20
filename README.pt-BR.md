@@ -15,6 +15,7 @@
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue" alt="Licença: MIT">
   </a>
+  <img src="https://img.shields.io/badge/node-%3E%3D22-339933?logo=node.js&logoColor=white" alt="Node.js: 22 ou superior">
 </div>
 <br>
 
@@ -37,14 +38,16 @@
 ## Índice
 
 - [Sobre o Projeto](#sobre-o-projeto)
+- [Prévia](#prévia)
 - [Funcionalidades](#funcionalidades)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Capturas de Tela](#capturas-de-tela)
+- [Arquitetura](#arquitetura)
 - [Como Começar](#como-começar)
 - [Scripts](#scripts)
 - [Testes](#testes)
 - [Documentação](#documentação)
 - [Contribuindo](#contribuindo)
+- [Segurança](#segurança)
 - [Licença](#licença)
 - [Autor](#autor)
 
@@ -55,6 +58,17 @@ GoPkg é uma plataforma web para descoberta e exploração de pacotes Go, constr
 Ela agrega dados da API do GitHub e do Go Module Proxy oficial para fornecer metadados ricos sobre pacotes: estrelas, forks, licença, README, conteúdo do `go.mod`, histórico completo de versões, releases do GitHub e notas do Go Report Card: tudo em uma única interface.
 
 A plataforma também integra o **Gopher AI**, um assistente de chat baseado no Google Gemini 2.5 Flash capaz de explicar qualquer pacote, gerar exemplos de código Go idiomático e responder dúvidas gerais sobre Go com contexto.
+
+## Prévia
+
+<div align="center">
+  <img src="public/screenshots/home.png" width="400" alt="Início"/>
+  <img src="public/screenshots/search.png" width="400" alt="Busca"/>
+  <img src="public/screenshots/popular.png" width="400" alt="Pacotes Populares"/>
+  <img src="public/screenshots/package-detail.png" width="400" alt="Detalhe do Pacote"/>
+  <img src="public/screenshots/compare.png" width="400" alt="Comparar"/>
+  <img src="public/screenshots/favorites.png" width="400" alt="Favoritos"/>
+</div>
 
 ## Funcionalidades
 
@@ -79,16 +93,9 @@ A plataforma também integra o **Gopher AI**, um assistente de chat baseado no G
 - **[GitHub REST API](https://docs.github.com/en/rest)**: Metadados de repositórios, releases e conteúdo do README.
 - **[Go Module Proxy](https://proxy.golang.org/)**: Listas de versões, arquivos `go.mod` e contagem de dependências.
 
-## Capturas de Tela
+## Arquitetura
 
-<div align="center">
-  <img src="public/screenshots/home.png" width="400" alt="Início"/>
-  <img src="public/screenshots/search.png" width="400" alt="Busca"/>
-  <img src="public/screenshots/popular.png" width="400" alt="Pacotes Populares"/>
-  <img src="public/screenshots/package-detail.png" width="400" alt="Detalhe do Pacote"/>
-  <img src="public/screenshots/compare.png" width="400" alt="Comparar"/>
-  <img src="public/screenshots/favorites.png" width="400" alt="Favoritos"/>
-</div>
+O código é dividido em camadas `app/ → components/ → hooks/ → lib/ → types/`, onde uma seta significa "pode importar de" e a regra corre em um único sentido: `lib/` não tem JSX nem React, então continua testável só com Vitest. Veja [docs/architecture.pt-BR.md](docs/architecture.pt-BR.md) para a árvore de diretórios completa, a fronteira Server/Client Component e a estratégia de cache.
 
 ## Como Começar
 
@@ -187,6 +194,10 @@ Cada um também está disponível em [English](docs/architecture.md) e [Español
 Contribuições tornam a comunidade de código aberto um lugar excelente para aprender e criar. Toda contribuição é bem-vinda.
 
 Antes de abrir um pull request, consulte [docs/contributing.pt-BR.md](docs/contributing.pt-BR.md) para o setup local, o checklist pré-PR, a convenção de mensagens de commit (Conventional Commits) e as regras de branching deste projeto.
+
+## Segurança
+
+Encontrou uma vulnerabilidade? Não abra uma issue pública. Veja [docs/security.pt-BR.md](docs/security.pt-BR.md) para o escopo e como reportar de forma privada.
 
 ## Licença
 

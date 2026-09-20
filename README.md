@@ -15,6 +15,7 @@
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT">
   </a>
+  <img src="https://img.shields.io/badge/node-%3E%3D22-339933?logo=node.js&logoColor=white" alt="Node.js: 22 or newer">
 </div>
 <br>
 
@@ -37,14 +38,16 @@
 ## Table of Contents
 
 - [About the Project](#about-the-project)
+- [Preview](#preview)
 - [Features](#features)
-- [Built With](#built-with)
-- [Screenshots](#screenshots)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
 - [Getting Started](#getting-started)
 - [Scripts](#scripts)
-- [Tests](#tests)
+- [Testing](#testing)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
+- [Security](#security)
 - [License](#license)
 - [Author](#author)
 
@@ -55,6 +58,17 @@ GoPkg is a web platform for discovering and exploring Go packages, built as a pr
 It aggregates data from the GitHub API and the official Go Module Proxy to provide rich package metadata: stars, forks, license, README, `go.mod` contents, full version history, GitHub releases, and Go Report Card grades: all in one interface.
 
 The platform also integrates **Gopher AI**, a chat assistant powered by Google Gemini 2.5 Flash that can explain any package, generate idiomatic Go code examples, and answer general Go questions in context.
+
+## Preview
+
+<div align="center">
+  <img src="public/screenshots/home.png" width="400" alt="Home"/>
+  <img src="public/screenshots/search.png" width="400" alt="Search"/>
+  <img src="public/screenshots/popular.png" width="400" alt="Popular Packages"/>
+  <img src="public/screenshots/package-detail.png" width="400" alt="Package Detail"/>
+  <img src="public/screenshots/compare.png" width="400" alt="Compare"/>
+  <img src="public/screenshots/favorites.png" width="400" alt="Favorites"/>
+</div>
 
 ## Features
 
@@ -68,7 +82,7 @@ The platform also integrates **Gopher AI**, a chat assistant powered by Google G
 - **AI Summary**: Auto-generated technical summary with purpose, key features, usage example, and common use cases.
 - **Dark / Light Mode**: System-aware theme with manual override.
 
-## Built With
+## Tech Stack
 
 - **[Next.js](https://nextjs.org/)**: React framework with App Router, React Server Components, and built-in caching.
 - **[React](https://react.dev/)**: UI library for building component-driven interfaces.
@@ -79,16 +93,9 @@ The platform also integrates **Gopher AI**, a chat assistant powered by Google G
 - **[GitHub REST API](https://docs.github.com/en/rest)**: Repository metadata, releases, and README content.
 - **[Go Module Proxy](https://proxy.golang.org/)**: Version lists, `go.mod` files, and dependency counts.
 
-## Screenshots
+## Architecture
 
-<div align="center">
-  <img src="public/screenshots/home.png" width="400" alt="Home"/>
-  <img src="public/screenshots/search.png" width="400" alt="Search"/>
-  <img src="public/screenshots/popular.png" width="400" alt="Popular Packages"/>
-  <img src="public/screenshots/package-detail.png" width="400" alt="Package Detail"/>
-  <img src="public/screenshots/compare.png" width="400" alt="Compare"/>
-  <img src="public/screenshots/favorites.png" width="400" alt="Favorites"/>
-</div>
+Code is layered `app/ → components/ → hooks/ → lib/ → types/`, where an arrow means "may import from" and the rule runs one direction only: `lib/` has no JSX or React, so it stays unit-testable with plain Vitest. See [docs/architecture.md](docs/architecture.md) for the full directory tree, the Server/Client Component boundary, and caching strategy.
 
 ## Getting Started
 
@@ -161,7 +168,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 | `analyze`       | `pnpm analyze`       | Builds with the bundle analyzer enabled.                                                                                                              |
 | `screenshot`    | `pnpm screenshot`    | Launches a headless browser against a running dev server and captures a screenshot of every app page into `public/screenshots/`, used for the README. |
 
-## Tests
+## Testing
 
 ```bash
 pnpm verify   # the same gate CI runs: format, lint, typecheck, test:coverage, build
@@ -187,6 +194,10 @@ Each is also available in [Português (BR)](docs/architecture.pt-BR.md) and [Esp
 Contributions make the open-source community an amazing place to learn and create. Any contributions you make are greatly appreciated.
 
 Before opening a pull request, see [docs/contributing.md](docs/contributing.md) for the local setup, the pre-PR checklist, commit message convention (Conventional Commits), and branching rules this project follows.
+
+## Security
+
+Found a vulnerability? Please do not open a public issue. See [docs/security.md](docs/security.md) for scope and how to report it privately.
 
 ## License
 
