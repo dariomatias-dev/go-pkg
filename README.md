@@ -7,20 +7,23 @@
   <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini">
 </div>
 <br>
+
 <div align="center">
   <a href="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml">
     <img src="https://github.com/dariomatias-dev/go-pkg/actions/workflows/ci.yaml/badge.svg" alt="CI: build passing">
   </a>
-  <img src="https://img.shields.io/badge/coverage-%E2%89%A580%25_enforced-brightgreen" alt="Test coverage: at least 80% enforced in CI">
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT">
+  <a href="https://codecov.io/gh/dariomatias-dev/go-pkg">
+    <img src="https://codecov.io/gh/dariomatias-dev/go-pkg/branch/main/graph/badge.svg" alt="Coverage">
   </a>
   <img src="https://img.shields.io/badge/node-%3E%3D22-339933?logo=node.js&logoColor=white" alt="Node.js: 22 or newer">
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT License">
+  </a>
 </div>
 <br>
 
 <p align="center">
-<strong>English</strong> · <a href="README.es.md">Español</a> · <a href="README.pt-BR.md">Português (BR)</a>
+  <strong>English</strong> · <a href="README.es.md">Español</a> · <a href="README.pt-BR.md">Português (BR)</a>
 </p>
 
 <h1 align="center">GoPkg</h1>
