@@ -24,12 +24,15 @@ describe("POST /api/package-assistant", () => {
   const originalKey = process.env.GEMINI_API_KEY;
 
   beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     resetRateLimitStore();
     generateContent.mockReset();
     process.env.GEMINI_API_KEY = "test-key";
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     if (originalKey === undefined) delete process.env.GEMINI_API_KEY;
     else process.env.GEMINI_API_KEY = originalKey;
   });

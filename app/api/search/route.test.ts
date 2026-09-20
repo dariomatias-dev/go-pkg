@@ -31,10 +31,13 @@ function searchResponse() {
 
 describe("GET /api/search", () => {
   beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.stubGlobal("fetch", vi.fn());
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 

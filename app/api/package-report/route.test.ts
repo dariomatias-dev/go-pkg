@@ -12,10 +12,13 @@ function badgeSvg(grade: string) {
 
 describe("GET /api/package-report", () => {
   beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.stubGlobal("fetch", vi.fn());
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 

@@ -43,6 +43,10 @@ describe("Header", () => {
     render(<Header />);
 
     await user.click(screen.getByRole("button", { name: /menu/i }));
+
+    document.addEventListener("click", (e) => e.preventDefault(), {
+      once: true,
+    });
     await user.click(screen.getByRole("link", { name: /favorites/i }));
 
     expect(screen.queryByText("Navigation")).not.toBeInTheDocument();

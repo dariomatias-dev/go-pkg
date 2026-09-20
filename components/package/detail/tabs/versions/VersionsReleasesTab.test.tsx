@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -252,7 +252,9 @@ describe("VersionsReleasesTab", () => {
 
     expect(replace).not.toHaveBeenCalled();
 
-    resolveReleases(releasesResponse());
+    await act(async () => {
+      resolveReleases(releasesResponse());
+    });
   });
 
   it("selects nothing when there is no version param and no latest version", async () => {

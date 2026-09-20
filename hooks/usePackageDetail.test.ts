@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { usePackageDetail } from "./usePackageDetail";
@@ -150,7 +150,7 @@ describe("usePackageDetail", () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.activeTab).toBe("readme");
 
-    result.current.handleTabChange("summary");
+    act(() => result.current.handleTabChange("summary"));
 
     await waitFor(() => expect(result.current.activeTab).toBe("summary"));
     await waitFor(() =>
@@ -171,15 +171,17 @@ describe("usePackageDetail", () => {
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
-    result.current.handleTabChange("summary");
+    act(() => result.current.handleTabChange("summary"));
     await waitFor(() =>
       expect(result.current.aiSummary).toBe("Cached summary."),
     );
 
     const callsBefore = vi.mocked(fetch).mock.calls.length;
 
-    result.current.handleTabChange("readme");
-    result.current.handleTabChange("summary");
+    act(() => {
+      result.current.handleTabChange("readme");
+      result.current.handleTabChange("summary");
+    });
 
     expect(vi.mocked(fetch).mock.calls.length).toBe(callsBefore);
   });
@@ -203,12 +205,14 @@ describe("usePackageDetail", () => {
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
-    result.current.handleTabChange("summary");
+    act(() => result.current.handleTabChange("summary"));
     await waitFor(() =>
       expect(result.current.aiSummaryError).toBe("AI is overloaded."),
     );
 
-    result.current.retryAiSummary();
+    act(() => {
+      void result.current.retryAiSummary();
+    });
     await waitFor(() =>
       expect(result.current.aiSummary).toBe("Recovered summary."),
     );

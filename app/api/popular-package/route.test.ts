@@ -35,11 +35,14 @@ function searchResponse() {
 
 describe("GET /api/popular-package", () => {
   beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     resetRateLimitStore();
     vi.stubGlobal("fetch", vi.fn());
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 

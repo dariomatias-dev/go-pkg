@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -58,12 +58,16 @@ function baseHookState(
   };
 }
 
-function renderDetail(importPath = "github.com/gin-gonic/gin") {
-  return render(
+async function renderDetail(importPath = "github.com/gin-gonic/gin") {
+  const view = render(
     <TooltipProvider>
       <PackageDetail importPath={importPath} />
     </TooltipProvider>,
   );
+
+  await act(async () => {});
+
+  return view;
 }
 
 describe("PackageDetail", () => {
@@ -80,17 +84,17 @@ describe("PackageDetail", () => {
     usePackageDetail.mockReset();
   });
 
-  it("shows a skeleton while loading", () => {
+  it("shows a skeleton while loading", async () => {
     usePackageDetail.mockReturnValue(
       baseHookState({ loading: true, data: null }),
     );
 
-    const { container } = renderDetail();
+    const { container } = await renderDetail();
 
     expect(container.querySelector(".animate-progress-slide")).toBeTruthy();
   });
 
-  it("shows an error view when the package fails to resolve", () => {
+  it("shows an error view when the package fails to resolve", async () => {
     usePackageDetail.mockReturnValue(
       baseHookState({
         loading: false,
@@ -99,15 +103,15 @@ describe("PackageDetail", () => {
       }),
     );
 
-    renderDetail();
+    await renderDetail();
 
     expect(screen.getByText("Package not found.")).toBeInTheDocument();
   });
 
-  it("renders the package header, breadcrumb and README tab once loaded", () => {
+  it("renders the package header, breadcrumb and README tab once loaded", async () => {
     usePackageDetail.mockReturnValue(baseHookState());
 
-    renderDetail();
+    await renderDetail();
 
     expect(screen.getByRole("heading", { name: "gin" })).toBeInTheDocument();
     expect(
@@ -115,22 +119,22 @@ describe("PackageDetail", () => {
     ).toBeGreaterThan(0);
   });
 
-  it("shows the Go Report Card only when the package has a GitHub URL", () => {
+  it("shows the Go Report Card only when the package has a GitHub URL", async () => {
     usePackageDetail.mockReturnValue(
       baseHookState({
         data: { pkg: pkg({ githubUrl: undefined }), goMod: "" },
       }),
     );
 
-    renderDetail();
+    await renderDetail();
 
     expect(screen.queryByText("Report Card")).not.toBeInTheDocument();
   });
 
-  it("renders the Gopher AI assistant chat", () => {
+  it("renders the Gopher AI assistant chat", async () => {
     usePackageDetail.mockReturnValue(baseHookState());
 
-    renderDetail();
+    await renderDetail();
 
     expect(
       screen.getByRole("heading", { name: /gopher ai assistant/i }),

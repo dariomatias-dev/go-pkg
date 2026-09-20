@@ -8,10 +8,13 @@ function req(params: string) {
 
 describe("GET /api/package-versions", () => {
   beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.stubGlobal("fetch", vi.fn());
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
