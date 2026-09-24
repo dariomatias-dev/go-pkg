@@ -9,8 +9,10 @@ import baseConfig from "./commitlint.config.mjs";
 // except a human choosing not to follow the convention - defaultIgnores
 // would let that through unchecked. The one legitimate exception is
 // GitHub's Revert button, which opens a PR titled `Revert "..."`.
-export default {
+const ciConfig = {
   ...baseConfig,
   defaultIgnores: false,
   ignores: [(message) => /^Revert /.test(message)],
 };
+
+export default ciConfig;
